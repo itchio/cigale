@@ -1,3 +1,3 @@
 - job:
-    name: 1.txt
+    name: matrix-job
     project-type: matrix
