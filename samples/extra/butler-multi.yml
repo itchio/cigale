@@ -1,0 +1,84 @@
+
+# e.g. label=$os-$arch, regex=(windows-amd64|linux-386)
+- '{def:inject-when}':
+  conditional-step:
+    condition-kind: regex-match
+    label: '{label}'
+    regex: '{regex}'
+    steps:
+      - inject:
+          properties-content: '{properties-content}'
+
+- '{def:shell}':
+  conditional-step:
+    condition-kind: regex-match
+    label: $os
+    regex: '(linux|osx)'
+    steps:
+      - shell: '{script}'
+
+- '{def:batch}':
+  conditional-step:
+    condition-kind: regex-match
+    label: $os
+    regex: 'windows'
+    steps:
+      - shell: '{script}'
+
+- '{def:go-multiplatform}':
+    job:
+      name: '{name}-go-multiplatform'
+      project-type: matrix
+      workspace: '/{name}/$os-$arch/src/${git.host}/${git.user}/${git.name}'
+      child-workspace: .
+      scm:
+        - git:
+            url: 'git@{git.host}'
+          credentials-id: '{git.credentials}'
+          branches:
+            - '**'
+          refspec: 'refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*'
+      triggers:
+        - github
+      builders:
+        - inject:
+            properties-content: |
+              GOPATH=$WORKSPACE/../../../..
+              GOARCH=$arch
+              BUTLER_LDFLAGS=-X main.version=travis-head
+              CGO_ENABLED=1
+              CC_FOR_TARGET=gcc
+              CXX_FOR_TARGET=g++
+        - @inject-when:
+            label: $os-$arch
+            regex: windows-386
+            properties-content: Path=$Path;C:\msys64\mingw32\bin
+        - @inject-when:
+            label: $os-$arch
+            regex: windows-amd64
+            properties-content: Path=$Path;C:\msys64\mingw64\bin
+        - @inject-when:
+            label: $os
+            regex: linux
+            properties-content: PATH=PATH:/usr/local/go/bin
+        - @shell:
+            script: |
+              go get -d -v ./...
+              go build -v -x -ldflags "$BUTLER_LDFLAGS" {pkg}
+              file {name}
+              butler -V
+        - @batch:
+            script: |
+              go get -d -v ./...
+              go build -v -x -ldflags "%BUTLER_LDFLAGS%" {pkg}
+              file {name}
+              butler -V
+
+- @go-multiplatform:
+    name: 'butler'
+    pkg: './cmd/butler'
+    git:
+      host: github.com
+      user: itchio
+      name: butler
+      credentials: f5387502-f743-45da-b8d7-1a8bf7d2a54e

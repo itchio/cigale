@@ -1,0 +1,15 @@
+#!/bin/bash
+if [[ -z $1 ]]; then
+  echo "Usage: scripts/compare FILE.yml"
+  exit 1
+fi
+
+rm -rf tmp
+
+echo "========== JJB ==========="
+jenkins-jobs test $1 -o tmp/jjb
+
+echo
+echo "========= Cigale ========="
+cigale test $1 -o tmp/cigale
+diff tmp/{jjb,cigale}
