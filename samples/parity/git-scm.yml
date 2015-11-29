@@ -1,0 +1,10 @@
+- job:
+    name: git-scm
+    project-type: matrix
+    scm:
+      - git:
+          url: git@github.com
+          credentials-id: yolo
+          branches:
+            - '**'
+          refspec: 'refs/heads'
