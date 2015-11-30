@@ -1,0 +1,8 @@
+#!/bin/bash
+pushd `dirname $0` > /dev/null
+SCRIPTPATH=`pwd`
+popd > /dev/null
+
+for i in $SCRIPTPATH/../samples/parity/*; do
+  $SCRIPTPATH/compare $i
+done

@@ -54,7 +54,7 @@ module Cigale
     end
 
     def translate_project (xml, jdef)
-      project = case jdef["project_type"]
+      project = case jdef["project-type"]
                 when "matrix"
                   "matrix-project"
                 else
@@ -77,9 +77,16 @@ module Cigale
         xml.blockBuildWhenDownstreamBuilding false
         xml.blockBuildWhenUpstreamBuilding false
         xml.concurrentBuild false
+        if val = jdef["workspace"]
+          xml.customWorkspace val
+        end
+        if val = jdef["child-workspace"]
+          xml.childCustomWorkspace val
+        end
         xml.canRoam true
         xml.properties
         translate_scm xml, jdef["scm"]
+        translate_triggers xml, jdef["triggers"]
         translate_builders xml, jdef["builders"]
         xml.publishers
         xml.buildWrappers
@@ -105,6 +112,25 @@ module Cigale
 
         xml.scm :class => clazz do
           self.send "translate_#{underize(stype)}_scm", xml, sdef
+        end
+      end
+    end
+
+    def translate_triggers (xml, triggers)
+      if (triggers || []).size == 0
+        return
+      end
+
+      xml.triggers :class => "vector" do
+        for t in triggers
+          case t
+          when "github"
+            xml.tag! "com.cloudbees.jenkins.GitHubPushTrigger" do
+              xml.spec
+            end
+          else
+            raise "Unknown trigger type: #{t}"
+          end
         end
       end
     end
@@ -161,6 +187,10 @@ module Cigale
     end
 
     def translate_builders (xml, builders)
+      if (builders || []).size == 0
+        return xml.builders
+      end
+
       xml.builders do
         for b in builders
           btype, bdef = asplode(b)
