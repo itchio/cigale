@@ -1,9 +1,9 @@
 language: ruby 
 rvm: 2.1.5
-sudo: true
 
 install:
-  - sudo pip install jenkins-job-builder
+  - pip install --user jenkins-job-builder
+  - export PATH=$PATH:/$HOME/.local/bin
   - rake install
 
 script:
