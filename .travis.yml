@@ -1,15 +1,9 @@
-language:
-  - ruby
-  - python
-
+language: ruby 
 rvm: 2.1.5
-python: 2.7
-
+sudo: true
 
 install:
-  - virtualenv venv --distribute
-  - venv/bin/activate 
-  - pip install jenkins-job-builder
+  - sudo pip install jenkins-job-builder
   - rake install
 
 script:
