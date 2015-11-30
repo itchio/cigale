@@ -4,13 +4,18 @@ require "slop"
 require "yaml"
 require "fileutils"
 require "builder"
+require "pp"
 
 module Cigale
   class CLI
-    def initialize
-      @logger = Logger.new($stdout).tap do |log|
+    def logger
+      @logger ||= Logger.new($stdout).tap do |log|
         log.progname = "cigale"
       end
+    end
+
+    def initialize
+      @numjobs = 0
 
       opts = Slop.parse ARGV do |o|
         o.banner = "Usage: cigale [options] [spec_file.yml]"
@@ -19,7 +24,7 @@ module Cigale
         o.string "-l", "loglevel", "Logger level", :default => "INFO"
       end
 
-      @logger.level = Logger.const_get opts[:loglevel]
+      logger.level = Logger.const_get opts[:loglevel]
 
       cmd, input = opts.arguments
       case cmd
@@ -29,34 +34,107 @@ module Cigale
         raise "Unknown command: #{cmd}"
       end
 
-      @logger.info "Parsing #{input}"
+      logger.info "Parsing #{input}"
       entries = YAML.load_file(input)
 
       output = opts[:output]
-      @logger.info "Creating directory #{output}"
+      logger.info "Creating directory #{output}"
       FileUtils.mkdir_p output
+
+      library = {}
+      concrete_entries = []
 
       for entry in entries
         etype, edef = asplode(entry)
 
         case etype
+        when Symbol
+          logger.info "Defined macro #{etype}"
+          library[etype.to_s] = edef
+        else
+          logger.info "Pushing entry #{etype}"
+          concrete_entries.push entry
+        end
+      end
+
+      for entry in concrete_entries
+        expanding = true
+        while expanding do
+          ctx = MacroContext.new :library => library
+          entry = expand_recursively(ctx, entry)
+          expanding = ctx.expanding?
+        end
+
+        etype, edef = asplode(res)
+
+        case etype
         when "job"
           xml = Builder::XmlMarkup.new(:indent => 2)
           xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
-
-          translate_project xml, edef
+          translate_job xml, edef
 
           job_path = File.join(output, edef["name"])
           File.open(job_path, "w") do |f|
             f.write(xml.target!)
           end
         else
-          raise "Unknown top-level type: #{entry_type}"
+          raise "Unknown top-level type: #{etype}"
         end
+      end
+
+      logger.info "Generated #{@numjobs} jobs."
+    end
+
+    def expand_recursively (ctx, entity)
+      case entity
+      when Array
+        entity.map do |x|
+          expand_recursively(ctx, interpolate(ctx, x))
+        end
+      when Hash
+        entity.map do |k, v|
+          case k
+          when /\.(.*)$/
+            if ctx.expanding?
+              [k, v]
+            else
+              mdef = ctx.lookup($1)
+              logger.info "Trying to instanciate #{$1}, def = "
+              pp mdef
+              ctx.start v
+              res = expand_recursively(ctx, mdef)
+              logger.info "Result of expansion is: "
+              pp res
+
+              kk, vv = asplode(res)
+              [kk, vv]
+            end
+          else
+            [k, expand_recursively(ctx, v)]
+          end
+        end.to_h
+      else
+        return interpolate(ctx, entity)
       end
     end
 
-    def translate_project (xml, jdef)
+    def interpolate (ctx, entity)
+      case entity
+      when /^{(.*)}$/
+        res = $1
+        logger.info "Found full-entity #{res}"
+        ctx.get_param(res)
+      when String
+        logger.info "Found string entity #{entity}"
+        entity
+      else
+        entity
+      end
+    end
+
+    def translate_job (xml, jdef)
+      @numjobs += 1
+
       project = case jdef["project-type"]
                 when "matrix"
                   "matrix-project"
@@ -150,7 +228,7 @@ module Cigale
       end
 
       xml.branches do
-        for branch in sdef["branches"]
+        for branch in (sdef["branches"] || [])
           xml.tag! "hudson.plugins.git.BranchSpec" do
             xml.name branch
           end
@@ -313,6 +391,33 @@ module Cigale
 
     def underize (name)
       name.gsub(/-/, '_')
+    end
+  end
+
+  class MacroContext
+    def initialize (options)
+      @library = options[:library]
+      @expanded = false
+    end
+
+    def start (params)
+      @expanding = true
+      @params = params
+    end
+
+    def get_param (name)
+      res = @params[name]
+      raise "Unspecified param #{name}" unless res
+    end
+
+    def lookup (macro_name)
+      mdef = @library[macro_name]
+      raise "Undefined macro: #{name} — got #{@library.keys.inspect}" unless mdef
+      mdef
+    end
+
+    def expanding?
+      @expanding
     end
   end
 end

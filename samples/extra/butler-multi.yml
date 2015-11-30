@@ -1,80 +1,74 @@
 
-# e.g. label=$os-$arch, regex=(windows-amd64|linux-386)
-- '{def:inject-when}':
-  conditional-step:
-    condition-kind: regex-match
-    label: '{label}'
-    regex: '{regex}'
-    steps:
-      - inject:
-          properties-content: '{properties-content}'
+- :export:
+    inject:
+      properties-content: '{* string}'
 
-- '{def:shell}':
-  conditional-step:
-    condition-kind: regex-match
-    label: $os
-    regex: '(linux|osx)'
-    steps:
-      - shell: '{script}'
+- :on-os-arch:
+    conditional-step:
+      condition-kind: regex-match
+      label: $os-arch
+      regex: '{os-arch string}'
+      steps: '{do list}'
 
-- '{def:batch}':
-  conditional-step:
-    condition-kind: regex-match
-    label: $os
-    regex: 'windows'
-    steps:
-      - shell: '{script}'
+- :on-windows:
+    .on-osarch:
+      spec: windows-.*
+      do: '{* list}'
 
-- '{def:go-multiplatform}':
+- :on-unix:
+    .on-osarch:
+      spec: (linux|osx)-.*
+      do: '{* list}'
+
+- :shell:
+    .on-unix: [ shell: '{* string}' ]
+
+- :batch:
+    .on-windows: [ batch: '{* string}' ]
+
+- :go-job:
     job:
-      name: '{name}-go-multiplatform'
+      name: '{name string}-go-multiplatform'
       project-type: matrix
-      workspace: '/{name}/$os-$arch/src/${git.host}/${git.user}/${git.name}'
+      workspace: '/{name}/$os-$arch/src/${git.host string}/${git.user string}/${git.name string}'
       child-workspace: .
       scm:
         - git:
-            url: 'git@{git.host}'
-          credentials-id: '{git.credentials}'
+            url: 'git@{git.host string}'
+          credentials-id: '{git.credentials string}'
           branches:
             - '**'
           refspec: 'refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*'
       triggers:
         - github
       builders:
-        - inject:
-            properties-content: |
-              GOPATH=$WORKSPACE/../../../..
-              GOARCH=$arch
-              BUTLER_LDFLAGS=-X main.version=travis-head
-              CGO_ENABLED=1
-              CC_FOR_TARGET=gcc
-              CXX_FOR_TARGET=g++
-        - @inject-when:
-            label: $os-$arch
-            regex: windows-386
-            properties-content: Path=$Path;C:\msys64\mingw32\bin
-        - @inject-when:
-            label: $os-$arch
-            regex: windows-amd64
-            properties-content: Path=$Path;C:\msys64\mingw64\bin
-        - @inject-when:
-            label: $os
-            regex: linux
-            properties-content: PATH=PATH:/usr/local/go/bin
-        - @shell:
-            script: |
-              go get -d -v ./...
-              go build -v -x -ldflags "$BUTLER_LDFLAGS" {pkg}
-              file {name}
-              butler -V
-        - @batch:
-            script: |
-              go get -d -v ./...
-              go build -v -x -ldflags "%BUTLER_LDFLAGS%" {pkg}
-              file {name}
-              butler -V
+        - .export: |
+            GOPATH=$WORKSPACE/../../../..
+            GOARCH=$arch
+            BUTLER_LDFLAGS=-X main.version=travis-head
+            CGO_ENABLED=1
+            CC_FOR_TARGET=gcc
+            CXX_FOR_TARGET=g++
+        - .on-os-arch:
+            spec: windows-386
+            do: [ .export: 'Path=$Path;C:\msys64\mingw32\bin' ]
+        - .on-os-arch:
+            spec: windows-amd64
+            do: [ .export: 'Path=$Path;C:\msys64\mingw64\bin' ]
+        - .on-unix:
+            - .export: PATH=PATH:/usr/local/go/bin
+        - .shell: |
+            go get -d -v ./...
+            go build -v -x -ldflags "$BUTLER_LDFLAGS" {pkg}
+            file {name}
+            butler -V
+        - .batch: |
+            go get -d -v ./...
+            go build -v -x -ldflags "%BUTLER_LDFLAGS%" {pkg}
+            file {name}
+            butler -V
 
-- @go-multiplatform:
+- .go-job:
     name: 'butler'
     pkg: './cmd/butler'
     git:
