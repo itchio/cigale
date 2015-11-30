@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+  - 2.1.5
+
+install:
+  - pip install jenkins-job-builder
+  - rake install
+
+script:
+  - make
