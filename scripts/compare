@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/bin/bash -e
+
 if [[ -z $1 ]]; then
   echo "Usage: scripts/compare FILE.yml"
   exit 1

@@ -8,3 +8,5 @@
           branches:
             - '**'
           refspec: 'refs/heads'
+    triggers:
+      - github
