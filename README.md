@@ -1,30 +1,38 @@
 # Cigale
 
-TODO: Write a gem description
+Just like jenkins-job-builder:
+
+  * cigale generates XML configuration that Jenkins can grok, from a bunch of
+    human-readable, diff-friendly, YAML files.
+  * It's not production-ready
+
+Contrary to jenkins-job-builder:
+
+  * The source code is actually readable
+  * Macros are just a YAML subtree that can be instanciated with
+  parameters of any types (scalars, sequences, etc.)
+  * It's not production-ready
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Execute:
 
-```ruby
-gem 'cigale'
+```bash
+bundle install
+rake install
 ```
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install cigale
 
 ## Usage
 
-TODO: Write usage instructions here
+Try running:
+
+```bash
+cigale test samples/parity/git-scm.yml -o output/directory
+```
 
 ## Contributing
 
-1. Fork it ( https://github.com/[my-github-username]/cigale/fork )
+1. Fork it ( https://github.com/fasterthanlime/cigale/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)

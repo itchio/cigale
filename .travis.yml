@@ -3,6 +3,8 @@ rvm:
   - 2.1.5
 
 install:
+  - virtualenv venv --distribute
+  - venv/bin/activate 
   - pip install jenkins-job-builder
   - rake install
 
