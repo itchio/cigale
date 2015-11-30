@@ -3,6 +3,11 @@ pushd `dirname $0` > /dev/null
 SCRIPTPATH=`pwd`
 popd > /dev/null
 
-for i in $SCRIPTPATH/../samples/parity/*; do
-  $SCRIPTPATH/compare $i
+pushd $SCRIPTPATH/../samples/ > /dev/null
+SAMPLEPATH=`pwd`
+popd > /dev/null
+
+for i in $SAMPLEPATH/parity/*; do
+  printf "☃ $(basename $i)... "
+  $SCRIPTPATH/compare $i && printf '\033[32;1m[ OK ]\033[0m\n' || printf '\033[31;1m[FAIL]\033[0m\n'
 done

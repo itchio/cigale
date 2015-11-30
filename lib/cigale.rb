@@ -16,7 +16,10 @@ module Cigale
         o.banner = "Usage: cigale [options] [spec_file.yml]"
 
         o.string "-o", "output", "Output directory", :default => "."
+        o.string "-l", "loglevel", "Logger level", :default => "INFO"
       end
+
+      @logger.level = Logger.const_get opts[:loglevel]
 
       cmd, input = opts.arguments
       case cmd

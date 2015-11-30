@@ -6,15 +6,6 @@ if [[ -z $1 ]]; then
 fi
 
 rm -rf tmp
-
-echo
-echo "========== JJB ==========="
-jenkins-jobs test $1 -o tmp/jjb
-
-echo
-echo "========= Cigale ========="
-cigale test $1 -o tmp/cigale
-
-echo
-echo "====== Comparison ========"
-git diff --exit-code --word-diff --no-index --color=always tmp/{jjb,cigale} && echo "Same!"
+jenkins-jobs -l ERROR test $1 -o tmp/jjb
+cigale -l ERROR test $1 -o tmp/cigale
+git diff --exit-code --word-diff --no-index --color=always tmp/{jjb,cigale}
