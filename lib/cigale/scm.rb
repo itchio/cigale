@@ -12,13 +12,17 @@ module Cigale::SCM
   require "cigale/scm/workspace"
   include Cigale::SCM::Workspace
 
+  require "cigale/scm/hg"
+  include Cigale::SCM::Hg
+
   def scm_classes
     @scm_classes ||= {
       "nil" => "hudson.scm.NullSCM",
       "git" => "hudson.plugins.git.GitSCM",
       "repo" => "hudson.plugins.repo.RepoScm",
       "tfs" => "hudson.plugins.tfs.TeamFoundationServerScm",
-      "workspace" => "hudson.plugins.cloneworkspace.CloneWorkspaceSCM"
+      "workspace" => "hudson.plugins.cloneworkspace.CloneWorkspaceSCM",
+      "hg" => "hudson.plugins.mercurial.MercurialSCM",
     }
   end
 
