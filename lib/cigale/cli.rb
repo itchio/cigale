@@ -25,7 +25,7 @@ module Cigale
       @numjobs = 0
 
       opts = Slop.parse ARGV do |o|
-        o.banner = "Usage: cigale [options] [spec_file.yml]"
+        o.banner = "Usage: cigale [options] [command] [spec_file.yml]"
 
         o.string "-o", "output", "Output directory", :default => "."
         o.bool "-d", "debug", "Enable debug output", :default => false
@@ -38,9 +38,13 @@ module Cigale
       case cmd
       when "test"
         # cool
+      when "dump"
+        # cool too
       else
         raise "Unknown command: #{cmd}"
       end
+
+      Exts.debug = opts[:debug]
 
       logger.info "Parsing #{input}"
       entries = YAML.load_file(input)
@@ -64,27 +68,31 @@ module Cigale
       end
 
       for entry in concrete_entries
-
         while true do
           ctx = MacroContext.new :library => library
           entry = ctx.expand(entry)
-          mutt "Intermediate macro repr: ", entry if opts[:debug]
           break unless ctx.had_expansions?
         end
-        etype, edef = first_pair(entry)
 
-        case etype
-        when "job"
-          xml = Builder::XmlMarkup.new(:indent => 2)
-          xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
-          translate_job xml, edef
-
-          job_path = File.join(output, edef["name"])
-          File.open(job_path, "w") do |f|
-            f.write(xml.target!)
-          end
+        case cmd
+        when "dump"
+          puts entry.to_yaml
         else
-          raise "Unknown top-level type: #{etype}"
+          etype, edef = first_pair(entry)
+
+          case etype
+          when "job"
+            xml = Builder::XmlMarkup.new(:indent => 2)
+            xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
+            translate_job xml, edef
+
+            job_path = File.join(output, edef["name"])
+            File.open(job_path, "w") do |f|
+              f.write(xml.target!)
+            end
+          else
+            raise "Unknown top-level type: #{etype}"
+          end
         end
       end
 
