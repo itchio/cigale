@@ -89,6 +89,9 @@ module Cigale
             end
           end
 
+          if sdef["clean"]
+            xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout"
+          end
           xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
         end
 
