@@ -85,10 +85,15 @@ module Cigale
             xml.tag! "hudson.plugins.git.extensions.impl.DisableRemotePoll"
           end
 
-          if excl = sdef["excluded-regions"]
+          exclRegions = sdef["excluded-regions"] || []
+          inclRegions = sdef["included-regions"] || []
+          unless exclRegions.empty? && inclRegions.empty?
             xml.tag! "hudson.plugins.git.extensions.impl.PathRestriction" do
-              for e in excl
-                xml.tag! "excludedRegions", e
+              unless exclRegions.empty?
+                xml.tag! "excludedRegions", exclRegions.join("\n")
+              end
+              unless inclRegions.empty?
+                xml.tag! "includedRegions", inclRegions.join("\n")
               end
             end
           end
