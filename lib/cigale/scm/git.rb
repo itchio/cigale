@@ -80,6 +80,15 @@ module Cigale
           if sdef["force-polling-using-workspace"]
             xml.tag! "hudson.plugins.git.extensions.impl.DisableRemotePoll"
           end
+
+          if excl = sdef["excluded-regions"]
+            xml.tag! "hudson.plugins.git.extensions.impl.PathRestriction" do
+              for e in excl
+                xml.tag! "excludedRegions", e
+              end
+            end
+          end
+
           xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
         end
 
