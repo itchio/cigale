@@ -64,6 +64,15 @@ module Cigale::SCM::Git
     end
 
     xml.extensions do
+      if val = sdef["changelog-against"]
+        xml.tag! "hudson.plugins.git.extensions.impl.ChangelogToBranch" do
+          xml.options do
+            xml.compareRemote val["remote"]
+            xml.compareTarget val["branch"]
+          end
+        end
+      end
+
       if val = sdef["timeout"]
         xml.tag! "hudson.plugins.git.extensions.impl.CheckoutOption" do
           xml.timeout val
