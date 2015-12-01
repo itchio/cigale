@@ -16,6 +16,17 @@ module Cigale
     include Cigale::SCM
     include Cigale::Builder
 
+    def coerce_array (input)
+      case input
+      when Array
+        return input
+      when nil
+        return []
+      else
+        return [input]
+      end
+    end
+
     def translate_job (xml, jdef)
       @numjobs += 1
 
@@ -67,8 +78,6 @@ module Cigale
           xml.buildWrappers
         end
       end
-
-
     end
 
   end # Generator

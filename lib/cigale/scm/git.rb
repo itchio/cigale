@@ -56,7 +56,7 @@ module Cigale::SCM::Git
     xml.gitConfigEmail
     xml.skipTag false
     xml.scmName
-    xml.useShallowClone false
+    xml.useShallowClone sdef["shallow-clone"] || false
     xml.ignoreNotifyCommit sdef["ignore-notify"] || false
 
     if lb = sdef["local-branch"]
