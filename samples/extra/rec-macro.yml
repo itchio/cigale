@@ -7,7 +7,7 @@
 
 - :on-unix:
     .on-os-arch:
-      spec: (linux)
+      spec: (linux)-.*
       do: '{* on-unix}'
 
 - :shell:

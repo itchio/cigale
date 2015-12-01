@@ -1,6 +1,7 @@
 
 require "cigale/macro_context"
 require "cigale/mutter"
+require "cigale/dig"
 
 require "logger"
 require "slop"
@@ -102,20 +103,20 @@ module Cigale
           case k
           when /\.(.*)$/
             if ctx.expanding?
-              return [k, expand_recursively(ctx, v)]
+              [k, expand_recursively(ctx, v)]
+            else
+              matt
+
+              mdef = ctx.lookup($1)
+              mutt "Expanding macro #{$1}", mdef
+              mutt "...with params", v
+
+              ctx.start v
+              res = expand_recursively(ctx, mdef)
+
+              kk, vv = asplode(res)
+              [kk, vv]
             end
-
-            matt
-
-            mdef = ctx.lookup($1)
-            mutt "Expanding macro #{$1}", mdef
-            mutt "...with params", v
-
-            ctx.start v
-            res = expand_recursively(ctx, mdef)
-
-            kk, vv = asplode(res)
-            [kk, vv]
           else
             [k, expand_recursively(ctx, v)]
           end
