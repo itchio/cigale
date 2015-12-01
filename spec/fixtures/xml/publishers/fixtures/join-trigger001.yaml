@@ -1,0 +1,14 @@
+publishers:
+  - join-trigger:
+      projects:
+        - project-one
+        - project-two
+      even-if-unstable: true
+      publishers:
+        - trigger-parameterized-builds:
+          - project: archive
+            current-parameters: true
+            trigger-with-no-params: true
+          - project: cleanup
+            current-parameters: true
+            trigger-with-no-params: false

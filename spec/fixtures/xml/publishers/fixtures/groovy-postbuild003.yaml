@@ -1,0 +1,7 @@
+publishers:
+    - groovy-postbuild:
+        script: "manager.buildFailure()"
+        classpath:
+            - "file:///path/to/your/lib"
+            - "file:///path/to/your/lib"
+        matrix-parent: false

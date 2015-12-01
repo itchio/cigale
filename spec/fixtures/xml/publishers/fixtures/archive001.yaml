@@ -1,0 +1,5 @@
+publishers:
+  - archive:
+      artifacts: '*.tar.gz'
+      allow-empty: 'true'
+      fingerprint: true

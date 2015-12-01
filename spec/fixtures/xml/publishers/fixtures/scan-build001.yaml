@@ -1,0 +1,5 @@
+publishers:
+  - scan-build:
+      mark-unstable: true
+      threshold: 0
+      exclude-paths: external-lib
