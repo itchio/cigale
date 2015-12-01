@@ -1,6 +1,16 @@
 require "cigale/scm"
 require "cigale/builder"
 
+require "builder/xmlbase"
+
+module Builder
+  class XmlBase
+    def indent!
+      _indent
+    end
+  end
+end
+
 module Cigale
   module Generator
     include Cigale::SCM

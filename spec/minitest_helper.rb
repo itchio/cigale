@@ -18,7 +18,7 @@ module Cigale
     end
 
     def diff (a, b)
-      cmd "git diff --exit-code --word-diff --no-index --color=always #{a} #{b}"
+      cmd "git diff --exit-code --no-index --color=always #{a} #{b}"
     end
 
     def cmd (cmd)

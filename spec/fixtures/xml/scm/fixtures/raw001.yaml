@@ -4,5 +4,5 @@ scm:
   - raw:
       xml: |
         <scm>
-           <scmraw/>
+          <scmraw/>
         </scm>

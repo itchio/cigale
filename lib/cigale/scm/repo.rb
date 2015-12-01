@@ -1,14 +1,5 @@
 
 require "cgi"
-require "builder/xmlbase"
-
-module Builder
-  class XmlBase
-    def indent!
-      _indent
-    end
-  end
-end
 
 module Cigale::SCM::Repo
   def translate_repo_scm (xml, sdef)
