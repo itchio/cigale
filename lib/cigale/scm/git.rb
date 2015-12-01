@@ -61,6 +61,10 @@ module Cigale
         xml.useShallowClone false
         xml.ignoreNotifyCommit false
 
+        if lb = sdef["local-branch"]
+          xml.localBranch lb
+        end
+
         xml.extensions do
           if val = sdef["timeout"]
             xml.tag! "hudson.plugins.git.extensions.impl.CheckoutOption" do
