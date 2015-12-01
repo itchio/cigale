@@ -1,4 +1,6 @@
-# Cigale
+# cigale
+
+[![Build Status](https://travis-ci.org/itchio/cigale.svg)](https://travis-ci.org/itchio/cigale)
 
 Just like jenkins-job-builder:
 
@@ -27,12 +29,12 @@ rake install
 Try running:
 
 ```bash
-cigale test samples/parity/git-scm.yml -o output/directory
+cigale test spec/fixtures/parity/git-scm.yml -o output/directory
 ```
 
 ## Contributing
 
-1. Fork it ( https://github.com/fasterthanlime/cigale/fork )
+1. Fork it ( https://github.com/itchio/cigale/fork )
 2. Create your feature branch (`git checkout -b my-new-feature`)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
