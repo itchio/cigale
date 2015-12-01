@@ -2,15 +2,6 @@
 module Cigale
   module SCM
     module Git
-      def git_browsers
-        @git_browsers ||= {
-          "githubweb" => {
-            :class => "hudson.plugins.git.browser.GithubWeb",
-            :url => "http://github.com/foo/example.git"
-          },
-        }
-      end
-
       def translate_git_scm (xml, sdef)
         xml.configVersion 2
         xml.userRemoteConfigs do
@@ -35,6 +26,16 @@ module Cigale
         end
 
         xml.excludedUsers
+
+        if mopts = sdef["merge"]
+          xml.userMergeOptions do
+            xml.mergeRemote mopts["remote"]
+            xml.mergeTarget mopts["branch"]
+            xml.mergeStrategy mopts["strategy"]
+            xml.fastForwardMode mopts["fast-forward-mode"]
+          end
+        end
+
         xml.buildChooser :class => "hudson.plugins.git.util.DefaultBuildChooser"
 
         subdef = sdef["submodule"]
@@ -76,17 +77,28 @@ module Cigale
             end
           end
 
+          if sdef["force-polling-using-workspace"]
+            xml.tag! "hudson.plugins.git.extensions.impl.DisableRemotePoll"
+          end
           xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
         end
 
         if browser = sdef["browser"]
-          bspec = git_browsers[browser] or raise "Unknown git browser type #{browser}"
-          xml.browser :class => bspec[:class] do
-            xml.url bspec[:url]
+          bclass = git_browser_classes[browser] or raise "Unknown git browser type #{browser}"
+          xml.browser :class => bclass do
+            if val = sdef["browser-url"]
+              xml.url val
+            end
           end
         end
       end
-    end
 
-  end
-end
+      def git_browser_classes
+        @git_browser_classes ||= {
+          "githubweb" => "hudson.plugins.git.browser.GithubWeb",
+          "rhodecode" => "hudson.plugins.git.browser.RhodeCode"
+        }
+      end
+    end # Git
+  end # SCM
+end # Cigale
