@@ -21,10 +21,10 @@ module Cigale
       end
     end
 
-    def initialize
+    def initialize (args)
       @numjobs = 0
 
-      opts = Slop.parse ARGV do |o|
+      opts = Slop.parse args do |o|
         o.banner = "Usage: cigale [options] [command] [spec_file.yml]"
 
         o.string "-o", "output", "Output directory", :default => "."

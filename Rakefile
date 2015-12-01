@@ -1,6 +1,9 @@
 require "bundler/gem_tasks"
+require "rake/testtask"
 
-task :test do |t|
-  sh "./scripts/compare-all"
+task :default => :test
+
+Rake::TestTask.new do |t|
+    t.pattern = "spec/*_spec.rb"
 end
 

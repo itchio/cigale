@@ -37,7 +37,7 @@ module Cigale
 
     def matt
       return unless @@debug
-      
+
       puts
       puts "==============================="
       puts

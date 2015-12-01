@@ -31,5 +31,3 @@
             - batch: |
                 go get -u -v ./...
                 go build -v ./cmd/butler
-
-

@@ -2,4 +2,4 @@
 
 require 'cigale'
 
-Cigale::CLI.new
+Cigale::CLI.new(ARGV)
