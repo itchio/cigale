@@ -49,6 +49,10 @@ module Cigale
       logger.info "Parsing #{input}"
       entries = YAML.load_file(input)
 
+      unless Array === entries
+        entries = [{"job" => entries}]
+      end
+
       output = opts[:output]
       logger.info "Creating directory #{output}"
       FileUtils.mkdir_p output
