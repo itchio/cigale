@@ -1,6 +1,7 @@
 
 require "cigale/macro_context"
 require "cigale/exts"
+require "cigale/generator"
 
 require "logger"
 require "slop"
@@ -15,6 +16,8 @@ require "builder"
 module Cigale
   # Command-line interface, need to be exploded further
   class CLI < Exts
+    include Cigale::Generator
+
     def logger
       @logger ||= Logger.new($stdout).tap do |log|
         log.progname = "cigale"
@@ -29,6 +32,7 @@ module Cigale
 
         o.string "-o", "output", "Output directory", :default => "."
         o.bool "-d", "debug", "Enable debug output", :default => false
+        o.bool "--fixture", "fixture", "Enable fixture mode", :default => false
         o.string "-l", "loglevel", "Logger level", :default => "INFO"
       end
 
@@ -50,6 +54,7 @@ module Cigale
       entries = YAML.load_file(input)
 
       unless Array === entries
+        raise "Top-level entity in YAML must be an array" unless opts[:fixture]
         entries = [{"job" => entries}]
       end
 
@@ -83,6 +88,11 @@ module Cigale
           puts entry.to_yaml
         else
           etype, edef = first_pair(entry)
+          if edef["name"].nil?
+            raise "Jobs must have names" unless opts[:fixture]
+            edef["name"] = "fixture"
+            edef["project-type"] = "test"
+          end
 
           case etype
           when "job"
@@ -90,7 +100,7 @@ module Cigale
             xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
             translate_job xml, edef
 
-            job_path = File.join(output, edef["name"])
+            job_path = File.join(output, edef["name"] + ".xml")
             File.open(job_path, "w") do |f|
               f.write(xml.target!)
             end
@@ -103,47 +113,6 @@ module Cigale
       logger.info "Generated #{@numjobs} jobs."
     end
 
-    def translate_job (xml, jdef)
-      @numjobs += 1
-
-      project = case jdef["project-type"]
-                when "matrix"
-                  "matrix-project"
-                else
-                  "project"
-                end
-
-      xml.tag! project do
-        case project
-        when "matrix-project"
-          xml.executionStrategy :class => "hudson.matrix.DefaultMatrixExecutionStrategyImpl" do
-            xml.runSequentially false
-          end
-          xml.combinationFilter
-          xml.axes
-        end
-
-        xml.actions
-        xml.description "<!-- Managed by Jenkins Job Builder -->"
-        xml.keepDependencies false
-        xml.blockBuildWhenDownstreamBuilding false
-        xml.blockBuildWhenUpstreamBuilding false
-        xml.concurrentBuild false
-        if val = jdef["workspace"]
-          xml.customWorkspace val
-        end
-        if val = jdef["child-workspace"]
-          xml.childCustomWorkspace val
-        end
-        xml.canRoam true
-        xml.properties
-        translate_scm xml, jdef["scm"]
-        translate_triggers xml, jdef["triggers"]
-        translate_builders xml, jdef["builders"]
-        xml.publishers
-        xml.buildWrappers
-      end
-    end
 
     def scm_classes
       @scm_classes ||= {
@@ -184,49 +153,6 @@ module Cigale
             raise "Unknown trigger type: #{t}"
           end
         end
-      end
-    end
-
-    def translate_git_scm (xml, sdef)
-      xml.configVersion 2
-      xml.userRemoteConfigs do
-        xml.tag! "hudson.plugins.git.UserRemoteConfig" do
-          xml.name sdef["name"] || "origin"
-          xml.refspec sdef["refspec"] || "+refs/heads/*:refs/remotes/remoteName/*"
-          xml.url sdef["url"]
-          xml.credentialsId sdef["credentials-id"]
-        end
-      end
-
-      xml.branches do
-        for branch in (sdef["branches"] || [])
-          xml.tag! "hudson.plugins.git.BranchSpec" do
-            xml.name branch
-          end
-        end
-      end
-
-      xml.excludedUsers
-      xml.buildChooser :class => "hudson.plugins.git.util.DefaultBuildChooser"
-      xml.disableSubmodules false
-      xml.recursiveSubmodules false
-      xml.doGenerateSubmoduleConfigurations false
-      xml.authorOrCommitter false
-      xml.wipeOutWorkspace true
-      xml.pruneBranches false
-      xml.remotePoll false
-      xml.gitTool "Default"
-      xml.submoduleCfg :class => "list"
-      xml.relativeTargetDir
-      xml.reference
-      xml.gitConfigName
-      xml.gitConfigEmail
-      xml.skipTag false
-      xml.scmName
-      xml.useShallowClone false
-      xml.ignoreNotifyCommit false
-      xml.extensions do
-        xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
       end
     end
 

@@ -13,7 +13,7 @@ module Cigale
     end
 
     def cigale (input, output)
-      CLI.new(["-l", "ERROR", "-o", output, "test", input])
+      CLI.new(["-l", "ERROR", "--fixture", "-o", output, "test", input])
       0
     end
 
