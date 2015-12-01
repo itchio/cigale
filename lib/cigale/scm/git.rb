@@ -121,6 +121,14 @@ module Cigale::SCM::Git
         end
       end
 
+      if ign = sdef["ignore-commits-with-messages"]
+        for pattern in ign
+          xml.tag! "hudson.plugins.git.extensions.impl.MessageExclusion" do
+            xml.excludedMessage pattern
+          end
+        end
+      end
+
       xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
     end
 
