@@ -1,9 +1,10 @@
-
-require "cigale/scm/git"
+require "cigale/scm"
+require "cigale/builder"
 
 module Cigale
   module Generator
-    include Cigale::SCM::Git
+    include Cigale::SCM
+    include Cigale::Builder
 
     def translate_job (xml, jdef)
       @numjobs += 1
@@ -47,7 +48,7 @@ module Cigale
           xml.properties
         end
 
-        translate_scm xml, jdef["scm"]
+        translate_scms xml, jdef["scm"]
         translate_triggers xml, jdef["triggers"]
 
         unless testing
@@ -56,6 +57,9 @@ module Cigale
           xml.buildWrappers
         end
       end
+
+
     end
-  end
-end
+
+  end # Generator
+end # Cigale
