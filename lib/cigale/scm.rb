@@ -15,6 +15,9 @@ module Cigale::SCM
   require "cigale/scm/hg"
   include Cigale::SCM::Hg
 
+  require "cigale/scm/store"
+  include Cigale::SCM::Store
+
   def scm_classes
     @scm_classes ||= {
       "nil" => "hudson.scm.NullSCM",
@@ -23,6 +26,7 @@ module Cigale::SCM
       "tfs" => "hudson.plugins.tfs.TeamFoundationServerScm",
       "workspace" => "hudson.plugins.cloneworkspace.CloneWorkspaceSCM",
       "hg" => "hudson.plugins.mercurial.MercurialSCM",
+      "store" => "org.jenkinsci.plugins.visualworks_store.StoreSCM",
     }
   end
 
