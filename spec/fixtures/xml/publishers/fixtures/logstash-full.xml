@@ -3,7 +3,7 @@
   <publishers>
     <jenkins.plugins.logstash.LogstashNotifier>
       <maxLines>2000</maxLines>
-      <failBuild>True</failBuild>
+      <failBuild>true</failBuild>
     </jenkins.plugins.logstash.LogstashNotifier>
   </publishers>
 </project>

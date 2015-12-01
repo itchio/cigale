@@ -44,7 +44,7 @@
       <readableMessage>false</readableMessage>
       <dependencyJobsNames/>
       <notificationLevel/>
-      <dynamicTriggerConfiguration>True</dynamicTriggerConfiguration>
+      <dynamicTriggerConfiguration>true</dynamicTriggerConfiguration>
       <triggerConfigURL>http://myhost/mytrigger</triggerConfigURL>
       <allowTriggeringUnreviewedPatches>true</allowTriggeringUnreviewedPatches>
       <triggerOnEvents>

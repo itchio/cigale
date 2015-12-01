@@ -5,7 +5,7 @@
       <buildFile>build.xml</buildFile>
       <antOpts>-ea -Xmx512m</antOpts>
       <properties>builddir=/tmp/
-failonerror=True
+failonerror=true
 </properties>
       <targets>debug test install</targets>
       <antName>Standard Ant</antName>

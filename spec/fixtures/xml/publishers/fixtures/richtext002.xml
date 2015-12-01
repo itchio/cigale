@@ -5,8 +5,8 @@
       <stableText>the stable text</stableText>
       <unstableText>the unstable text</unstableText>
       <failedText/>
-      <unstableAsStable>False</unstableAsStable>
-      <failedAsStable>True</failedAsStable>
+      <unstableAsStable>false</unstableAsStable>
+      <failedAsStable>true</failedAsStable>
       <parserName>HTML</parserName>
     </org.korosoft.jenkins.plugin.rtp.RichTextPublisher>
   </publishers>

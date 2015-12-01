@@ -77,7 +77,7 @@
       <readableMessage>false</readableMessage>
       <dependencyJobsNames/>
       <notificationLevel/>
-      <dynamicTriggerConfiguration>False</dynamicTriggerConfiguration>
+      <dynamicTriggerConfiguration>false</dynamicTriggerConfiguration>
       <triggerConfigURL/>
       <allowTriggeringUnreviewedPatches>false</allowTriggeringUnreviewedPatches>
       <triggerOnEvents>
