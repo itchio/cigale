@@ -2,6 +2,15 @@
 module Cigale
   module SCM
     module Git
+      def git_browsers
+        @git_browsers ||= {
+          "githubweb" => {
+            :class => "hudson.plugins.git.browser.GithubWeb",
+            :url => "http://github.com/foo/example.git"
+          },
+        }
+      end
+
       def translate_git_scm (xml, sdef)
         xml.configVersion 2
         xml.userRemoteConfigs do
@@ -52,6 +61,12 @@ module Cigale
         xml.ignoreNotifyCommit false
 
         xml.extensions do
+          if val = sdef["timeout"]
+            xml.tag! "hudson.plugins.git.extensions.impl.CheckoutOption" do
+              xml.timeout val
+            end
+          end
+
           if subdef
             xml.tag! "hudson.plugins.git.extensions.impl.SubmoduleOption" do
               xml.disableSubmodules subdef["disable"]
@@ -62,6 +77,13 @@ module Cigale
           end
 
           xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
+        end
+
+        if browser = sdef["browser"]
+          bspec = git_browsers[browser] or raise "Unknown git browser type #{browser}"
+          xml.browser :class => bspec[:class] do
+            xml.url bspec[:url]
+          end
         end
       end
     end
