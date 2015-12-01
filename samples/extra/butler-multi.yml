@@ -7,16 +7,16 @@
     conditional-step:
       condition-kind: regex-match
       label: $os-arch
-      regex: '{os-arch string}'
+      regex: '{spec string}'
       steps: '{do list}'
 
 - :on-windows:
-    .on-osarch:
+    .on-os-arch:
       spec: windows-.*
       do: '{* list}'
 
 - :on-unix:
-    .on-osarch:
+    .on-os-arch:
       spec: (linux|osx)-.*
       do: '{* list}'
 
