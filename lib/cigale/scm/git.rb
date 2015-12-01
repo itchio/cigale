@@ -108,6 +108,19 @@ module Cigale::SCM::Git
       if sdef["clean"]
         xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout"
       end
+
+      if sch = sdef["sparse-checkout"]
+        xml.tag! "hudson.plugins.git.extensions.impl.SparseCheckoutPaths" do
+          xml.sparseCheckoutPaths do
+            for path in sch["paths"]
+              xml.tag! "hudson.plugins.git.extensions.impl.SparseCheckoutPath" do
+                xml.path path
+              end
+            end
+          end
+        end
+      end
+
       xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
     end
 
