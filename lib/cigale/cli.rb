@@ -100,7 +100,7 @@ module Cigale
             xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
             translate_job xml, edef
 
-            job_path = File.join(output, edef["name"] + ".xml")
+            job_path = File.join(output, edef["name"])
             File.open(job_path, "w") do |f|
               f.write(xml.target!)
             end

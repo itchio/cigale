@@ -59,7 +59,7 @@ module Cigale
         xml.skipTag false
         xml.scmName
         xml.useShallowClone false
-        xml.ignoreNotifyCommit false
+        xml.ignoreNotifyCommit sdef["ignore-notify"] || false
 
         if lb = sdef["local-branch"]
           xml.localBranch lb
@@ -112,7 +112,8 @@ module Cigale
       def git_browser_classes
         @git_browser_classes ||= {
           "githubweb" => "hudson.plugins.git.browser.GithubWeb",
-          "rhodecode" => "hudson.plugins.git.browser.RhodeCode"
+          "rhodecode" => "hudson.plugins.git.browser.RhodeCode",
+          "stash" => "hudson.plugins.git.browser.Stash",
         }
       end
     end # Git

@@ -21,7 +21,7 @@ module Cigale
       cdir = File.join(Helper.test_dir, "cig")
 
       cigale(sample, cdir) == 0 or raise "cigale failed"
-      xf = Dir.glob(File.join(cdir, "*.xml")).first or raise "no xml produced :("
+      xf = Dir.glob(File.join(cdir, "*")).first or raise "no output produced :("
 
       ref = sample.gsub(/\.yaml$/, ".xml")
       raise "couldn't find reference xml file #{ref}" unless File.exist?(ref)
