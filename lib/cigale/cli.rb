@@ -1,7 +1,6 @@
 
 require "cigale/macro_context"
-require "cigale/mutter"
-require "cigale/dig"
+require "cigale/exts"
 
 require "logger"
 require "slop"
@@ -15,7 +14,7 @@ require "builder"
 
 module Cigale
   # Command-line interface, need to be exploded further
-  class CLI < Mutter
+  class CLI < Exts
     def logger
       @logger ||= Logger.new($stdout).tap do |log|
         log.progname = "cigale"
@@ -54,7 +53,7 @@ module Cigale
       concrete_entries = []
 
       for entry in entries
-        etype, edef = asplode(entry)
+        etype, edef = first_pair(entry)
 
         case etype
         when Symbol
@@ -65,14 +64,14 @@ module Cigale
       end
 
       for entry in concrete_entries
-        expanding = true
-        while expanding do
+
+        while true do
           ctx = MacroContext.new :library => library
-          entry = expand_recursively(ctx, entry)
+          entry = ctx.expand(entry)
           mutt "Intermediate macro repr: ", entry if opts[:debug]
-          expanding = ctx.expanding?
+          break unless ctx.had_expansions?
         end
-        etype, edef = asplode(entry)
+        etype, edef = first_pair(entry)
 
         case etype
         when "job"
@@ -90,52 +89,6 @@ module Cigale
       end
 
       logger.info "Generated #{@numjobs} jobs."
-    end
-
-    def expand_recursively (ctx, entity)
-      case entity
-      when Array
-        entity.map do |x|
-          expand_recursively(ctx, interpolate(ctx, x))
-        end
-      when Hash
-        entity.map do |k, v|
-          case k
-          when /\.(.*)$/
-            if ctx.expanding?
-              [k, expand_recursively(ctx, v)]
-            else
-              matt
-
-              mdef = ctx.lookup($1)
-              mutt "Expanding macro #{$1}", mdef
-              mutt "...with params", v
-
-              ctx.start v
-              res = expand_recursively(ctx, mdef)
-
-              kk, vv = asplode(res)
-              [kk, vv]
-            end
-          else
-            [k, expand_recursively(ctx, v)]
-          end
-        end.to_h
-      else
-        return interpolate(ctx, entity)
-      end
-    end
-
-    def interpolate (ctx, entity)
-      case entity
-      when /^{(.*)}$/
-        res = $1
-        ctx.get_param(res)
-      when String
-        entity
-      else
-        entity
-      end
     end
 
     def translate_job (xml, jdef)
@@ -193,7 +146,7 @@ module Cigale
       end
 
       for s in scms
-        stype, sdef = asplode(s)
+        stype, sdef = first_pair(s)
         clazz = scm_classes[stype]
         raise "Unknown scm type: #{stype}" unless clazz
 
@@ -280,7 +233,7 @@ module Cigale
 
       xml.builders do
         for b in builders
-          btype, bdef = asplode(b)
+          btype, bdef = first_pair(b)
           clazz = builder_classes[btype]
 
           if clazz.nil?
@@ -346,7 +299,7 @@ module Cigale
 
       translate_condition_runner xml, bdef
 
-      stype, sdef = asplode(bdef["steps"].first)
+      stype, sdef = first_pair(bdef["steps"].first)
       clazz = builder_classes[stype]
       raise "Unknown builder type: #{stype}" unless clazz
 
@@ -358,7 +311,7 @@ module Cigale
     def translate_conditional_multi_step_builder (xml, bdef)
       xml.conditionalbuilders do
         for step in bdef["steps"]
-          stype, sdef = asplode(step)
+          stype, sdef = first_pair(step)
           clazz = builder_classes[stype]
           raise "Unknown builder type: #{stype}" unless clazz
 
@@ -389,10 +342,6 @@ module Cigale
 
     def translate_condition_runner (xml, bdef)
       xml.runner :class => "org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"
-    end
-
-    def asplode (map)
-      return map.keys.first, map.values.first
     end
 
     def underize (name)
