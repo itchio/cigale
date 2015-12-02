@@ -48,6 +48,12 @@ module Cigale::Builder
   require "cigale/builder/grails"
   include Cigale::Builder::Grails
 
+  require "cigale/builder/system-groovy"
+  include Cigale::Builder::SystemGroovy
+
+  require "cigale/builder/change-assembly-version"
+  include Cigale::Builder::ChangeAssemblyVersion
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -63,6 +69,8 @@ module Cigale::Builder
       "msbuild" => "hudson.plugins.msbuild.MsBuildBuilder",
       "builders-from" => "hudson.plugins.templateproject.ProxyBuilder",
       "grails" => "com.g2one.hudson.grails.GrailsBuilder",
+      "system-groovy" => "hudson.plugins.groovy.SystemGroovy",
+      "change-assembly-version" => "org.jenkinsci.plugins.changeassemblyversion.ChangeAssemblyVersion"
     }
   end
 
