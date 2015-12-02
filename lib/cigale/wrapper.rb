@@ -10,6 +10,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/m2-repository-cleanup"
   require "cigale/wrapper/logstash"
   require "cigale/wrapper/live-screenshot"
+  require "cigale/wrapper/android-emulator"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -17,6 +18,7 @@ module Cigale::Wrapper
       "inject-passwords" => "EnvInjectPasswordWrapper",
       "delivery-pipeline" => "se.diabol.jenkins.pipeline.PipelineVersionContributor",
       "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
+      "android-emulator" => "hudson.plugins.android__emulator.AndroidEmulator",
     }
   end
 
