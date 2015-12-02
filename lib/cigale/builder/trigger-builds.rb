@@ -61,24 +61,29 @@ module Cigale::Builder::TriggerBuilds
                     xml.ignoreOfflineNodes ign
                   when "filebuild"
                     xml.filePattern f["file-pattern"]
-                    xml.noFilesFoundAction "SKIP"
+                    xml.noFilesFoundAction f["no-files-found-action"] || "SKIP"
                   when "binaryfile"
                     xml.parameterName f["parameter-name"]
                     xml.filePattern f["file-pattern"]
-                    xml.noFilesFoundAction "SKIP"
+                    xml.noFilesFoundAction f["no-files-found-action"] || "SKIP"
                   when "counterbuild"
                     xml.from f["from"]
                     xml.to f["to"]
                     xml.step f["step"]
-                    xml.paramExpr
-                    xml.validationFail "FAIL"
+                    xml.paramExpr f["parameters"]
+                    xml.validationFail f["validation-fail"] || "FAIL"
                   end
                 end
               end
             end
           end
 
-          xml.projects "build_started"
+          projects = build["project"]
+          if Array === projects
+            xml.projects projects.join(",")
+          else
+            xml.projects projects || "build_started"
+          end
           xml.condition "ALWAYS"
           xml.triggerWithNoParameters false
           xml.buildAllNodesWithLabel false

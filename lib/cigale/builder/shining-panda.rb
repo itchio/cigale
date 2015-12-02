@@ -15,10 +15,15 @@ module Cigale::Builder::ShiningPanda
 
     xml.tag! bclass do
       ver = bdef["python-version"] and xml.pythonName ver
-      xml.home bdef["name"]
-      xml.clear bdef["clear"]
-      xml.useDistribute bdef["use-distribute"]
-      xml.systemSitePackages bdef["system-site-packages"]
+
+      case env
+      when "virtualenv", "custom"
+        xml.home bdef["name"]
+        xml.clear bdef["clear"]
+        xml.useDistribute bdef["use-distribute"]
+        xml.systemSitePackages bdef["system-site-packages"]
+      end
+
       xml.nature bdef["nature"]
       xml.command bdef["command"]
       xml.ignoreExitCode bdef["ignore-exit-code"]
