@@ -93,12 +93,16 @@ module Cigale::Builder
       when "build-cause"
         xml.buildCause bdef["cause"]
         xml.exclusiveCause bdef["exclusive-cause"]
+      when "strings-match"
+        xml.arg1 bdef["condition-string1"]
+        xml.arg2 bdef["condition-string2"]
+        xml.ignoreCase bdef["condition-case-insensitive"]
       when "time"
         xml.earliestHours bdef["earliest-hour"]
         xml.earliestMinutes bdef["earliest-min"]
         xml.latestHours bdef["latest-hour"]
         xml.latestMinutes bdef["latest-min"]
-        xml.useBuildTime false
+        xml.useBuildTime bdef["use-build-time"] || false
       when "day-of-week"
         @day_of_week_classes ||= {
           "weekday" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$Weekday",
@@ -166,6 +170,7 @@ module Cigale::Builder
       "execution-node" => "org.jenkins_ci.plugins.run_condition.core.NodeCondition",
       "current-status" => "org.jenkins_ci.plugins.run_condition.core.StatusCondition",
       "build-cause" => "org.jenkins_ci.plugins.run_condition.core.CauseCondition",
+      "strings-match" => "org.jenkins_ci.plugins.run_condition.core.StringsMatchCondition",
       "time" => "org.jenkins_ci.plugins.run_condition.core.TimeCondition",
       "day-of-week" => "org.jenkins_ci.plugins.run_condition.core.DayCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
