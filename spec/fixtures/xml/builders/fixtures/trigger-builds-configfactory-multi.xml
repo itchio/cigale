@@ -8,7 +8,7 @@
             <hudson.plugins.parameterizedtrigger.CurrentBuildParameters/>
             <hudson.plugins.parameterizedtrigger.SubversionRevisionBuildParameters/>
             <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
-              <properties>FOO=&quot;bar&quot;</properties>
+              <properties>FOO="bar&quot;</properties>
             </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
           </configs>
           <configFactories>

@@ -12,7 +12,7 @@
     <hudson.tasks.Shell>
       <command>#!/usr/bin/env python
 #
-print(&quot;Doing something cool with python&quot;)
+print("Doing something cool with python&quot;)
 </command>
     </hudson.tasks.Shell>
   </builders>

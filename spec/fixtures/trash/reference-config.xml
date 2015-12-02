@@ -81,7 +81,7 @@
       </values>
     </hudson.matrix.TextAxis>
   </axes>
-  <combinationFilter>(os ==&quot;osx&quot;).implies(arch==&quot;amd64&quot;)</combinationFilter>
+  <combinationFilter>(os =="osx&quot;).implies(arch==&quot;amd64&quot;)</combinationFilter>
   <builders>
     <EnvInjectBuilder plugin="envinject@1.92.1">
       <info>
@@ -134,7 +134,7 @@ CXX_FOR_TARGET=g++</propertiesContent>
         </EnvInjectBuilder>
         <hudson.tasks.Shell>
           <command>go get -d -v ./...
-go build -v -x -ldflags &quot;$BUTLER_LDFLAGS&quot; ./cmd/butler
+go build -v -x -ldflags "$BUTLER_LDFLAGS&quot; ./cmd/butler
 file butler
 ./butler -V
 7za a butler.7z butler</command>
@@ -155,7 +155,7 @@ file butler
         </EnvInjectBuilder>
         <hudson.tasks.BatchFile>
           <command>go get -d -v ./...&#xd;
-go build -v -x -ldflags &quot;%BUTLER_LDFLAGS%&quot; ./cmd/butler&#xd;
+go build -v -x -ldflags "%BUTLER_LDFLAGS%&quot; ./cmd/butler&#xd;
 file butler.exe&#xd;
 butler -V&#xd;
 7za a butler.7z butler.exe</command>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.cloudbees.plugins.flow.BuildFlow>
-  <dsl>build(&quot;job1&quot;)
+  <dsl>build("job1&quot;)
 parallel (
-  { build(&quot;job2a&quot;) },
-  { build(&quot;job2b&quot;) }
+  { build("job2a&quot;) },
+  { build("job2b&quot;) }
 )
 </dsl>
   <buildNeedsWorkspace>false</buildNeedsWorkspace>

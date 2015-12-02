@@ -10,7 +10,7 @@
               <combineQueuedCommits>false</combineQueuedCommits>
             </hudson.plugins.git.GitRevisionBuildParameters>
             <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
-              <properties>FOO=&quot;bar&quot;</properties>
+              <properties>FOO="bar&quot;</properties>
             </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
             <org.jvnet.jenkins.plugins.nodelabelparameter.parameterizedtrigger.NodeLabelBuildParameter>
               <name>NODE</name>

@@ -29,11 +29,11 @@
 # test script containing some variables to show how you can include scripts
 # into job template definitions provided you use the include-raw-escaped tag
 
-MSG=&quot;hello world&quot;
+MSG="hello world&quot;
 
-[[ -n &quot;${MSG}&quot; ]] &amp;&amp; {
+[[ -n "${MSG}&quot; ]] &amp;&amp; {
     # this next section is executed as one
-    echo &quot;${MSG}&quot;
+    echo "${MSG}&quot;
     exit 0
 }
 </command>

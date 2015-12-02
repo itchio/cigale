@@ -10,12 +10,12 @@
       <connectionRetryLimit>5</connectionRetryLimit>
       <preventRemoteBuildQueue>true</preventRemoteBuildQueue>
       <blockBuildUntilComplete>true</blockBuildUntilComplete>
-      <parameters>FOO=&quot;bar&quot;
-herp=&quot;derp&quot;
+      <parameters>FOO="bar&quot;
+herp="derp&quot;
 </parameters>
       <parameterList>
-        <string>FOO=&quot;bar&quot;</string>
-        <string>herp=&quot;derp&quot;</string>
+        <string>FOO="bar&quot;</string>
+        <string>herp="derp&quot;</string>
       </parameterList>
       <loadParamsFromFile>true</loadParamsFromFile>
       <parameterFile>.props</parameterFile>

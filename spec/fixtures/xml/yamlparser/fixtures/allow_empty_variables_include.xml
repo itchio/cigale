@@ -11,7 +11,7 @@
   <scm class="hudson.scm.NullSCM"/>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo &quot;Here -&gt;&lt;- you should see nothing&quot;</command>
+      <command>echo "Here -&gt;&lt;- you should see nothing&quot;</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>

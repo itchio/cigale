@@ -4,7 +4,7 @@
     <org.jenkinsci.plugins.postbuildscript.PostBuildScript>
       <buildSteps>
         <hudson.tasks.Shell>
-          <command>echo &quot;Shell execution should be first&quot;</command>
+          <command>echo "Shell execution should be first&quot;</command>
         </hudson.tasks.Shell>
         <hudson.tasks.Ant>
           <targets>ant_target</targets>

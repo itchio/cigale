@@ -20,7 +20,7 @@
           </logTexts>
           <EscalateStatus>true</EscalateStatus>
           <RunIfJobSuccessful>true</RunIfJobSuccessful>
-          <script>echo &quot;Here goes the task script&quot;
+          <script>echo "Here goes the task script&quot;
 </script>
         </hudson.plugins.postbuildtask.TaskProperties>
       </tasks>
