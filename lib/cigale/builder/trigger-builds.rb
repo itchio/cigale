@@ -96,7 +96,7 @@ module Cigale::Builder::TriggerBuilds
               if threshold != "never"
                 xml.buildStepFailureThreshold do
                   threshold = "FAILURE" if (threshold === true || threshold.nil?)
-                  translate_trigger_build_threshold(xml, threshold)
+                  translate_build_status(xml, threshold)
                 end
               end
 
@@ -104,7 +104,7 @@ module Cigale::Builder::TriggerBuilds
               if threshold != "never"
                 xml.unstableThreshold do
                   threshold = "UNSTABLE" if (threshold === true || threshold.nil?)
-                  translate_trigger_build_threshold(xml, threshold)
+                  translate_build_status(xml, threshold)
                 end
               end
 
@@ -112,7 +112,7 @@ module Cigale::Builder::TriggerBuilds
               if threshold != "never"
                 xml.failureThreshold do
                   threshold = "FAILURE" if (threshold === true || threshold.nil?)
-                  translate_trigger_build_threshold(xml, threshold)
+                  translate_build_status(xml, threshold)
                 end
               end
             end # block
@@ -121,37 +121,6 @@ module Cigale::Builder::TriggerBuilds
       end # for b in builds
     end # configs
 
-  end
-
-  def translate_trigger_build_threshold (xml, threshold)
-    @trigger_builds_thresholds ||= {
-      "UNSTABLE" => {
-        "ordinal" => 1,
-        "color" => "YELLOW",
-        "completeBuild" => true,
-      },
-      "FAILURE" => {
-        "ordinal" => 2,
-        "color" => "RED",
-        "completeBuild" => true,
-      },
-      "NOT_BUILD" => {
-        "ordinal" => 3,
-        "color" => "NOTBUILD",
-        "completeBuild" => false,
-      },
-      "ABORTED" => {
-        "ordinal" => 4,
-        "color" => "ABORTED",
-        "completeBuild" => false,
-      },
-    }
-
-    tspec = @trigger_builds_thresholds[threshold] or raise "Unknown trigger build threshold: '#{threshold}'"
-    xml.name threshold
-    for k, v in tspec
-      xml.tag! k, v
-    end
   end
 
   def trigger_factories

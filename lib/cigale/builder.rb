@@ -1,5 +1,8 @@
 
 module Cigale::Builder
+  require "cigale/builder/build_status"
+  include Cigale::Builder::BuildStatus
+
   require "cigale/builder/conditional"
   include Cigale::Builder::Conditional
 

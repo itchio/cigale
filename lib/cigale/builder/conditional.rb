@@ -78,10 +78,10 @@ module Cigale::Builder::Conditional
         end
       when "current-status"
         worst = bdef["condition-worst"] and xml.worstResult do
-          translate_trigger_build_threshold xml, worst
+          translate_build_status xml, worst
         end
         best = bdef["condition-best"] and xml.bestResult do
-          translate_trigger_build_threshold xml, best
+          translate_build_status xml, best
         end
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
