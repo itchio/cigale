@@ -9,6 +9,9 @@ module Cigale::Property
   require "cigale/property/sidebar"
   require "cigale/property/authorization"
   require "cigale/property/batch-tasks"
+  require "cigale/property/copyartifact"
+  require "cigale/property/heavy-job"
+  require "cigale/property/throttle"
 
   def property_classes
     @property_classes ||= {
@@ -19,6 +22,9 @@ module Cigale::Property
       "builds-chain-fingerprinter" => "org.jenkinsci.plugins.buildschainfingerprinter.AutomaticFingerprintJobProperty",
       "slave-utilization" => "com.suryagaddipati.jenkins.SlaveUtilizationProperty",
       "authorization" => "hudson.security.AuthorizationMatrixProperty",
+      "batch-tasks" => "hudson.plugins.batch__task.BatchTaskProperty",
+      "heavy-job" => "hudson.plugins.heavy__job.HeavyJobProperty",
+      "throttle" => "hudson.plugins.throttleconcurrents.ThrottleJobProperty",
     }
   end
 
@@ -52,6 +58,9 @@ module Cigale::Property
           case ptype
           when "sidebar"
             sidebars << pdef
+            next
+          when "copyartifact"
+            translate_copyartifact_property xml, pdef
             next
           else
             raise "Unknown property type: #{ptype}"
