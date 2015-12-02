@@ -45,7 +45,7 @@ module Cigale::Builder::TriggerBuilds
                 xml.tag! fclass do
                   xml.name f["name"]
                   xml.nodeLabel f["node-label"]
-                  xml.ignoreOfflineNodes f["ignore-offline-nodes"]
+                  xml.ignoreOfflineNodes f["ignore-offline-nodes"] || true
                 end
               end
             end
