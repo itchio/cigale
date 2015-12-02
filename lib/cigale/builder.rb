@@ -28,6 +28,7 @@ module Cigale::Builder
   require "cigale/builder/ant"
   require "cigale/builder/sbt"
   require "cigale/builder/dsl"
+  require "cigale/builder/config-file-provider"
 
   def builder_classes
     @builder_classes = {
@@ -89,6 +90,8 @@ module Cigale::Builder
             translate_shining_panda_builder xml, bdef
           when "copyartifact"
             translate_copyartifact_builder xml, bdef
+          when "config-file-provider"
+            translate_config_file_provider_builder xml, bdef
           else
             raise "Unknown builder type: #{btype}" unless clazz
           end
