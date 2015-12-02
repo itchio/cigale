@@ -24,6 +24,7 @@ module Cigale::Builder
   require "cigale/builder/change-assembly-version"
   require "cigale/builder/beaker"
   require "cigale/builder/copyartifact"
+  require "cigale/builder/artifact-resolver"
   require "cigale/builder/multijob"
   require "cigale/builder/cmake"
   require "cigale/builder/ant"
@@ -58,6 +59,7 @@ module Cigale::Builder
       "ant" => "hudson.tasks.Ant",
       "sbt" => "org.jvnet.hudson.plugins.SbtPluginBuilder",
       "dsl" => "javaposse.jobdsl.plugin.ExecuteDslScripts",
+      "artifact-resolver" => "org.jvnet.hudson.plugins.repositoryconnector.ArtifactResolver",
     }
   end
 
