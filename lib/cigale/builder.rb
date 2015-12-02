@@ -29,6 +29,7 @@ module Cigale::Builder
   require "cigale/builder/sbt"
   require "cigale/builder/dsl"
   require "cigale/builder/config-file-provider"
+  require "cigale/builder/sonatype-clm"
 
   def builder_classes
     @builder_classes = {
@@ -92,6 +93,8 @@ module Cigale::Builder
             translate_copyartifact_builder xml, bdef
           when "config-file-provider"
             translate_config_file_provider_builder xml, bdef
+          when "sonatype-clm"
+            translate_sonatype_clm_builder xml, bdef
           else
             raise "Unknown builder type: #{btype}" unless clazz
           end
