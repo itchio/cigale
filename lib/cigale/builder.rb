@@ -30,6 +30,9 @@ module Cigale::Builder
   require "cigale/builder/sonar"
   include Cigale::Builder::Sonar
 
+  require "cigale/builder/shining-panda"
+  include Cigale::Builder::ShiningPanda
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -71,6 +74,8 @@ module Cigale::Builder
             translate_managed_script_builder xml, bdef
           when "conditional-step"
             translate_conditional_step_builder xml, bdef
+          when "shining-panda"
+            translate_shining_panda_builder xml, bdef
           else
             raise "Unknown builder type: #{btype}" unless clazz
           end
