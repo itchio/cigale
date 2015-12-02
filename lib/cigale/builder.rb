@@ -26,6 +26,7 @@ module Cigale::Builder
   require "cigale/builder/multijob"
   require "cigale/builder/cmake"
   require "cigale/builder/ant"
+  require "cigale/builder/sbt"
 
   def builder_classes
     @builder_classes = {
@@ -50,6 +51,7 @@ module Cigale::Builder
       "multijob" => "com.tikal.jenkins.plugins.multijob.MultiJobBuilder",
       "cmake" => "hudson.plugins.cmake.CmakeBuilder",
       "ant" => "hudson.tasks.Ant",
+      "sbt" => "org.jvnet.hudson.plugins.SbtPluginBuilder",
     }
   end
 
