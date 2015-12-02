@@ -33,6 +33,9 @@ module Cigale::Builder
   require "cigale/builder/shining-panda"
   include Cigale::Builder::ShiningPanda
 
+  require "cigale/builder/powershell"
+  include Cigale::Builder::PowerShell
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -43,6 +46,7 @@ module Cigale::Builder
       "ssh-builder" => "org.jvnet.hudson.plugins.SSHBuilder",
       "maven-target" => "hudson.tasks.Maven",
       "sonar" => "hudson.plugins.sonar.SonarRunnerBuilder",
+      "powershell" => "hudson.plugins.powershell.PowerShell",
     }
   end
 
