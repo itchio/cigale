@@ -6,6 +6,10 @@ module Cigale::Wrapper
       xml.strategy :class => "hudson.plugins.build_timeout.impl.NoActivityTimeOutStrategy" do
         xml.timeoutSecondsString wdef["timeout"] * 60
       end
+    when "likely-stuck"
+      xml.strategy :class => "hudson.plugins.build_timeout.impl.LikelyStuckTimeOutStrategy" do
+        xml.timeoutMinutes wdef["timeout"]
+      end
     else
       xml.timeoutMinutes wdef["timeout"]
     end
@@ -31,17 +35,20 @@ module Cigale::Wrapper
     xml.timeoutEnvVar wdef["timeout-var"]
 
     fail = wdef["fail"] and xml.failBuild fail
-    unless writedesc
-      xml.writingDescription false
-    end
 
-    case wdef["type"]
-    when "no-activity"
-      # muffin
-    else
-      xml.timeoutPercentage 0
-      xml.timeoutMinutesElasticDefault 3
-      xml.timeoutType wdef["type"]
+    if wdef["type"] != "likely-stuck"
+      unless writedesc
+        xml.writingDescription false
+      end
+
+      case wdef["type"]
+      when "no-activity"
+        # muffin
+      else
+        xml.timeoutPercentage 0
+        xml.timeoutMinutesElasticDefault 3
+        xml.timeoutType wdef["type"]
+      end
     end
   end
 end

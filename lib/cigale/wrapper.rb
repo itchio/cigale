@@ -30,6 +30,9 @@ module Cigale::Wrapper
         when "rbenv"
           translate_rbenv_wrapper xml, {}
           next
+        when "m2-repository-cleanup"
+          translate_m2_repository_cleanup_wrapper xml, {}
+          next
         end
 
         wtype, wdef = first_pair(w)
