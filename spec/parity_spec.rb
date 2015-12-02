@@ -36,7 +36,7 @@ module Cigale
       end
     end
 
-    %w[scm builders].each do |category|
+    %w[scm builders properties].each do |category|
       g = File.join(Helper.fixtures_dir, "xml", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
         it "gens correct xml for '#{f}'" do

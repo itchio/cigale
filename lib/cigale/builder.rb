@@ -34,7 +34,7 @@ module Cigale::Builder
   require "cigale/builder/sonatype-clm"
 
   def builder_classes
-    @builder_classes = {
+    @builder_classes ||= {
       "inject" => "EnvInjectBuilder",
       "shell" => "hudson.tasks.Shell",
       "batch" => "hudson.tasks.BatchFile",
@@ -85,7 +85,7 @@ module Cigale::Builder
         btype, bdef = first_pair(b)
         clazz = builder_classes[btype]
 
-        if clazz.nil?
+        unless clazz
           case btype
           when "managed-script"
             translate_managed_script_builder xml, bdef
@@ -100,7 +100,7 @@ module Cigale::Builder
           when "sonatype-clm"
             translate_sonatype_clm_builder xml, bdef
           else
-            raise "Unknown builder type: #{btype}" unless clazz
+            raise "Unknown builder type: #{btype}"
           end
         else
           xml.tag! clazz do

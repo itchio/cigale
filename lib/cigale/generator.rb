@@ -1,5 +1,6 @@
 require "cigale/scm"
 require "cigale/builder"
+require "cigale/property"
 
 require "builder/xmlbase"
 
@@ -15,6 +16,7 @@ module Cigale
   module Generator
     include Cigale::SCM
     include Cigale::Builder
+    include Cigale::Property
 
     def coerce_array (input)
       case input
@@ -66,7 +68,10 @@ module Cigale
             xml.childCustomWorkspace val
           end
           xml.canRoam true
-          xml.properties
+        end
+
+        if (not testing) || @opts[:test_category] == "properties"
+          translate_properties xml, jdef["properties"]
         end
 
         if (not testing) || @opts[:test_category] == "scm"
