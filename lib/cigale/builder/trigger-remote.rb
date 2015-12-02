@@ -5,19 +5,32 @@ module Cigale::Builder
     xml.remoteJenkinsName bdef["remote-jenkins-name"]
     xml.token bdef["token"]
     xml.job bdef["job"]
-    xml.shouldNotFailBuild !bdef["should-fail-build"]
-    xml.pollInterval bdef["poll-interval"]
-    xml.connectionRetryLimit bdef["connection-retry-limit"]
-    xml.preventRemoteBuildQueue bdef["prevent-remote-build-queue"]
-    xml.blockBuildUntilComplete bdef["block"]
-    xml.parameters bdef["predefined-parameters"]
-    xml.parameterList do
-      for param in bdef["predefined-parameters"].strip.split("\n")
-        xml.string param
+    dontFailBuild = if bdef.has_key?("should-fail-build")
+      !bdef["should-fail-build"]
+    else
+      false
+    end
+    xml.shouldNotFailBuild dontFailBuild
+    xml.pollInterval bdef["poll-interval"] || 10
+    xml.connectionRetryLimit bdef["connection-retry-limit"] || 5
+    xml.preventRemoteBuildQueue bdef["prevent-remote-build-queue"] || false
+    xml.blockBuildUntilComplete bdef["block"] || true
+
+    if preparams = bdef["predefined-parameters"]
+      xml.parameters preparams
+      xml.parameterList do
+        for param in preparams.strip.split("\n")
+          xml.string param
+        end
       end
     end
-    xml.loadParamsFromFile true
-    xml.parameterFile bdef["property-file"]
+
+    if propfile = bdef["property-file"]
+      xml.loadParamsFromFile true
+      xml.parameterFile propfile
+    else
+      xml.loadParamsFromFile false
+    end
     xml.overrideAuth false
   end
 
