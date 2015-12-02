@@ -9,6 +9,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/rbenv"
   require "cigale/wrapper/m2-repository-cleanup"
   require "cigale/wrapper/logstash"
+  require "cigale/wrapper/live-screenshot"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -33,6 +34,9 @@ module Cigale::Wrapper
         when "m2-repository-cleanup"
           translate_m2_repository_cleanup_wrapper xml, {}
           next
+        when "live-screenshot"
+          translate_live_screenshot_wrapper xml, {}
+          next
         end
 
         wtype, wdef = first_pair(w)
@@ -44,6 +48,11 @@ module Cigale::Wrapper
           end
         else
           case wtype
+          when "raw"
+            for l in wdef["xml"].split("\n")
+              xml.indent!
+              xml << l + "\n"
+            end
           when "config-file-provider"
             translate_config_file_provider_wrapper xml, wdef
           when "mongo-db"
@@ -54,6 +63,8 @@ module Cigale::Wrapper
             translate_m2_repository_cleanup_wrapper xml, wdef
           when "logstash"
             translate_logstash_wrapper xml, wdef
+          when "live-screenshot"
+            translate_live_screenshot_wrapper xml, wdef
           else
             raise "Unknown wrapper type: #{wtype}"
           end
