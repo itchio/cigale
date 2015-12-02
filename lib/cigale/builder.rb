@@ -45,6 +45,9 @@ module Cigale::Builder
         when "critical-block-end"
           xml.tag! "org.jvnet.hudson.plugins.exclusion.CriticalBlockEnd", :plugin => "Exclusion"
           next
+        when "github-notifier"
+          xml.tag! "com.cloudbees.jenkins.GitHubSetCommitStatusBuilder"
+          next
         end
 
         btype, bdef = first_pair(b)
