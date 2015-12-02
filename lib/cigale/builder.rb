@@ -21,6 +21,7 @@ module Cigale::Builder
   require "cigale/builder/system-groovy"
   require "cigale/builder/change-assembly-version"
   require "cigale/builder/beaker"
+  require "cigale/builder/copyartifact"
 
   def builder_classes
     @builder_classes = {
@@ -74,6 +75,8 @@ module Cigale::Builder
             translate_conditional_step_builder xml, bdef
           when "shining-panda"
             translate_shining_panda_builder xml, bdef
+          when "copyartifact"
+            translate_copyartifact_builder xml, bdef
           else
             raise "Unknown builder type: #{btype}" unless clazz
           end
