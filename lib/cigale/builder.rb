@@ -42,6 +42,9 @@ module Cigale::Builder
   require "cigale/builder/msbuild"
   include Cigale::Builder::MsBuild
 
+  require "cigale/builder/builders-from"
+  include Cigale::Builder::BuildersFrom
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -55,6 +58,7 @@ module Cigale::Builder
       "powershell" => "hudson.plugins.powershell.PowerShell",
       "python" => "hudson.plugins.python.Python",
       "msbuild" => "hudson.plugins.msbuild.MsBuildBuilder",
+      "builders-from" => "hudson.plugins.templateproject.ProxyBuilder",
     }
   end
 
