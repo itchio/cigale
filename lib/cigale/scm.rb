@@ -35,7 +35,7 @@ module Cigale::SCM
   end
 
   def translate_scms (xml, scms, multi=false)
-    if scms.nil?
+    if scms.nil? || scms.size == 0
       return xml.scm :class => scm_classes["nil"]
     end
 

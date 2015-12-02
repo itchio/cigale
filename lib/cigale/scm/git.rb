@@ -2,14 +2,29 @@
 module Cigale::SCM::Git
   def translate_git_scm (xml, sdef)
     xml.configVersion 2
+
     xml.userRemoteConfigs do
-      xml.tag! "hudson.plugins.git.UserRemoteConfig" do
-        remote_name = sdef["name"] || "origin"
-        xml.name remote_name
-        xml.refspec sdef["refspec"] || "+refs/heads/*:refs/remotes/#{remote_name}/*"
-        xml.url sdef["url"]
-        if val = sdef["credentials-id"]
-          xml.credentialsId val
+      if remotes = sdef["remotes"]
+        for r in remotes
+          remote_name, rdef = first_pair(r)
+          xml.tag! "hudson.plugins.git.UserRemoteConfig" do
+            xml.name remote_name
+            xml.refspec rdef["refspec"] || "+refs/heads/*:refs/remotes/#{remote_name}/*"
+            xml.url rdef["url"]
+            if val = rdef["credentials-id"]
+              xml.credentialsId val
+            end
+          end
+        end
+      else
+        xml.tag! "hudson.plugins.git.UserRemoteConfig" do
+          remote_name = sdef["name"] || "origin"
+          xml.name remote_name
+          xml.refspec sdef["refspec"] || "+refs/heads/*:refs/remotes/#{remote_name}/*"
+          xml.url sdef["url"]
+          if val = sdef["credentials-id"]
+            xml.credentialsId val
+          end
         end
       end
     end
@@ -105,8 +120,14 @@ module Cigale::SCM::Git
         end
       end
 
-      if sdef["clean"]
-        xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout"
+      if cl = sdef["clean"]
+        case cl
+        when Hash
+          xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout" if cl["after"]
+          xml.tag! "hudson.plugins.git.extensions.impl.CleanBeforeCheckout" if cl["before"]
+        else
+          xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout"
+        end
       end
 
       if sch = sdef["sparse-checkout"]
@@ -138,6 +159,9 @@ module Cigale::SCM::Git
         if val = sdef["browser-url"]
           xml.url val
         end
+        if v = sdef["browser-version"]
+          xml.version v
+        end
       end
     end
   end
@@ -147,6 +171,7 @@ module Cigale::SCM::Git
       "githubweb" => "hudson.plugins.git.browser.GithubWeb",
       "rhodecode" => "hudson.plugins.git.browser.RhodeCode",
       "stash" => "hudson.plugins.git.browser.Stash",
+      "gitlab" => "hudson.plugins.git.browser.GitLab",
     }
   end
 end # Cigale::SCM::Git
