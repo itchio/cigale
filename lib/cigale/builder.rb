@@ -15,6 +15,9 @@ module Cigale::Builder
   require "cigale/builder/gradle"
   include Cigale::Builder::Gradle
 
+  require "cigale/builder/managed-script"
+  include Cigale::Builder::ManagedScript
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -35,7 +38,10 @@ module Cigale::Builder
         clazz = builder_classes[btype]
 
         if clazz.nil?
-          if btype == "conditional-step"
+          case btype
+          when "managed-script"
+            translate_managed_script_builder xml, bdef
+          when "conditional-step"
             translate_conditional_step_builder xml, bdef
           else
             raise "Unknown builder type: #{btype}" unless clazz
