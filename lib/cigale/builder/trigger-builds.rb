@@ -10,9 +10,11 @@ module Cigale::Builder
           boolparams = build["bool-parameters"]
           same_node = build["same-node"]
           currpar = build["current-parameters"]
+          gitrev = build["git-revision"]
           svnrev = build["svn-revision"]
+          nodelabel = build["node-label"]
 
-          if propfile || boolparams || predefparams || same_node || currpar || svnrev
+          if propfile || boolparams || predefparams || same_node || currpar || gitrev || svnrev || nodelabel
             xml.configs do
               propfile and xml.tag! "hudson.plugins.parameterizedtrigger.FileBuildParameters" do
                 xml.propertiesFile propfile
@@ -27,10 +29,18 @@ module Cigale::Builder
               same_node and xml.tag! "hudson.plugins.parameterizedtrigger.NodeParameters"
 
               currpar and xml.tag! "hudson.plugins.parameterizedtrigger.CurrentBuildParameters"
+              gitrev and xml.tag! "hudson.plugins.git.GitRevisionBuildParameters" do
+                xml.combineQueuedCommits false
+              end
               svnrev and xml.tag! "hudson.plugins.parameterizedtrigger.SubversionRevisionBuildParameters"
 
               predefparams and xml.tag! "hudson.plugins.parameterizedtrigger.PredefinedBuildParameters" do
                 xml.properties predefparams
+              end
+
+              nodelabel and xml.tag! "org.jvnet.jenkins.plugins.nodelabelparameter.parameterizedtrigger.NodeLabelBuildParameter" do
+                xml.name build["node-label-name"]
+                xml.nodeLabel nodelabel
               end
 
               boolparams and xml.tag! "hudson.plugins.parameterizedtrigger.BooleanParameters" do
