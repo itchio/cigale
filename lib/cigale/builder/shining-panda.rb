@@ -17,11 +17,13 @@ module Cigale::Builder::ShiningPanda
       ver = bdef["python-version"] and xml.pythonName ver
 
       case env
-      when "virtualenv", "custom"
+      when "virtualenv"
         xml.home bdef["name"]
         xml.clear bdef["clear"]
         xml.useDistribute bdef["use-distribute"]
         xml.systemSitePackages bdef["system-site-packages"]
+      when "custom"
+        xml.home bdef["home"]
       end
 
       xml.nature bdef["nature"]
