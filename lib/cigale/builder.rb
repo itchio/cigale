@@ -22,6 +22,7 @@ module Cigale::Builder
   require "cigale/builder/change-assembly-version"
   require "cigale/builder/beaker"
   require "cigale/builder/copyartifact"
+  require "cigale/builder/multijob"
 
   def builder_classes
     @builder_classes = {
@@ -42,6 +43,7 @@ module Cigale::Builder
       "system-groovy" => "hudson.plugins.groovy.SystemGroovy",
       "change-assembly-version" => "org.jenkinsci.plugins.changeassemblyversion.ChangeAssemblyVersion",
       "beaker" => "org.jenkinsci.plugins.beakerbuilder.BeakerBuilder",
+      "multijob" => "com.tikal.jenkins.plugins.multijob.MultiJobBuilder",
     }
   end
 
