@@ -8,6 +8,7 @@ module Cigale::Builder
   require "cigale/builder/gradle"
   require "cigale/builder/managed-script"
   require "cigale/builder/trigger-builds"
+  require "cigale/builder/trigger-remote"
   require "cigale/builder/ssh"
   require "cigale/builder/maven-target"
   require "cigale/builder/sonar"
@@ -27,6 +28,7 @@ module Cigale::Builder
       "batch" => "hudson.tasks.BatchFile",
       "gradle" => "hudson.plugins.gradle.Gradle",
       "trigger-builds" => "hudson.plugins.parameterizedtrigger.TriggerBuilder",
+      "trigger-remote" => "org.jenkinsci.plugins.ParameterizedRemoteTrigger.RemoteBuildConfiguration",
       "ssh-builder" => "org.jvnet.hudson.plugins.SSHBuilder",
       "maven-target" => "hudson.tasks.Maven",
       "sonar" => "hudson.plugins.sonar.SonarRunnerBuilder",
