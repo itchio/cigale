@@ -1,5 +1,5 @@
 
-module Cigale::Builder::MsBuild
+module Cigale::Builder
   def translate_msbuild_builder (xml, bdef)
     xml.msBuildName bdef["msbuild-version"]
     xml.msBuildFile bdef["solution-file"]

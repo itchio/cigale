@@ -1,5 +1,5 @@
 
-module Cigale::Builder::ManagedScript
+module Cigale::Builder
   def translate_managed_script_builder (xml, bdef)
     sclass = case bdef["type"]
     when "script"

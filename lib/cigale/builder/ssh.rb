@@ -1,5 +1,5 @@
 
-module Cigale::Builder::Ssh
+module Cigale::Builder
   # sigh...
   def translate_ssh_builder_builder (xml, bdef)
     xml.siteName bdef["ssh-user-ip"]

@@ -1,5 +1,5 @@
 
-module Cigale::Builder::Grails
+module Cigale::Builder
   def translate_grails_builder (xml, bdef)
     xml.targets bdef["targets"]
     xml.name bdef["name"]

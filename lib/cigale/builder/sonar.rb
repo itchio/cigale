@@ -1,5 +1,5 @@
 
-module Cigale::Builder::Sonar
+module Cigale::Builder
   def translate_sonar_builder (xml, bdef)
     xml.installationName bdef["sonar-name"]
     xml.task bdef["task"]

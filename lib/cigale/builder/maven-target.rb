@@ -1,5 +1,5 @@
 
-module Cigale::Builder::MavenTarget
+module Cigale::Builder
   def translate_maven_target_builder (xml, bdef)
     xml.targets bdef["goals"]
     xml.properties

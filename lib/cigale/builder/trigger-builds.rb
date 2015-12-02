@@ -1,5 +1,5 @@
 
-module Cigale::Builder::TriggerBuilds
+module Cigale::Builder
 
   def translate_trigger_builds_builder (xml, bdef)
     xml.configs do

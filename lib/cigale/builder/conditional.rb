@@ -1,5 +1,5 @@
 
-module Cigale::Builder::Conditional
+module Cigale::Builder
 
   def translate_conditional_step_builder (xml, bdef)
     case (bdef["steps"] || []).size

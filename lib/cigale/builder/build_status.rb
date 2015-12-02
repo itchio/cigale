@@ -1,5 +1,5 @@
 
-module Cigale::Builder::BuildStatus
+module Cigale::Builder
 
   def translate_build_status (xml, status)
     @build_statuses ||= {

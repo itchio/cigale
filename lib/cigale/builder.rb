@@ -1,61 +1,24 @@
 
 module Cigale::Builder
   require "cigale/builder/build_status"
-  include Cigale::Builder::BuildStatus
-
   require "cigale/builder/conditional"
-  include Cigale::Builder::Conditional
-
   require "cigale/builder/inject"
-  include Cigale::Builder::Inject
-
   require "cigale/builder/shell"
-  include Cigale::Builder::Shell
-
   require "cigale/builder/batch"
-  include Cigale::Builder::Batch
-
   require "cigale/builder/gradle"
-  include Cigale::Builder::Gradle
-
   require "cigale/builder/managed-script"
-  include Cigale::Builder::ManagedScript
-
   require "cigale/builder/trigger-builds"
-  include Cigale::Builder::TriggerBuilds
-
   require "cigale/builder/ssh"
-  include Cigale::Builder::Ssh
-
   require "cigale/builder/maven-target"
-  include Cigale::Builder::MavenTarget
-
   require "cigale/builder/sonar"
-  include Cigale::Builder::Sonar
-
   require "cigale/builder/shining-panda"
-  include Cigale::Builder::ShiningPanda
-
   require "cigale/builder/powershell"
-  include Cigale::Builder::PowerShell
-
   require "cigale/builder/python"
-  include Cigale::Builder::Python
-
   require "cigale/builder/msbuild"
-  include Cigale::Builder::MsBuild
-
   require "cigale/builder/builders-from"
-  include Cigale::Builder::BuildersFrom
-
   require "cigale/builder/grails"
-  include Cigale::Builder::Grails
-
   require "cigale/builder/system-groovy"
-  include Cigale::Builder::SystemGroovy
-
   require "cigale/builder/change-assembly-version"
-  include Cigale::Builder::ChangeAssemblyVersion
 
   def builder_classes
     @builder_classes = {

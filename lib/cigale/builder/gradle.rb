@@ -1,5 +1,5 @@
 
-module Cigale::Builder::Gradle
+module Cigale::Builder
   def translate_gradle_builder (xml, bdef)
     xml.description
     xml.tasks bdef["tasks"]

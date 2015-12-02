@@ -1,5 +1,5 @@
 
-module Cigale::Builder::Inject
+module Cigale::Builder
 
   def translate_inject_builder (xml, bdef)
     xml.info do
@@ -8,5 +8,5 @@ module Cigale::Builder::Inject
       end
     end
   end
-  
+
 end

@@ -1,5 +1,5 @@
 
-module Cigale::Builder::ShiningPanda
+module Cigale::Builder
   def translate_shining_panda_builder (xml, bdef)
     env = bdef["build-environment"]
     bclass = case env
