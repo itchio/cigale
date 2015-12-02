@@ -126,20 +126,29 @@ module Cigale::Builder::TriggerBuilds
   def translate_trigger_build_threshold (xml, threshold)
     @trigger_builds_thresholds ||= {
       "UNSTABLE" => {
-        "name" => "UNSTABLE",
         "ordinal" => 1,
         "color" => "YELLOW",
         "completeBuild" => true,
       },
       "FAILURE" => {
-        "name" => "FAILURE",
         "ordinal" => 2,
         "color" => "RED",
         "completeBuild" => true,
       },
+      "NOT_BUILD" => {
+        "ordinal" => 3,
+        "color" => "NOTBUILD",
+        "completeBuild" => false,
+      },
+      "ABORTED" => {
+        "ordinal" => 4,
+        "color" => "ABORTED",
+        "completeBuild" => false,
+      },
     }
 
     tspec = @trigger_builds_thresholds[threshold] or raise "Unknown trigger build threshold: '#{threshold}'"
+    xml.name threshold
     for k, v in tspec
       xml.tag! k, v
     end

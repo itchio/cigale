@@ -76,6 +76,13 @@ module Cigale::Builder::Conditional
             xml.string node
           end
         end
+      when "current-status"
+        worst = bdef["condition-worst"] and xml.worstResult do
+          translate_trigger_build_threshold xml, worst
+        end
+        best = bdef["condition-best"] and xml.bestResult do
+          translate_trigger_build_threshold xml, best
+        end
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
       end
@@ -99,6 +106,7 @@ module Cigale::Builder::Conditional
       "files-match" => "org.jenkins_ci.plugins.run_condition.core.FilesMatchCondition",
       "file-exists" => "org.jenkins_ci.plugins.run_condition.core.FileExistsCondition",
       "execution-node" => "org.jenkins_ci.plugins.run_condition.core.NodeCondition",
+      "current-status" => "org.jenkins_ci.plugins.run_condition.core.StatusCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
       "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
       "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
