@@ -36,9 +36,10 @@ module Cigale
       end
     end
 
-    %w[scm builders properties].each do |category|
+    %w[scm builders properties wrappers].each do |category|
       g = File.join(Helper.fixtures_dir, "xml", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
+        next if f.include? "plugins_info."
         it "gens correct xml for '#{f}'" do
           compare_with_xml f, category
         end

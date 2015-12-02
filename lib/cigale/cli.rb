@@ -67,6 +67,7 @@ module Cigale
       library = {}
       concrete_entries = []
 
+      # sort out macro definitions from actual entries
       for entry in entries
         etype, edef = first_pair(entry)
 

@@ -1,10 +1,10 @@
 
 module Cigale::Wrapper
-  # require "cigale/wrapper/..."
+  require "cigale/wrapper/timeout"
 
   def wrapper_classes
     @wrapper_classes ||= {
-      "" => "fixme"
+      "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
     }
   end
 
