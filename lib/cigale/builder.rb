@@ -11,6 +11,7 @@ module Cigale::Builder
   require "cigale/builder/trigger-remote"
   require "cigale/builder/ssh"
   require "cigale/builder/maven-target"
+  require "cigale/builder/maven-builder"
   require "cigale/builder/sonar"
   require "cigale/builder/shining-panda"
   require "cigale/builder/powershell"
@@ -41,6 +42,7 @@ module Cigale::Builder
       "trigger-remote" => "org.jenkinsci.plugins.ParameterizedRemoteTrigger.RemoteBuildConfiguration",
       "ssh-builder" => "org.jvnet.hudson.plugins.SSHBuilder",
       "maven-target" => "hudson.tasks.Maven",
+      "maven-builder" => "org.jfrog.hudson.maven3.Maven3Builder",
       "sonar" => "hudson.plugins.sonar.SonarRunnerBuilder",
       "powershell" => "hudson.plugins.powershell.PowerShell",
       "python" => "hudson.plugins.python.Python",
