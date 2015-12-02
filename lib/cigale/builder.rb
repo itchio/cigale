@@ -45,6 +45,9 @@ module Cigale::Builder
   require "cigale/builder/builders-from"
   include Cigale::Builder::BuildersFrom
 
+  require "cigale/builder/grails"
+  include Cigale::Builder::Grails
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -59,6 +62,7 @@ module Cigale::Builder
       "python" => "hudson.plugins.python.Python",
       "msbuild" => "hudson.plugins.msbuild.MsBuildBuilder",
       "builders-from" => "hudson.plugins.templateproject.ProxyBuilder",
+      "grails" => "com.g2one.hudson.grails.GrailsBuilder",
     }
   end
 
