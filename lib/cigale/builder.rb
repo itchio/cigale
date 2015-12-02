@@ -21,6 +21,9 @@ module Cigale::Builder
   require "cigale/builder/trigger-builds"
   include Cigale::Builder::TriggerBuilds
 
+  require "cigale/builder/ssh"
+  include Cigale::Builder::Ssh
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -28,6 +31,7 @@ module Cigale::Builder
       "batch" => "hudson.tasks.BatchFile",
       "gradle" => "hudson.plugins.gradle.Gradle",
       "trigger-builds" => "hudson.plugins.parameterizedtrigger.TriggerBuilder",
+      "ssh-builder" => "org.jvnet.hudson.plugins.SSHBuilder",
     }
   end
 
