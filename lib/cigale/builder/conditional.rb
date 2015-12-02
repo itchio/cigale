@@ -83,10 +83,23 @@ module Cigale::Builder
         best = bdef["condition-best"] and xml.bestResult do
           translate_build_status xml, best
         end
+      when "num-comp"
+        xml.lhs bdef["lhs"]
+        xml.rhs bdef["rhs"]
+
+        comp = bdef["comparator"]
+        cclass = condition_comparator_classes[comp] or raise "Unknown num-comp comparator: #{comp}"
+        xml.comparator :class => cclass
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
       end
     end
+  end
+
+  def condition_comparator_classes
+    @condition_comparator_classes ||= {
+      "equal" => "org.jenkins_ci.plugins.run_condition.core.NumericalComparisonCondition$EqualTo",
+    }
   end
 
   def translate_condition_runner (xml, bdef)
@@ -105,6 +118,7 @@ module Cigale::Builder
       "regex-match" => "org.jenkins_ci.plugins.run_condition.core.ExpressionCondition",
       "files-match" => "org.jenkins_ci.plugins.run_condition.core.FilesMatchCondition",
       "file-exists" => "org.jenkins_ci.plugins.run_condition.core.FileExistsCondition",
+      "num-comp" => "org.jenkins_ci.plugins.run_condition.core.NumericalComparisonCondition",
       "execution-node" => "org.jenkins_ci.plugins.run_condition.core.NodeCondition",
       "current-status" => "org.jenkins_ci.plugins.run_condition.core.StatusCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
