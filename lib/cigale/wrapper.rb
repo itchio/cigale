@@ -7,6 +7,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/port-allocator"
   require "cigale/wrapper/mongo-db"
   require "cigale/wrapper/rbenv"
+  require "cigale/wrapper/m2-repository-cleanup"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -45,6 +46,8 @@ module Cigale::Wrapper
             translate_mongo_db_wrapper xml, wdef
           when "rbenv"
             translate_rbenv_wrapper xml, wdef
+          when "m2-repository-cleanup"
+            translate_m2_repository_cleanup xml, wdef
           else
             raise "Unknown wrapper type: #{wtype}"
           end
