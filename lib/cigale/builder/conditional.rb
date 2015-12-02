@@ -99,6 +99,32 @@ module Cigale::Builder
         xml.latestHours bdef["latest-hour"]
         xml.latestMinutes bdef["latest-min"]
         xml.useBuildTime false
+      when "day-of-week"
+        @day_of_week_classes ||= {
+          "weekday" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$Weekday",
+          "select-days" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$SelectDays",
+        }
+
+        dsel = bdef["day-selector"]
+        dclass = @day_of_week_classes[dsel] or raise "Unknown day-of-week selector: #{dsel}"
+
+        case dsel
+        when "select-days"
+          xml.daySelector :class => dclass do
+            xml.days do
+              %w(SUN MON TUE WED THU FRI SAT).each_with_index do |item, index|
+                xml.tag! "org.jenkins__ci.plugins.run__condition.core.DayCondition_-Day" do
+                  xml.day index + 1
+                  xml.selected (true == bdef["days"][item]) || false
+                end
+              end
+            end
+          end
+        else
+          xml.daySelector :class => dclass
+        end
+
+        xml.useBuildTime bdef["use-build-time"]
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
       end
@@ -132,6 +158,7 @@ module Cigale::Builder
       "current-status" => "org.jenkins_ci.plugins.run_condition.core.StatusCondition",
       "build-cause" => "org.jenkins_ci.plugins.run_condition.core.CauseCondition",
       "time" => "org.jenkins_ci.plugins.run_condition.core.TimeCondition",
+      "day-of-week" => "org.jenkins_ci.plugins.run_condition.core.DayCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
       "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
       "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
