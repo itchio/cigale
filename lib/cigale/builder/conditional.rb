@@ -70,6 +70,12 @@ module Cigale::Builder::Conditional
         bdir = bdef["condition-basedir"]
         bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for file-exists: '#{bdir}'"
         xml.baseDir :class => bdirclass
+      when "execution-node"
+        xml.allowedNodes do
+          for node in bdef["nodes"]
+            xml.string node
+          end
+        end
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
       end
@@ -92,6 +98,7 @@ module Cigale::Builder::Conditional
       "regex-match" => "org.jenkins_ci.plugins.run_condition.core.ExpressionCondition",
       "files-match" => "org.jenkins_ci.plugins.run_condition.core.FilesMatchCondition",
       "file-exists" => "org.jenkins_ci.plugins.run_condition.core.FileExistsCondition",
+      "execution-node" => "org.jenkins_ci.plugins.run_condition.core.NodeCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
       "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
       "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
