@@ -27,7 +27,7 @@ module Cigale
       when Hash
         entity.map do |k, v|
           case k
-          when /\.(.*)$/
+          when /^\.(.*)$/
             # macro call
             if expanding?
               # keep child macro as-is for later expansion
