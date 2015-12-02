@@ -34,6 +34,15 @@ module Cigale::Builder
 
     xml.builders do
       for b in builders
+        case b
+        when "critical-block-start"
+          xml.tag! "org.jvnet.hudson.plugins.exclusion.CriticalBlockStart", :plugin => "Exclusion"
+          next
+        when "critical-block-end"
+          xml.tag! "org.jvnet.hudson.plugins.exclusion.CriticalBlockEnd", :plugin => "Exclusion"
+          next
+        end
+
         btype, bdef = first_pair(b)
         clazz = builder_classes[btype]
 
