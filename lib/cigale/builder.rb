@@ -27,6 +27,9 @@ module Cigale::Builder
   require "cigale/builder/maven-target"
   include Cigale::Builder::MavenTarget
 
+  require "cigale/builder/sonar"
+  include Cigale::Builder::Sonar
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -36,6 +39,7 @@ module Cigale::Builder
       "trigger-builds" => "hudson.plugins.parameterizedtrigger.TriggerBuilder",
       "ssh-builder" => "org.jvnet.hudson.plugins.SSHBuilder",
       "maven-target" => "hudson.tasks.Maven",
+      "sonar" => "hudson.plugins.sonar.SonarRunnerBuilder",
     }
   end
 
