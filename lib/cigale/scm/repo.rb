@@ -13,7 +13,6 @@ module Cigale::SCM::Repo
     xml.jobs sdef["jobs"]
     xml.currentBranch sdef["current-branch"]
     xml.quiet sdef["quiet"]
-    xml.indent!
-    xml << "<localManifest>" + CGI.escapeHTML(sdef["local-manifest"]) + "</localManifest>\n"
+    xml.localManifest sdef["local-manifest"]
   end
 end

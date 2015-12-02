@@ -5,11 +5,33 @@ module Cigale::Builder::TriggerBuilds
     xml.configs do
       for build in bdef
         xml.tag! "hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig" do
-          if propfile = build["property-file"]
+          propfile = build["property-file"]
+          predefparams = build["predefined-parameters"]
+          boolparams = build["bool-parameters"]
+          same_node = build["same-node"]
+
+          if propfile || boolparams || predefparams || same_node
             xml.configs do
-              xml.tag! "hudson.plugins.parameterizedtrigger.FileBuildParameters" do
-                xml.propertiesFile build["property-file"]
+              propfile and xml.tag! "hudson.plugins.parameterizedtrigger.FileBuildParameters" do
+                xml.propertiesFile propfile
                 xml.failTriggerOnMissing true
+              end
+
+              same_node and xml.tag! "hudson.plugins.parameterizedtrigger.NodeParameters"
+
+              predefparams and xml.tag! "hudson.plugins.parameterizedtrigger.PredefinedBuildParameters" do
+                xml.properties predefparams
+              end
+
+              boolparams and xml.tag! "hudson.plugins.parameterizedtrigger.BooleanParameters" do
+                xml.configs do
+                  for bp in boolparams
+                    xml.tag! "hudson.plugins.parameterizedtrigger.BooleanParameterConfig" do
+                      xml.name bp["name"]
+                      xml.value !!bp["value"]
+                    end
+                  end
+                end
               end
             end
           else
