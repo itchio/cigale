@@ -6,6 +6,7 @@ module Cigale::Property
   require "cigale/property/ownership"
   require "cigale/property/builds-chain-fingerprinter"
   require "cigale/property/slave-utilization"
+  require "cigale/property/sidebar"
   require "cigale/property/batch-tasks"
 
   def property_classes
@@ -15,7 +16,7 @@ module Cigale::Property
       "delivery-pipeline" => "se.diabol.jenkins.pipeline.PipelineProperty",
       "ownership" => "com.synopsys.arc.jenkins.plugins.ownership.jobs.JobOwnerJobProperty",
       "builds-chain-fingerprinter" => "org.jenkinsci.plugins.buildschainfingerprinter.AutomaticFingerprintJobProperty",
-      "slave-utilization" => "com.suryagaddipati.jenkins.SlaveUtilizationProperty"
+      "slave-utilization" => "com.suryagaddipati.jenkins.SlaveUtilizationProperty",
     }
   end
 
@@ -23,6 +24,8 @@ module Cigale::Property
     if (props || []).size == 0
       return xml.properties
     end
+
+    sidebars = []
 
     xml.properties do
       for p in props
@@ -44,12 +47,22 @@ module Cigale::Property
         clazz = property_classes[ptype]
 
         unless clazz
-          raise "Unknown property type: #{ptype}"
+          case ptype
+          when "sidebar"
+            sidebars << pdef
+            next
+          else
+            raise "Unknown property type: #{ptype}"
+          end
         end
 
         xml.tag! clazz do
           self.send "translate_#{underize(ptype)}_property", xml, pdef
         end
+      end # for
+
+      unless sidebars.empty?
+        translate_sidebar_properties xml, sidebars
       end
     end
   end
