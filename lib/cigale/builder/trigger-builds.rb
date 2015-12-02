@@ -9,8 +9,10 @@ module Cigale::Builder::TriggerBuilds
           predefparams = build["predefined-parameters"]
           boolparams = build["bool-parameters"]
           same_node = build["same-node"]
+          currpar = build["current-parameters"]
+          svnrev = build["svn-revision"]
 
-          if propfile || boolparams || predefparams || same_node
+          if propfile || boolparams || predefparams || same_node || currpar || svnrev
             xml.configs do
               propfile and xml.tag! "hudson.plugins.parameterizedtrigger.FileBuildParameters" do
                 xml.propertiesFile propfile
@@ -18,6 +20,9 @@ module Cigale::Builder::TriggerBuilds
               end
 
               same_node and xml.tag! "hudson.plugins.parameterizedtrigger.NodeParameters"
+
+              currpar and xml.tag! "hudson.plugins.parameterizedtrigger.CurrentBuildParameters"
+              svnrev and xml.tag! "hudson.plugins.parameterizedtrigger.SubversionRevisionBuildParameters"
 
               predefparams and xml.tag! "hudson.plugins.parameterizedtrigger.PredefinedBuildParameters" do
                 xml.properties predefparams
@@ -41,11 +46,33 @@ module Cigale::Builder::TriggerBuilds
           if factories = build["parameter-factories"]
             xml.configFactories do
               for f in factories
-                fclass = trigger_factories[f["factory"]] or raise "Unknown trigger param factory type: #{f["factory"]}"
+                fname = f["factory"]
+                fclass = trigger_factories[fname] or raise "Unknown trigger param factory type: #{fname}"
                 xml.tag! fclass do
-                  xml.name f["name"]
-                  xml.nodeLabel f["node-label"]
-                  xml.ignoreOfflineNodes f["ignore-offline-nodes"] || true
+                  case fname
+                  when "allnodesforlabel"
+                    xml.name f["name"]
+                    xml.nodeLabel f["node-label"]
+                    ign = if f.has_key?("ignore-offline-nodes")
+                      f["ignore-offline-nodes"]
+                    else true
+                      true
+                    end
+                    xml.ignoreOfflineNodes ign
+                  when "filebuild"
+                    xml.filePattern f["file-pattern"]
+                    xml.noFilesFoundAction "SKIP"
+                  when "binaryfile"
+                    xml.parameterName f["parameter-name"]
+                    xml.filePattern f["file-pattern"]
+                    xml.noFilesFoundAction "SKIP"
+                  when "counterbuild"
+                    xml.from f["from"]
+                    xml.to f["to"]
+                    xml.step f["step"]
+                    xml.paramExpr
+                    xml.validationFail "FAIL"
+                  end
                 end
               end
             end
@@ -116,6 +143,9 @@ module Cigale::Builder::TriggerBuilds
   def trigger_factories
     @trigger_factories ||= {
       "allnodesforlabel" => "org.jvnet.jenkins.plugins.nodelabelparameter.parameterizedtrigger.AllNodesForLabelBuildParameterFactory",
+      "filebuild" => "hudson.plugins.parameterizedtrigger.FileBuildParameterFactory",
+      "binaryfile" => "hudson.plugins.parameterizedtrigger.BinaryFileParameterFactory",
+      "counterbuild" => "hudson.plugins.parameterizedtrigger.CounterBuildParameterFactory",
     }
   end
 
