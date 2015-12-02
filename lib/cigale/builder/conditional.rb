@@ -90,6 +90,9 @@ module Cigale::Builder
         comp = bdef["comparator"]
         cclass = condition_comparator_classes[comp] or raise "Unknown num-comp comparator: #{comp}"
         xml.comparator :class => cclass
+      when "build-cause"
+        xml.buildCause bdef["cause"]
+        xml.exclusiveCause bdef["exclusive-cause"]
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
       end
@@ -121,6 +124,7 @@ module Cigale::Builder
       "num-comp" => "org.jenkins_ci.plugins.run_condition.core.NumericalComparisonCondition",
       "execution-node" => "org.jenkins_ci.plugins.run_condition.core.NodeCondition",
       "current-status" => "org.jenkins_ci.plugins.run_condition.core.StatusCondition",
+      "build-cause" => "org.jenkins_ci.plugins.run_condition.core.CauseCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
       "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
       "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
