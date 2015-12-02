@@ -16,7 +16,12 @@ module Cigale::Builder
             xml.configs do
               propfile and xml.tag! "hudson.plugins.parameterizedtrigger.FileBuildParameters" do
                 xml.propertiesFile propfile
-                xml.failTriggerOnMissing true
+                tom = if build.has_key?("property-file-fail-on-missing")
+                  build["property-file-fail-on-missing"]
+                else
+                  true
+                end
+                xml.failTriggerOnMissing tom
               end
 
               same_node and xml.tag! "hudson.plugins.parameterizedtrigger.NodeParameters"
