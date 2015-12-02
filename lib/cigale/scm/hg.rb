@@ -1,5 +1,5 @@
 
-module Cigale::SCM::Hg
+module Cigale::SCM
   def translate_hg_scm (xml, sdef)
     xml.source sdef["url"]
     if cid = sdef["credentials-id"]

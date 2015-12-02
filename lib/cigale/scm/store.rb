@@ -1,5 +1,5 @@
 
-module Cigale::SCM::Store
+module Cigale::SCM
   def translate_store_scm (xml, sdef)
     xml.scriptName sdef["script"]
     xml.repositoryName sdef["repository"]

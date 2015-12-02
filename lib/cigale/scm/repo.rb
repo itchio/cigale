@@ -1,7 +1,5 @@
 
-require "cgi"
-
-module Cigale::SCM::Repo
+module Cigale::SCM
   def translate_repo_scm (xml, sdef)
     xml.manifestRepositoryUrl sdef["manifest-url"]
     xml.manifestBranch sdef["manifest-branch"]

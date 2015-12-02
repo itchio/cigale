@@ -1,5 +1,5 @@
 
-module Cigale::SCM::Tfs
+module Cigale::SCM
   def translate_tfs_scm (xml, sdef)
     xml.serverUrl sdef["server-url"]
     xml.projectPath sdef["project-path"]

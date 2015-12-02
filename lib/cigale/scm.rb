@@ -1,25 +1,12 @@
 
 module Cigale::SCM
   require "cigale/scm/git"
-  include Cigale::SCM::Git
-
   require "cigale/scm/repo"
-  include Cigale::SCM::Repo
-
   require "cigale/scm/tfs"
-  include Cigale::SCM::Tfs
-
   require "cigale/scm/workspace"
-  include Cigale::SCM::Workspace
-
   require "cigale/scm/hg"
-  include Cigale::SCM::Hg
-
   require "cigale/scm/store"
-  include Cigale::SCM::Store
-
   require "cigale/scm/svn"
-  include Cigale::SCM::Svn
 
   def scm_classes
     @scm_classes ||= {

@@ -1,5 +1,5 @@
 
-module Cigale::SCM::Svn
+module Cigale::SCM
   def translate_svn_scm (xml, sdef)
     if vu = sdef["viewvc-url"]
       xml.browser :class => "hudson.scm.browsers.ViewSVN" do

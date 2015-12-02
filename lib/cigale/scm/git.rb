@@ -1,5 +1,5 @@
 
-module Cigale::SCM::Git
+module Cigale::SCM
   def translate_git_scm (xml, sdef)
     xml.configVersion 2
 
