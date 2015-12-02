@@ -27,6 +27,7 @@ module Cigale::Builder
   require "cigale/builder/cmake"
   require "cigale/builder/ant"
   require "cigale/builder/sbt"
+  require "cigale/builder/dsl"
 
   def builder_classes
     @builder_classes = {
@@ -52,6 +53,7 @@ module Cigale::Builder
       "cmake" => "hudson.plugins.cmake.CmakeBuilder",
       "ant" => "hudson.tasks.Ant",
       "sbt" => "org.jvnet.hudson.plugins.SbtPluginBuilder",
+      "dsl" => "javaposse.jobdsl.plugin.ExecuteDslScripts",
     }
   end
 

@@ -93,6 +93,12 @@ module Cigale::Builder
       when "build-cause"
         xml.buildCause bdef["cause"]
         xml.exclusiveCause bdef["exclusive-cause"]
+      when "time"
+        xml.earliestHours bdef["earliest-hour"]
+        xml.earliestMinutes bdef["earliest-min"]
+        xml.latestHours bdef["latest-hour"]
+        xml.latestMinutes bdef["latest-min"]
+        xml.useBuildTime false
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
       end
@@ -125,6 +131,7 @@ module Cigale::Builder
       "execution-node" => "org.jenkins_ci.plugins.run_condition.core.NodeCondition",
       "current-status" => "org.jenkins_ci.plugins.run_condition.core.StatusCondition",
       "build-cause" => "org.jenkins_ci.plugins.run_condition.core.CauseCondition",
+      "time" => "org.jenkins_ci.plugins.run_condition.core.TimeCondition",
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
       "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
       "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
