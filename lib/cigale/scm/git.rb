@@ -11,9 +11,7 @@ module Cigale::SCM::Git
             xml.name remote_name
             xml.refspec rdef["refspec"] || "+refs/heads/*:refs/remotes/#{remote_name}/*"
             xml.url rdef["url"]
-            if val = rdef["credentials-id"]
-              xml.credentialsId val
-            end
+            cri = rdef["credentials-id"] and xml.credentialsId cri
           end
         end
       else
@@ -22,9 +20,7 @@ module Cigale::SCM::Git
           xml.name remote_name
           xml.refspec sdef["refspec"] || "+refs/heads/*:refs/remotes/#{remote_name}/*"
           xml.url sdef["url"]
-          if val = sdef["credentials-id"]
-            xml.credentialsId val
-          end
+          cri = sdef["credentials-id"] and xml.credentialsId cri
         end
       end
     end
@@ -74,9 +70,7 @@ module Cigale::SCM::Git
     xml.useShallowClone sdef["shallow-clone"] || false
     xml.ignoreNotifyCommit sdef["ignore-notify"] || false
 
-    if lb = sdef["local-branch"]
-      xml.localBranch lb
-    end
+    lb = sdef["local-branch"] and xml.localBranch lb
 
     xml.extensions do
       if val = sdef["changelog-against"]
@@ -88,43 +82,33 @@ module Cigale::SCM::Git
         end
       end
 
-      if val = sdef["timeout"]
-        xml.tag! "hudson.plugins.git.extensions.impl.CheckoutOption" do
-          xml.timeout val
-        end
+      timeout = sdef["timeout"] and xml.tag! "hudson.plugins.git.extensions.impl.CheckoutOption" do
+        xml.timeout timeout
       end
 
-      if subdef
-        xml.tag! "hudson.plugins.git.extensions.impl.SubmoduleOption" do
-          xml.disableSubmodules subdef["disable"]
-          xml.recursiveSubmodules subdef["recursive"]
-          xml.trackingSubmodules subdef["tracking"]
-          xml.timeout subdef["timeout"] || "10"
-        end
+      subdef and xml.tag! "hudson.plugins.git.extensions.impl.SubmoduleOption" do
+        xml.disableSubmodules subdef["disable"]
+        xml.recursiveSubmodules subdef["recursive"]
+        xml.trackingSubmodules subdef["tracking"]
+        xml.timeout subdef["timeout"] || 10
       end
 
-      if sdef["force-polling-using-workspace"]
-        xml.tag! "hudson.plugins.git.extensions.impl.DisableRemotePoll"
-      end
+      sdef["force-polling-using-workspace"] and xml.tag! "hudson.plugins.git.extensions.impl.DisableRemotePoll"
 
       exclRegions = sdef["excluded-regions"] || []
       inclRegions = sdef["included-regions"] || []
       unless exclRegions.empty? && inclRegions.empty?
         xml.tag! "hudson.plugins.git.extensions.impl.PathRestriction" do
-          unless exclRegions.empty?
-            xml.tag! "excludedRegions", exclRegions.join("\n")
-          end
-          unless inclRegions.empty?
-            xml.tag! "includedRegions", inclRegions.join("\n")
-          end
+          exclRegions.empty? or xml.tag! "excludedRegions", exclRegions.join("\n")
+          inclRegions.empty? or xml.tag! "includedRegions", inclRegions.join("\n")
         end
       end
 
       if cl = sdef["clean"]
         case cl
         when Hash
-          xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout" if cl["after"]
-          xml.tag! "hudson.plugins.git.extensions.impl.CleanBeforeCheckout" if cl["before"]
+          cl["after"] and xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout"
+          cl["before"] and xml.tag! "hudson.plugins.git.extensions.impl.CleanBeforeCheckout"
         else
           xml.tag! "hudson.plugins.git.extensions.impl.CleanCheckout"
         end
@@ -156,12 +140,8 @@ module Cigale::SCM::Git
     if browser = sdef["browser"]
       bclass = git_browser_classes[browser] or raise "Unknown git browser type #{browser}"
       xml.browser :class => bclass do
-        if val = sdef["browser-url"]
-          xml.url val
-        end
-        if v = sdef["browser-version"]
-          xml.version v
-        end
+        url = sdef["browser-url"] and xml.url url
+        ver = sdef["browser-version"] and xml.version ver
       end
     end
   end
