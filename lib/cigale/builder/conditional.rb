@@ -127,6 +127,15 @@ module Cigale::Builder
         xml.useBuildTime bdef["use-build-time"]
       when "not"
         translate_condition "condition", xml, bdef["condition-operand"]
+      when "or", "and"
+        operands = bdef["condition-operands"]
+        xml.conditions do
+          for operand in operands
+            xml.tag! "org.jenkins__ci.plugins.run__condition.logic.ConditionContainer" do
+              translate_condition "condition", xml, operand
+            end
+          end
+        end
       end
     end
   end
