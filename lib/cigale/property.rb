@@ -54,21 +54,19 @@ module Cigale::Property
         ptype, pdef = first_pair(p)
         clazz = property_classes[ptype]
 
-        unless clazz
+        if clazz
+          xml.tag! clazz do
+            self.send "translate_#{underize(ptype)}_property", xml, pdef
+          end
+        else
           case ptype
           when "sidebar"
             sidebars << pdef
-            next
           when "copyartifact"
             translate_copyartifact_property xml, pdef
-            next
           else
             raise "Unknown property type: #{ptype}"
           end
-        end
-
-        xml.tag! clazz do
-          self.send "translate_#{underize(ptype)}_property", xml, pdef
         end
       end # for
 

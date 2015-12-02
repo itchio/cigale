@@ -1,6 +1,8 @@
+
+require "cigale/property"
+require "cigale/wrapper"
 require "cigale/scm"
 require "cigale/builder"
-require "cigale/property"
 
 require "builder/xmlbase"
 
@@ -14,9 +16,10 @@ end
 
 module Cigale
   module Generator
+    include Cigale::Property
+    include Cigale::Wrapper
     include Cigale::SCM
     include Cigale::Builder
-    include Cigale::Property
 
     def coerce_array (input)
       case input
@@ -88,7 +91,10 @@ module Cigale
 
         unless testing
           xml.publishers
-          xml.buildWrappers
+        end
+
+        if (not testing) || @opts[:test_category] == "wrappers"
+          translate_wrappers xml, jdef["wrappers"]
         end
       end
     end

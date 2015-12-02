@@ -85,7 +85,11 @@ module Cigale::Builder
         btype, bdef = first_pair(b)
         clazz = builder_classes[btype]
 
-        unless clazz
+        if clazz
+          xml.tag! clazz do
+            self.send "translate_#{underize(btype)}_builder", xml, bdef
+          end
+        else
           case btype
           when "managed-script"
             translate_managed_script_builder xml, bdef
@@ -102,12 +106,8 @@ module Cigale::Builder
           else
             raise "Unknown builder type: #{btype}"
           end
-        else
-          xml.tag! clazz do
-            self.send "translate_#{underize(btype)}_builder", xml, bdef
-          end
-        end
-      end
+        end # if clazz
+      end # for b in builders
     end
   end
 end # Cigale::Builder
