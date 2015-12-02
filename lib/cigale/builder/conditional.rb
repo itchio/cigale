@@ -62,11 +62,16 @@ module Cigale::Builder::Conditional
         xml.includes bdef["include-pattern"].join(",")
         xml.excludes bdef["exclude-pattern"].join(",")
 
-        condition_basedir = bdef["condition-basedir"]
-        bdirclass = {
-          "jenkins-home" => "org.jenkins_ci.plugins.run_condition.common.BaseDirectory$JenkinsHome"
-        }[condition_basedir] or raise "Unknown base dir for files-match: #{condition_basedir}"
+        bdir = bdef["condition-basedir"]
+        bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for files-match: '#{bdir}'"
         xml.baseDir :class => bdirclass
+      when "file-exists"
+        xml.file bdef["condition-filename"]
+        bdir = bdef["condition-basedir"]
+        bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for file-exists: '#{bdir}'"
+        xml.baseDir :class => bdirclass
+      when "not"
+        translate_condition "condition", xml, bdef["condition-operand"]
       end
     end
   end
@@ -75,10 +80,21 @@ module Cigale::Builder::Conditional
     xml.runner :class => "org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"
   end
 
+  def condition_basedirs
+    @condition_basedirs ||= {
+      "jenkins-home" => "org.jenkins_ci.plugins.run_condition.common.BaseDirectory$JenkinsHome",
+      "workspace" => "org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace",
+    }
+  end
+
   def condition_classes
     @condition_classes ||= {
       "regex-match" => "org.jenkins_ci.plugins.run_condition.core.ExpressionCondition",
       "files-match" => "org.jenkins_ci.plugins.run_condition.core.FilesMatchCondition",
+      "file-exists" => "org.jenkins_ci.plugins.run_condition.core.FileExistsCondition",
+      "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
+      "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
+      "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
     }
   end
 
