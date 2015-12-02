@@ -36,6 +36,9 @@ module Cigale::Builder
   require "cigale/builder/powershell"
   include Cigale::Builder::PowerShell
 
+  require "cigale/builder/python"
+  include Cigale::Builder::Python
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -47,6 +50,7 @@ module Cigale::Builder
       "maven-target" => "hudson.tasks.Maven",
       "sonar" => "hudson.plugins.sonar.SonarRunnerBuilder",
       "powershell" => "hudson.plugins.powershell.PowerShell",
+      "python" => "hudson.plugins.python.Python",
     }
   end
 
