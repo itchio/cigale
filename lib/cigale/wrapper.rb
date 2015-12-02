@@ -8,6 +8,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/mongo-db"
   require "cigale/wrapper/rbenv"
   require "cigale/wrapper/m2-repository-cleanup"
+  require "cigale/wrapper/logstash"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -47,7 +48,9 @@ module Cigale::Wrapper
           when "rbenv"
             translate_rbenv_wrapper xml, wdef
           when "m2-repository-cleanup"
-            translate_m2_repository_cleanup xml, wdef
+            translate_m2_repository_cleanup_wrapper xml, wdef
+          when "logstash"
+            translate_logstash_wrapper xml, wdef
           else
             raise "Unknown wrapper type: #{wtype}"
           end
