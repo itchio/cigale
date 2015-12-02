@@ -25,6 +25,7 @@ module Cigale::Builder
   require "cigale/builder/copyartifact"
   require "cigale/builder/multijob"
   require "cigale/builder/cmake"
+  require "cigale/builder/ant"
 
   def builder_classes
     @builder_classes = {
@@ -48,6 +49,7 @@ module Cigale::Builder
       "beaker" => "org.jenkinsci.plugins.beakerbuilder.BeakerBuilder",
       "multijob" => "com.tikal.jenkins.plugins.multijob.MultiJobBuilder",
       "cmake" => "hudson.plugins.cmake.CmakeBuilder",
+      "ant" => "hudson.tasks.Ant",
     }
   end
 
