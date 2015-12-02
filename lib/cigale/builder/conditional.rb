@@ -58,6 +58,15 @@ module Cigale::Builder::Conditional
       when "regex-match"
         xml.expression bdef["regex"] || raise("Missing regex: #{bdef.inspect}")
         xml.label bdef["label"] || raise("Missing label: #{bdef.inspect}")
+      when "files-match"
+        xml.includes bdef["include-pattern"].join(",")
+        xml.excludes bdef["exclude-pattern"].join(",")
+
+        condition_basedir = bdef["condition-basedir"]
+        bdirclass = {
+          "jenkins-home" => "org.jenkins_ci.plugins.run_condition.common.BaseDirectory$JenkinsHome"
+        }[condition_basedir] or raise "Unknown base dir for files-match: #{condition_basedir}"
+        xml.baseDir :class => bdirclass
       end
     end
   end
@@ -69,6 +78,7 @@ module Cigale::Builder::Conditional
   def condition_classes
     @condition_classes ||= {
       "regex-match" => "org.jenkins_ci.plugins.run_condition.core.ExpressionCondition",
+      "files-match" => "org.jenkins_ci.plugins.run_condition.core.FilesMatchCondition",
     }
   end
 
