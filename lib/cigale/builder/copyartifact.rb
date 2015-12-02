@@ -26,9 +26,21 @@ module Cigale::Builder
       val = bdef["optional"] and xml.optional val
       val = bdef["parameter-filters"] and xml.parameters val
 
-      if buildnum = bdef["build-number"]
-        xml.selector :class => "hudson.plugins.copyartifact.SpecificBuildSelector" do
-          xml.buildNumber buildnum
+      begin
+        whichbuild = bdef["which-build"]
+        @which_build_options ||= {
+          "last-completed" => "hudson.plugins.copyartifact.LastCompletedBuildSelector",
+          "specific-build" => "hudson.plugins.copyartifact.SpecificBuildSelector",
+        }
+
+        wclass = @which_build_options[whichbuild] or raise "Unknown build selector in copyartifact: #{whichbuild}"
+        case whichbuild
+        when "specific-build"
+          xml.selector :class => wclass do
+            xml.buildNumber bdef["build-number"]
+          end
+        else
+          xml.selector :class => wclass
         end
       end
     end
