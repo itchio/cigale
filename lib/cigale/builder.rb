@@ -20,6 +20,7 @@ module Cigale::Builder
   require "cigale/builder/grails"
   require "cigale/builder/system-groovy"
   require "cigale/builder/change-assembly-version"
+  require "cigale/builder/beaker"
 
   def builder_classes
     @builder_classes = {
@@ -38,7 +39,8 @@ module Cigale::Builder
       "builders-from" => "hudson.plugins.templateproject.ProxyBuilder",
       "grails" => "com.g2one.hudson.grails.GrailsBuilder",
       "system-groovy" => "hudson.plugins.groovy.SystemGroovy",
-      "change-assembly-version" => "org.jenkinsci.plugins.changeassemblyversion.ChangeAssemblyVersion"
+      "change-assembly-version" => "org.jenkinsci.plugins.changeassemblyversion.ChangeAssemblyVersion",
+      "beaker" => "org.jenkinsci.plugins.beakerbuilder.BeakerBuilder",
     }
   end
 
