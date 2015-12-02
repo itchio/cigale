@@ -12,8 +12,8 @@ module Cigale
       cmd "jenkins-jobs -l ERROR test #{input} -o #{output}"
     end
 
-    def cigale (input, output)
-      CLI.new(["-l", "ERROR", "--fixture", "-o", output, "test", input])
+    def cigale (input, output, additional_args=[])
+      CLI.new(["-l", "ERROR", "--fixture", "-o", output, "test", input] + additional_args)
       0
     end
 

@@ -69,11 +69,16 @@ module Cigale
           xml.properties
         end
 
-        translate_scms xml, jdef["scm"]
+        if (not testing) || @opts[:test_category] == "scm"
+          translate_scms xml, jdef["scm"]
+        end
         translate_triggers xml, jdef["triggers"]
 
-        unless testing
+        if (not testing) || @opts[:test_category] == "builders"
           translate_builders xml, jdef["builders"]
+        end
+
+        unless testing
           xml.publishers
           xml.buildWrappers
         end

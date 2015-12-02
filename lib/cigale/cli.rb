@@ -33,8 +33,10 @@ module Cigale
         o.string "-o", "output", "Output directory", :default => "."
         o.bool "-d", "debug", "Enable debug output", :default => false
         o.bool "--fixture", "fixture", "Enable fixture mode", :default => false
+        o.string "--test-category", "test_category", "Test category"
         o.string "-l", "loglevel", "Logger level", :default => "INFO"
       end
+      @opts = opts
 
       logger.level = Logger.const_get opts[:loglevel]
 
