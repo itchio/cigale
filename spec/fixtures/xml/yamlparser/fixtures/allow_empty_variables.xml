@@ -11,7 +11,7 @@
   <scm class="hudson.scm.NullSCM"/>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo "This should be empty: &quot;
+      <command>echo "This should be empty: "
 </command>
     </hudson.tasks.Shell>
   </builders>

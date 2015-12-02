@@ -114,7 +114,7 @@ org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
       </condition>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
       <buildStep class="hudson.tasks.Shell">
-        <command>go get -d -v ./... &amp;&amp; go build -v -x -ldflags "$BUTLER_LDFLAGS&quot; ./cmd/butler &amp;&amp; file butler.exe &amp;&amp; butler -V &amp;&amp; 7za a butler.7z butler.exe </command>
+        <command>go get -d -v ./... &amp;&amp; go build -v -x -ldflags "$BUTLER_LDFLAGS" ./cmd/butler &amp;&amp; file butler.exe &amp;&amp; butler -V &amp;&amp; 7za a butler.7z butler.exe </command>
       </buildStep>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
     <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
@@ -124,7 +124,7 @@ org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
       </condition>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail"/>
       <buildStep class="hudson.tasks.BatchFile">
-        <command>go get -d -v ./... &amp;&amp; go build -v -x -ldflags "%BUTLER_LDFLAGS%&quot; ./cmd/butler &amp;&amp; file butler.exe &amp;&amp; butler -V &amp;&amp; 7za a butler.7z butler.exe </command>
+        <command>go get -d -v ./... &amp;&amp; go build -v -x -ldflags "%BUTLER_LDFLAGS%" ./cmd/butler &amp;&amp; file butler.exe &amp;&amp; butler -V &amp;&amp; 7za a butler.7z butler.exe </command>
       </buildStep>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
   </builders>

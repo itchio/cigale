@@ -34,12 +34,12 @@
       <buildSteps>
         <hudson.tasks.Shell>
           <command>#!/bin/bash
-echo "Doing somethiung cool&quot;
+echo "Doing somethiung cool"
 </command>
         </hudson.tasks.Shell>
         <hudson.tasks.Shell>
           <command>#!/bin/zsh
-echo "Doing somethin cool with zsh&quot;
+echo "Doing somethin cool with zsh"
 </command>
         </hudson.tasks.Shell>
         <hudson.tasks.Ant>

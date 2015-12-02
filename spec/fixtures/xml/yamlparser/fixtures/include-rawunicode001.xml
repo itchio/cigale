@@ -16,7 +16,7 @@
       <buildSteps>
         <hudson.tasks.Shell>
           <command>#!/bin/bash
-echo "Unicode! ☃&quot;
+echo "Unicode! ☃"
 </command>
         </hudson.tasks.Shell>
       </buildSteps>

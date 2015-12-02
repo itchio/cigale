@@ -7,7 +7,7 @@
           <configs>
             <hudson.plugins.parameterizedtrigger.NodeParameters/>
             <hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
-              <properties>FOO="bar&quot;</properties>
+              <properties>FOO="bar"</properties>
             </hudson.plugins.parameterizedtrigger.PredefinedBuildParameters>
             <hudson.plugins.parameterizedtrigger.BooleanParameters>
               <configs>

@@ -2,14 +2,14 @@
 <matrix-project>
   <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
     <runSequentially>true</runSequentially>
-    <touchStoneCombinationFilter>os == "fedora11&quot;</touchStoneCombinationFilter>
+    <touchStoneCombinationFilter>os == "fedora11"</touchStoneCombinationFilter>
     <touchStoneResultCondition>
       <name>UNSTABLE</name>
       <ordinal>1</ordinal>
       <color>YELLOW</color>
     </touchStoneResultCondition>
   </executionStrategy>
-  <combinationFilter>!(os=="fedora11&quot; &amp;&amp; arch==&quot;amd64&quot;)</combinationFilter>
+  <combinationFilter>!(os=="fedora11" &amp;&amp; arch=="amd64")</combinationFilter>
   <axes>
     <hudson.matrix.LabelExpAxis>
       <name>os</name>

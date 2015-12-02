@@ -4,7 +4,7 @@
     <org.jenkinsci.plugins.postbuildscript.PostBuildScript>
       <buildSteps>
         <hudson.tasks.Shell>
-          <command>echo "Shell execution&quot;</command>
+          <command>echo "Shell execution"</command>
         </hudson.tasks.Shell>
       </buildSteps>
       <scriptOnlyIfSuccess>true</scriptOnlyIfSuccess>

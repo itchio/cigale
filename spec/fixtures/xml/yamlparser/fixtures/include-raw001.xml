@@ -27,7 +27,7 @@
 # to inline scripts that are maintained outside of the jenkins
 # job yaml configuration.
 
-echo "hello world&quot;
+echo "hello world"
 
 exit 0
 </command>
