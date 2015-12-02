@@ -4,12 +4,16 @@ module Cigale::Wrapper
   require "cigale/wrapper/config-file-provider"
   require "cigale/wrapper/inject-passwords"
   require "cigale/wrapper/delivery-pipeline"
+  require "cigale/wrapper/port-allocator"
+  require "cigale/wrapper/mongo-db"
+  require "cigale/wrapper/rbenv"
 
   def wrapper_classes
     @wrapper_classes ||= {
       "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
       "inject-passwords" => "EnvInjectPasswordWrapper",
-      "delivery-pipeline" => "se.diabol.jenkins.pipeline.PipelineVersionContributor"
+      "delivery-pipeline" => "se.diabol.jenkins.pipeline.PipelineVersionContributor",
+      "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
     }
   end
 
@@ -20,6 +24,12 @@ module Cigale::Wrapper
 
     xml.buildWrappers do
       for w in wrappers
+        case w
+        when "rbenv"
+          translate_rbenv_wrapper xml, {}
+          next
+        end
+
         wtype, wdef = first_pair(w)
         clazz = wrapper_classes[wtype]
 
@@ -31,6 +41,10 @@ module Cigale::Wrapper
           case wtype
           when "config-file-provider"
             translate_config_file_provider_wrapper xml, wdef
+          when "mongo-db"
+            translate_mongo_db_wrapper xml, wdef
+          when "rbenv"
+            translate_rbenv_wrapper xml, wdef
           else
             raise "Unknown wrapper type: #{wtype}"
           end
