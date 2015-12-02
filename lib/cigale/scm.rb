@@ -27,7 +27,6 @@ module Cigale::SCM
     end
 
     if scms.size > 1 and not multi
-      puts "scms size = #{scms.size}"
       xml.scm :class => "org.jenkinsci.plugins.multiplescms.MultiSCM" do
         xml.scms do
           translate_scms(xml, scms, true)
