@@ -11,6 +11,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/logstash"
   require "cigale/wrapper/live-screenshot"
   require "cigale/wrapper/android-emulator"
+  require "cigale/wrapper/ssh-agent-credentials"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -19,6 +20,7 @@ module Cigale::Wrapper
       "delivery-pipeline" => "se.diabol.jenkins.pipeline.PipelineVersionContributor",
       "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
       "android-emulator" => "hudson.plugins.android__emulator.AndroidEmulator",
+      "ssh-agent-credentials" => "com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper",
     }
   end
 
