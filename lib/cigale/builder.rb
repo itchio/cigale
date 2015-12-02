@@ -18,12 +18,16 @@ module Cigale::Builder
   require "cigale/builder/managed-script"
   include Cigale::Builder::ManagedScript
 
+  require "cigale/builder/trigger-builds"
+  include Cigale::Builder::TriggerBuilds
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
       "shell" => "hudson.tasks.Shell",
       "batch" => "hudson.tasks.BatchFile",
       "gradle" => "hudson.plugins.gradle.Gradle",
+      "trigger-builds" => "hudson.plugins.parameterizedtrigger.TriggerBuilder",
     }
   end
 
