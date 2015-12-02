@@ -7,6 +7,7 @@ module Cigale::Property
   require "cigale/property/builds-chain-fingerprinter"
   require "cigale/property/slave-utilization"
   require "cigale/property/sidebar"
+  require "cigale/property/authorization"
   require "cigale/property/batch-tasks"
 
   def property_classes
@@ -17,6 +18,7 @@ module Cigale::Property
       "ownership" => "com.synopsys.arc.jenkins.plugins.ownership.jobs.JobOwnerJobProperty",
       "builds-chain-fingerprinter" => "org.jenkinsci.plugins.buildschainfingerprinter.AutomaticFingerprintJobProperty",
       "slave-utilization" => "com.suryagaddipati.jenkins.SlaveUtilizationProperty",
+      "authorization" => "hudson.security.AuthorizationMatrixProperty",
     }
   end
 
