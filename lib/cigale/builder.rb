@@ -24,6 +24,9 @@ module Cigale::Builder
   require "cigale/builder/ssh"
   include Cigale::Builder::Ssh
 
+  require "cigale/builder/maven-target"
+  include Cigale::Builder::MavenTarget
+
   def builder_classes
     @builder_classes = {
       "inject" => "EnvInjectBuilder",
@@ -32,15 +35,16 @@ module Cigale::Builder
       "gradle" => "hudson.plugins.gradle.Gradle",
       "trigger-builds" => "hudson.plugins.parameterizedtrigger.TriggerBuilder",
       "ssh-builder" => "org.jvnet.hudson.plugins.SSHBuilder",
+      "maven-target" => "hudson.tasks.Maven",
     }
   end
 
-  def translate_builders (xml, builders)
+  def translate_builders (xml, tag, builders)
     if (builders || []).size == 0
       return xml.builders
     end
 
-    xml.builders do
+    xml.tag! tag do
       for b in builders
         case b
         when "critical-block-start"

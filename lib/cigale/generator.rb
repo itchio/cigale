@@ -75,7 +75,10 @@ module Cigale
         translate_triggers xml, jdef["triggers"]
 
         if (not testing) || @opts[:test_category] == "builders"
-          translate_builders xml, jdef["builders"]
+          if post = jdef["postbuilders"]
+            translate_builders xml, "postbuilders", jdef["postbuilders"]
+          end
+          translate_builders xml, "builders", jdef["builders"]
         end
 
         unless testing
