@@ -12,6 +12,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/live-screenshot"
   require "cigale/wrapper/android-emulator"
   require "cigale/wrapper/ssh-agent-credentials"
+  require "cigale/wrapper/logfilesize"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -69,6 +70,8 @@ module Cigale::Wrapper
             translate_logstash_wrapper xml, wdef
           when "live-screenshot"
             translate_live_screenshot_wrapper xml, wdef
+          when "logfilesize"
+            translate_logfilesize_wrapper xml, wdef
           else
             raise "Unknown wrapper type: #{wtype}"
           end
