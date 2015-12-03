@@ -21,6 +21,9 @@ module Cigale::Wrapper
   require "cigale/wrapper/locks"
   require "cigale/wrapper/xvfb"
   require "cigale/wrapper/credentials-binding"
+  require "cigale/wrapper/ci-skip"
+  require "cigale/wrapper/job-log-logger"
+  require "cigale/wrapper/custom-tools"
 
   class CustomWrapper
   end
@@ -34,6 +37,9 @@ module Cigale::Wrapper
       "logfilesize" => CustomWrapper.new,
       "exclusion" => CustomWrapper.new,
       "config-file-provider" => CustomWrapper.new,
+      "ci-skip" => CustomWrapper.new,
+      "delivery-pipeline" => CustomWrapper.new,
+      "live-screenshot" => CustomWrapper.new,
 
       "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
       "inject-passwords" => "EnvInjectPasswordWrapper",
@@ -47,6 +53,8 @@ module Cigale::Wrapper
       "locks" => "hudson.plugins.locksandlatches.LockWrapper",
       "xvfb" => "org.jenkinsci.plugins.xvfb.XvfbBuildWrapper",
       "credentials-binding" => "org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper",
+      "job-log-logger" => "org.jenkins.ci.plugins.jobloglogger.JobLogLoggerBuildWrapper",
+      "custom-tools" => "com.cloudbees.jenkins.plugins.customtools.CustomToolInstallWrapper",
     }
   end
 

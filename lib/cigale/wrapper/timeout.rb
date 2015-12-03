@@ -7,7 +7,7 @@ module Cigale::Wrapper
 
     timeoutvar = wdef["timeout-var"] and xml.timeoutEnvVar timeoutvar
     xml.failBuild wdef["fail"]
-    xml.writingDescription wdef["write-description"]
+    xml.writingDescription boolp(wdef["write-description"], false)
 
     xml.timeoutPercentage wdef["elastic-percentage"] || 0
     xml.timeoutMinutesElasticDefault wdef["elastic-default-timeout"] || 3
