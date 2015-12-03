@@ -204,6 +204,17 @@ module Cigale::Publisher
     end
   end # translate_publishers
 
+  def translate_individual_publisher (xml, p)
+    ptype, pdef = lookup_publisher p
+    clazz = publisher_classes[ptype]
+    raise "Invalid individual publisher: #{clazz}" unless String === clazz
+
+    xml.publisher :class => clazz do
+      method = "translate_#{underize(ptype)}_publisher"
+      self.send method, xml, pdef
+    end
+  end
+
   def lookup_publisher (p)
     ptype = nil
     pdef = {}

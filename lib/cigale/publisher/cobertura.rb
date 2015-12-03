@@ -2,12 +2,13 @@ module Cigale::Publisher
   def translate_cobertura_publisher (xml, pdef)
     xml.coberturaReportFile pdef["report-file"]
     xml.onlyStable pdef["only-stable"]
-    xml.failUnhealthy pdef["fail-unhealthy"]
-    xml.failUnstable pdef["fail-unstable"]
-    xml.autoUpdateHealth pdef["health-auto-update"]
-    xml.autoUpdateStability pdef["stability-auto-update"]
-    xml.zoomCoverageChart pdef["zoom-coverage-chart"]
-    xml.failNoReports pdef["fail-no-reports"]
+
+    pdef.has_key?("fail-unhealthy") and xml.failUnhealthy pdef["fail-unhealthy"]
+    pdef.has_key?("fail-unstable") and xml.failUnstable pdef["fail-unstable"]
+    pdef.has_key?("health-auto-update") and xml.autoUpdateHealth pdef["health-auto-update"]
+    pdef.has_key?("stability-auto-update") and xml.autoUpdateStability pdef["stability-auto-update"]
+    pdef.has_key?("zoom-coverage-chart") and xml.zoomCoverageChart pdef["zoom-coverage-chart"]
+    pdef.has_key?("fail-no-reports") and xml.failNoReports pdef["fail-no-reports"]
 
     targets = {
       "healthy" => {},
@@ -15,7 +16,7 @@ module Cigale::Publisher
       "failing" => {},
     }
 
-    for target in pdef["targets"]
+    for target in (pdef["targets"] || [])
       metric, values = first_pair(target)
       values.each do |state, value|
         targets[state][metric] = value

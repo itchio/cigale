@@ -1,10 +1,9 @@
-
 module Cigale::Publisher
   def translate_archive_publisher (xml, pdef)
     xml.artifacts pdef["artifacts"]
     xml.latestOnly false
     xml.allowEmptyArchive pdef["allow-empty"]
     onlysucc = pdef["only-if-success"] and xml.onlyIfSuccessful onlysucc
-    xml.fingerprint pdef["fingerprint"]
+    fingerprint = pdef["fingerprint"] and xml.fingerprint fingerprint
   end
 end
