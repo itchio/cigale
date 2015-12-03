@@ -108,7 +108,7 @@ module Cigale::Publisher
       "cppcheck" => "org.jenkinsci.plugins.cppcheck.CppcheckPublisher",
       "description-setter" => "hudson.plugins.descriptionsetter.DescriptionSetterPublisher",
       "disable-failed-job" => CustomPublisher.new,
-      "display-upstream-changes" => "jenkins.plugins.displayupstreamchanges.DisplayUpstreamChangesRecorder",
+      "display-upstream-changes" => CustomPublisher.new,
       "downstream-ext" => "hudson.plugins.downstream__ext.DownstreamTrigger",
       "doxygen" => "hudson.plugins.doxygen.DoxygenArchiver",
       "dry" => "hudson.plugins.dry.DryPublisher",
