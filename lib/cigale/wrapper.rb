@@ -121,4 +121,4 @@ module Cigale::Wrapper
     return wtype, wdef
   end
 
-end
+end # Cigale::Wrapper

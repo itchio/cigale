@@ -32,9 +32,24 @@ module Cigale::Builder
   require "cigale/builder/dsl"
   require "cigale/builder/config-file-provider"
   require "cigale/builder/sonatype-clm"
+  require "cigale/builder/exclusion"
+  require "cigale/builder/github-notifier"
+
+  class CustomBuilder
+  end
 
   def builder_classes
     @builder_classes ||= {
+      "critical-block-start" => CustomBuilder.new,
+      "critical-block-end" => CustomBuilder.new,
+      "github-notifier" => CustomBuilder.new,
+      "managed-script" => CustomBuilder.new,
+      "conditional-step" => CustomBuilder.new,
+      "shining-panda" => CustomBuilder.new,
+      "copyartifact" => CustomBuilder.new,
+      "config-file-provider" => CustomBuilder.new,
+      "sonatype-clm" => CustomBuilder.new,
+
       "inject" => "EnvInjectBuilder",
       "shell" => "hudson.tasks.Shell",
       "batch" => "hudson.tasks.BatchFile",
@@ -70,44 +85,46 @@ module Cigale::Builder
 
     xml.tag! tag do
       for b in builders
-        case b
-        when "critical-block-start"
-          xml.tag! "org.jvnet.hudson.plugins.exclusion.CriticalBlockStart", :plugin => "Exclusion"
-          next
-        when "critical-block-end"
-          xml.tag! "org.jvnet.hudson.plugins.exclusion.CriticalBlockEnd", :plugin => "Exclusion"
-          next
-        when "github-notifier"
-          xml.tag! "com.cloudbees.jenkins.GitHubSetCommitStatusBuilder"
-          next
-        end
-
-        btype, bdef = first_pair(b)
-        clazz = builder_classes[btype]
-
-        if clazz
-          xml.tag! clazz do
-            self.send "translate_#{underize(btype)}_builder", xml, bdef
+        btype, bdef = lookup_builder(b)
+        case btype
+        when "raw"
+          for l in bdef["xml"].split("\n")
+            xml.indent!
+            xml << l + "\n"
           end
         else
-          case btype
-          when "managed-script"
-            translate_managed_script_builder xml, bdef
-          when "conditional-step"
-            translate_conditional_step_builder xml, bdef
-          when "shining-panda"
-            translate_shining_panda_builder xml, bdef
-          when "copyartifact"
-            translate_copyartifact_builder xml, bdef
-          when "config-file-provider"
-            translate_config_file_provider_builder xml, bdef
-          when "sonatype-clm"
-            translate_sonatype_clm_builder xml, bdef
+          method = "translate_#{underize(btype)}_builder"
+          clazz = builder_classes[btype]
+          raise "Unknown builder type: #{btype}" unless clazz
+
+          case clazz
+          when CustomBuilder
+            self.send method, xml, bdef
           else
-            raise "Unknown builder type: #{btype}"
+            xml.tag! clazz do
+              self.send method, xml, bdef
+            end
           end
-        end # if clazz
+        end # not raw
       end # for b in builders
     end
   end
+
+  def lookup_builder (w)
+    btype = nil
+    bdef = {}
+    clazz = nil
+
+    case w
+    when Hash
+      btype, bdef = first_pair(w)
+    when String
+      btype = w
+    else
+      raise "Invalid builder markup: #{w.inspect}"
+    end
+
+    return btype, bdef
+  end
+
 end # Cigale::Builder
