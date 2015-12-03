@@ -20,6 +20,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/matrix-tie-parent"
   require "cigale/wrapper/locks"
   require "cigale/wrapper/xvfb"
+  require "cigale/wrapper/credentials-binding"
 
   class CustomWrapper
   end
@@ -32,7 +33,7 @@ module Cigale::Wrapper
       "logstash" => CustomWrapper.new,
       "logfilesize" => CustomWrapper.new,
       "exclusion" => CustomWrapper.new,
-      "exclusion" => CustomWrapper.new,
+      "config-file-provider" => CustomWrapper.new,
 
       "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
       "inject-passwords" => "EnvInjectPasswordWrapper",
@@ -44,7 +45,8 @@ module Cigale::Wrapper
       "env-file" => "hudson.plugins.envfile.EnvFileBuildWrapper",
       "matrix-tie-parent" => "matrixtieparent.BuildWrapperMtp",
       "locks" => "hudson.plugins.locksandlatches.LockWrapper",
-      "xvfb" => "org.jenkinsci.plugins.xvfb.XvfbBuildWrapper"
+      "xvfb" => "org.jenkinsci.plugins.xvfb.XvfbBuildWrapper",
+      "credentials-binding" => "org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper",
     }
   end
 
