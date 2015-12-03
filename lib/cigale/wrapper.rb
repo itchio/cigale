@@ -20,6 +20,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/matrix-tie-parent"
   require "cigale/wrapper/locks"
   require "cigale/wrapper/xvfb"
+  require "cigale/wrapper/xvnc"
   require "cigale/wrapper/credentials-binding"
   require "cigale/wrapper/ci-skip"
   require "cigale/wrapper/job-log-logger"
@@ -53,6 +54,7 @@ module Cigale::Wrapper
       "matrix-tie-parent" => "matrixtieparent.BuildWrapperMtp",
       "locks" => "hudson.plugins.locksandlatches.LockWrapper",
       "xvfb" => "org.jenkinsci.plugins.xvfb.XvfbBuildWrapper",
+      "xvnc" => "hudson.plugins.xvnc.Xvnc",
       "credentials-binding" => "org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper",
       "job-log-logger" => "org.jenkins.ci.plugins.jobloglogger.JobLogLoggerBuildWrapper",
       "custom-tools" => "com.cloudbees.jenkins.plugins.customtools.CustomToolInstallWrapper",
