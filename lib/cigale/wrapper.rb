@@ -24,6 +24,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/ci-skip"
   require "cigale/wrapper/job-log-logger"
   require "cigale/wrapper/custom-tools"
+  require "cigale/wrapper/release"
 
   class CustomWrapper
   end
@@ -55,6 +56,7 @@ module Cigale::Wrapper
       "credentials-binding" => "org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper",
       "job-log-logger" => "org.jenkins.ci.plugins.jobloglogger.JobLogLoggerBuildWrapper",
       "custom-tools" => "com.cloudbees.jenkins.plugins.customtools.CustomToolInstallWrapper",
+      "release" => "hudson.plugins.release.ReleaseWrapper",
     }
   end
 
