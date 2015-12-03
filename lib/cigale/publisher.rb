@@ -1,13 +1,13 @@
 
 module Cigale::Publisher
-  # require "cigale/publisher/xxx"
+  require "cigale/publisher/naginator"
 
   class CustomPublisher
   end
 
   def publisher_classes
     @publisher_classes ||= {
-      "" => "",
+      "naginator" => "com.chikli.hudson.plugin.naginator.NaginatorPublisher",
     }
   end
 
@@ -51,6 +51,8 @@ module Cigale::Publisher
     when Hash
       ptype, pdef = first_pair(p)
     when String
+      ptype = p
+    else
       raise "Invalid publisher markup: #{p.inspect}"
     end
 

@@ -5,6 +5,8 @@ module Cigale
   describe "ParitySpec" do
     include Helper
 
+    i_suck_and_my_tests_are_order_dependent!
+
     def compare_with_jjb (sample)
       Helper.clean_test_dir!
       jdir = File.join(Helper.test_dir, "jjb")
@@ -36,7 +38,7 @@ module Cigale
       end
     end
 
-    %w[scm builders properties wrappers].each do |category|
+    %w[scm builders properties wrappers publishers].each do |category|
       g = File.join(Helper.fixtures_dir, "xml", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
         next if f.include? "plugins_info."
