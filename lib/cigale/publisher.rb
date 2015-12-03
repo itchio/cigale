@@ -15,7 +15,7 @@ module Cigale::Publisher
   require "cigale/publisher/cloverphp"
   require "cigale/publisher/cobertura"
   require "cigale/publisher/conditional-publisher"
-  require "cigale/publisher/copy-to-mater"
+  require "cigale/publisher/copy-to-master"
   require "cigale/publisher/coverage"
   require "cigale/publisher/cppcheck"
   require "cigale/publisher/description-setter"
