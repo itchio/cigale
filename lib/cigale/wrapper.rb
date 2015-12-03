@@ -18,9 +18,22 @@ module Cigale::Wrapper
   require "cigale/wrapper/env-file"
   require "cigale/wrapper/exclusion"
   require "cigale/wrapper/matrix-tie-parent"
+  require "cigale/wrapper/locks"
+  require "cigale/wrapper/xvfb"
+
+  class CustomWrapper
+  end
 
   def wrapper_classes
     @wrapper_classes ||= {
+      "mongo-db" => CustomWrapper.new,
+      "rbenv" => CustomWrapper.new,
+      "m2-repository-cleanup" => CustomWrapper.new,
+      "logstash" => CustomWrapper.new,
+      "logfilesize" => CustomWrapper.new,
+      "exclusion" => CustomWrapper.new,
+      "exclusion" => CustomWrapper.new,
+
       "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
       "inject-passwords" => "EnvInjectPasswordWrapper",
       "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
@@ -30,72 +43,68 @@ module Cigale::Wrapper
       "env-script" => "com.lookout.jenkins.EnvironmentScript",
       "env-file" => "hudson.plugins.envfile.EnvFileBuildWrapper",
       "matrix-tie-parent" => "matrixtieparent.BuildWrapperMtp",
+      "locks" => "hudson.plugins.locksandlatches.LockWrapper",
+      "xvfb" => "org.jenkinsci.plugins.xvfb.XvfbBuildWrapper"
     }
   end
 
   def translate_wrappers (xml, wrappers)
+    wrappers = (wrappers || []).reject do |wrapper|
+      case wrapper
+      when Hash
+        k, v = first_pair(wrapper)
+        true if k == "locks" && (v || []).empty?
+      else
+        false
+      end
+    end
+
     if (wrappers || []).size == 0
       return xml.buildWrappers
     end
 
     xml.buildWrappers do
       for w in wrappers
-        case w
-        when "rbenv"
-          translate_rbenv_wrapper xml, {}
-          next
-        when "m2-repository-cleanup"
-          translate_m2_repository_cleanup_wrapper xml, {}
-          next
-        when "live-screenshot"
-          translate_live_screenshot_wrapper xml, {}
-          next
-        when "logfilesize"
-          translate_logfilesize_wrapper xml, {}
-          next
-        when "delivery-pipeline"
-          translate_delivery_pipeline_wrapper xml, {}
-          next
-        end
-
-        wtype, wdef = first_pair(w)
-        clazz = wrapper_classes[wtype]
-
-        if clazz
-          xml.tag! clazz do
-            self.send "translate_#{underize(wtype)}_wrapper", xml, wdef
+        wtype, wdef = lookup_wrapper(w)
+        case wtype
+        when "raw"
+          for l in wdef["xml"].split("\n")
+            xml.indent!
+            xml << l + "\n"
           end
         else
-          case wtype
-          when "raw"
-            for l in wdef["xml"].split("\n")
-              xml.indent!
-              xml << l + "\n"
-            end
-          when "config-file-provider"
-            translate_config_file_provider_wrapper xml, wdef
-          when "mongo-db"
-            translate_mongo_db_wrapper xml, wdef
-          when "rbenv"
-            translate_rbenv_wrapper xml, wdef
-          when "m2-repository-cleanup"
-            translate_m2_repository_cleanup_wrapper xml, wdef
-          when "logstash"
-            translate_logstash_wrapper xml, wdef
-          when "live-screenshot"
-            translate_live_screenshot_wrapper xml, wdef
-          when "logfilesize"
-            translate_logfilesize_wrapper xml, wdef
-          when "exclusion"
-            translate_exclusion_wrapper xml, wdef
-          when "delivery-pipeline"
-            translate_delivery_pipeline_wrapper xml, wdef
-          else
-            raise "Unknown wrapper type: #{wtype}"
-          end
-        end # unless clazz
+          method = "translate_#{underize(wtype)}_wrapper"
+          clazz = wrapper_classes[wtype]
+          raise "Unknown wrapper type: #{wtype}" unless clazz
 
+          case clazz
+          when CustomWrapper
+            self.send method, xml, wdef
+          else
+            xml.tag! clazz do
+              self.send method, xml, wdef
+            end
+          end
+        end
       end # for w in wrappers
-    end # wrappers
+    end # xml.buildWrappers
   end
+
+  def lookup_wrapper (w)
+    wtype = nil
+    wdef = {}
+    clazz = nil
+
+    case w
+    when Hash
+      wtype, wdef = first_pair(w)
+    when String
+      wtype = w
+    else
+      raise "Invalid wrapper markup: #{w.inspect}"
+    end
+
+    return wtype, wdef
+  end
+
 end

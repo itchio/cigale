@@ -6,7 +6,7 @@ module Cigale::Wrapper
       xml.port wdef["port"]
       xml.dbpath wdef["data-directory"]
       xml.parameters wdef["startup-params"]
-      xml.startTimeout wdef["start-timeout"]
+      xml.startTimeout wdef["start-timeout"] || 0
     end
   end
 end
