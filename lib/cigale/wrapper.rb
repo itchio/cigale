@@ -14,16 +14,20 @@ module Cigale::Wrapper
   require "cigale/wrapper/ssh-agent-credentials"
   require "cigale/wrapper/logfilesize"
   require "cigale/wrapper/inject-ownership-variables"
+  require "cigale/wrapper/env-script"
+  require "cigale/wrapper/env-file"
+  require "cigale/wrapper/exclusion"
 
   def wrapper_classes
     @wrapper_classes ||= {
       "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
       "inject-passwords" => "EnvInjectPasswordWrapper",
-      "delivery-pipeline" => "se.diabol.jenkins.pipeline.PipelineVersionContributor",
       "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
       "android-emulator" => "hudson.plugins.android__emulator.AndroidEmulator",
       "ssh-agent-credentials" => "com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper",
       "inject-ownership-variables" => "com.synopsys.arc.jenkins.plugins.ownership.wrappers.OwnershipBuildWrapper",
+      "env-script" => "com.lookout.jenkins.EnvironmentScript",
+      "env-file" => "hudson.plugins.envfile.EnvFileBuildWrapper",
     }
   end
 
@@ -43,6 +47,12 @@ module Cigale::Wrapper
           next
         when "live-screenshot"
           translate_live_screenshot_wrapper xml, {}
+          next
+        when "logfilesize"
+          translate_logfilesize_wrapper xml, {}
+          next
+        when "delivery-pipeline"
+          translate_delivery_pipeline_wrapper xml, {}
           next
         end
 
@@ -74,6 +84,10 @@ module Cigale::Wrapper
             translate_live_screenshot_wrapper xml, wdef
           when "logfilesize"
             translate_logfilesize_wrapper xml, wdef
+          when "exclusion"
+            translate_exclusion_wrapper xml, wdef
+          when "delivery-pipeline"
+            translate_delivery_pipeline_wrapper xml, wdef
           else
             raise "Unknown wrapper type: #{wtype}"
           end
