@@ -102,12 +102,11 @@ module Cigale::Wrapper
         end
       end # for w in wrappers
     end # xml.buildWrappers
-  end
+  end # translate_wrappers
 
   def lookup_wrapper (w)
     wtype = nil
     wdef = {}
-    clazz = nil
 
     case w
     when Hash

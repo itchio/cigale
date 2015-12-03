@@ -80,7 +80,7 @@ module Cigale::Builder
 
   def translate_builders (xml, tag, builders)
     if (builders || []).size == 0
-      return xml.builders
+      return xml.tag! tag
     end
 
     xml.tag! tag do
@@ -108,20 +108,19 @@ module Cigale::Builder
         end # not raw
       end # for b in builders
     end
-  end
+  end # translate_builders
 
-  def lookup_builder (w)
+  def lookup_builder (b)
     btype = nil
     bdef = {}
-    clazz = nil
 
-    case w
+    case b
     when Hash
-      btype, bdef = first_pair(w)
+      btype, bdef = first_pair(b)
     when String
-      btype = w
+      btype = b
     else
-      raise "Invalid builder markup: #{w.inspect}"
+      raise "Invalid builder markup: #{b.inspect}"
     end
 
     return btype, bdef

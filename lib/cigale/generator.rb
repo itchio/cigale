@@ -3,6 +3,7 @@ require "cigale/property"
 require "cigale/wrapper"
 require "cigale/scm"
 require "cigale/builder"
+require "cigale/publisher"
 
 require "builder/xmlbase"
 
@@ -20,6 +21,7 @@ module Cigale
     include Cigale::Wrapper
     include Cigale::SCM
     include Cigale::Builder
+    include Cigale::Publisher
 
     def coerce_array (input)
       case input
@@ -87,8 +89,8 @@ module Cigale
           translate_builders xml, "builders", jdef["builders"]
         end
 
-        if testcat.nil?
-          xml.publishers
+        if testcat.nil? || testcat == "publishers"
+          translate_publishers xml, "publishers", jdef["publishers"]
         end
 
         if testcat.nil? || testcat == "wrappers"
