@@ -1,7 +1,7 @@
 
 module Cigale::Wrapper
   def translate_timeout_wrapper (xml, wdef)
-    use_strategy = wdef.has_key?("timeout") && %w(no-activity likely-stuck).include?(wdef["type"])
+    use_strategy = wdef.has_key?("timeout") && %w(no-activity likely-stuck absolute).include?(wdef["type"])
 
     if use_strategy
       case wdef["type"]
@@ -13,14 +13,18 @@ module Cigale::Wrapper
         xml.strategy :class => "hudson.plugins.build_timeout.impl.LikelyStuckTimeOutStrategy" do
           xml.timeoutMinutes wdef["timeout"]
         end
+      when "absolute"
+        xml.strategy :class => "hudson.plugins.build_timeout.impl.AbsoluteTimeOutStrategy" do
+          xml.timeoutMinutes wdef["timeout"]
+        end
       end
     else
       xml.timeoutMinutes wdef["timeout"] || 3
     end
 
     writedesc = wdef["write-description"]
-    abort = wdef["abort"]
-    writeops = writedesc || abort
+    abort = boolp(wdef["abort"], true)
+    writeops = (writedesc || abort) && use_strategy
 
     if writeops
       xml.operationList do
@@ -44,7 +48,7 @@ module Cigale::Wrapper
       xml.failBuild wdef["fail"]
     end
 
-    if wdef["type"] != "likely-stuck" || !use_strategy
+    if !use_strategy
       unless writedesc
         xml.writingDescription false
       end
