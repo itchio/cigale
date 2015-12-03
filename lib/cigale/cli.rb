@@ -94,7 +94,7 @@ module Cigale
           if edef["name"].nil?
             raise "Jobs must have names" unless opts[:fixture]
             edef["name"] = "fixture"
-            edef["project-type"] = "test"
+            edef["project-type"] ||= "project"
           end
 
           case etype

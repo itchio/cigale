@@ -40,6 +40,7 @@ module Cigale
       g = File.join(Helper.fixtures_dir, "xml", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
         next if f.include? "plugins_info."
+        next if File.exist?(f.gsub(".yaml", ".plugins_info.yaml"))
         it "gens correct xml for '#{f}'" do
           compare_with_xml f, category
         end

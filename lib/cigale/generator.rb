@@ -36,13 +36,11 @@ module Cigale
       @numjobs += 1
 
       type = jdef["project-type"]
-      testing = (type == "test")
+      testcat = @opts[:test_category]
 
       project = case type
       when "matrix"
         "matrix-project"
-      when "test"
-        "project"
       else
         "project"
       end
@@ -57,7 +55,7 @@ module Cigale
           xml.axes
         end
 
-        unless testing
+        if testcat.nil?
           xml.actions
           xml.description "<!-- Managed by Jenkins Job Builder -->"
           xml.keepDependencies false
@@ -73,27 +71,27 @@ module Cigale
           xml.canRoam true
         end
 
-        if (not testing) || @opts[:test_category] == "properties"
+        if testcat.nil? || testcat == "properties"
           translate_properties xml, jdef["properties"]
         end
 
-        if (not testing) || @opts[:test_category] == "scm"
+        if testcat.nil? || testcat == "scm"
           translate_scms xml, jdef["scm"]
         end
         translate_triggers xml, jdef["triggers"]
 
-        if (not testing) || @opts[:test_category] == "builders"
+        if testcat.nil? || testcat == "builders"
           if post = jdef["postbuilders"]
             translate_builders xml, "postbuilders", jdef["postbuilders"]
           end
           translate_builders xml, "builders", jdef["builders"]
         end
 
-        unless testing
+        if testcat.nil?
           xml.publishers
         end
 
-        if (not testing) || @opts[:test_category] == "wrappers"
+        if testcat.nil? || testcat == "wrappers"
           translate_wrappers xml, jdef["wrappers"]
         end
       end

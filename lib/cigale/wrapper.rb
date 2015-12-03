@@ -17,6 +17,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/env-script"
   require "cigale/wrapper/env-file"
   require "cigale/wrapper/exclusion"
+  require "cigale/wrapper/matrix-tie-parent"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -28,6 +29,7 @@ module Cigale::Wrapper
       "inject-ownership-variables" => "com.synopsys.arc.jenkins.plugins.ownership.wrappers.OwnershipBuildWrapper",
       "env-script" => "com.lookout.jenkins.EnvironmentScript",
       "env-file" => "hudson.plugins.envfile.EnvFileBuildWrapper",
+      "matrix-tie-parent" => "matrixtieparent.BuildWrapperMtp",
     }
   end
 
