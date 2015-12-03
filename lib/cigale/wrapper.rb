@@ -13,6 +13,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/android-emulator"
   require "cigale/wrapper/ssh-agent-credentials"
   require "cigale/wrapper/logfilesize"
+  require "cigale/wrapper/inject-ownership-variables"
 
   def wrapper_classes
     @wrapper_classes ||= {
@@ -22,6 +23,7 @@ module Cigale::Wrapper
       "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
       "android-emulator" => "hudson.plugins.android__emulator.AndroidEmulator",
       "ssh-agent-credentials" => "com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper",
+      "inject-ownership-variables" => "com.synopsys.arc.jenkins.plugins.ownership.wrappers.OwnershipBuildWrapper",
     }
   end
 
