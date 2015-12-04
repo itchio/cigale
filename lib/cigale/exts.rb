@@ -3,12 +3,6 @@ require "pp" # pretty-print
 
 module Cigale
   class Exts
-    @@debug = false
-
-    def self.debug= (debug)
-      @@debug = debug
-    end
-
     # Lets you do `dig(hash, "a.b.c")` instead of `hash["a"]["b"]["c"]`
     def dig(h, dotted_path)
       parts = dotted_path.split '.', 2
@@ -23,24 +17,6 @@ module Cigale
     # Given {:a => b, :c => d, :e => f}, returns [:a, b]
     def first_pair(h)
       h.each_pair.next
-    end
-
-    def mutt (msg, obj)
-      return unless @@debug
-
-      puts "--------------------"
-      puts "> #{msg}: "
-      puts
-      pp obj
-      puts "--------------------"
-    end
-
-    def matt
-      return unless @@debug
-
-      puts
-      puts "==============================="
-      puts
     end
   end
 end

@@ -33,11 +33,7 @@ module Cigale
               # keep child macro as-is for later expansion
               [k, expand(v)]
             else
-              matt
-
               mdef = lookup($1)
-              mutt "Expanding macro #{$1}", mdef
-              mutt "...with params", v
 
               res = self.with_params(v).expand(mdef)
               case res
@@ -82,13 +78,11 @@ module Cigale
 
       name, type = spec.split(" ")
       if name == '*'
-        mutt "Resolving {#{spec}} =>", @params
         return @params
       end
 
       res = dig(@params, name)
       raise "Unspecified param {#{name}}" unless res
-      mutt "Resolving {#{spec}} =>", res
       res
     end
 

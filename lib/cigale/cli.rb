@@ -31,7 +31,6 @@ module Cigale
         o.banner = "Usage: cigale [options] [command] [spec_file.yml]"
 
         o.string "-o", "output", "Output directory", :default => "."
-        o.bool "-d", "debug", "Enable debug output", :default => false
         o.bool "--fixture", "fixture", "Enable fixture mode", :default => false
         o.string "--test-category", "test_category", "Test category"
         o.string "-l", "loglevel", "Logger level", :default => "INFO"
@@ -40,24 +39,38 @@ module Cigale
 
       logger.level = Logger.const_get opts[:loglevel]
 
+      if opts.arguments.empty?
+        puts "cigale v#{VERSION}"
+        puts "Usage: cigale [test] -o output/directory [spec file or directory]"
+        return
+      end
+
       cmd, input = opts.arguments
       case cmd
-      when "test"
-        # cool
-      when "dump"
-        # cool too
+      when "test", "dump"
+        # all good
       else
         raise "Unknown command: #{cmd}"
       end
 
-      Exts.debug = opts[:debug]
+      inputs = if File.directory? input
+        Dir.glob(File.join(input, "**", "*.y{a,}ml"))
+      else
+        [input]
+      end
 
-      logger.info "Parsing #{input}"
-      entries = YAML.load_file(input)
+      entries = []
 
-      unless Array === entries
-        raise "Top-level entity in YAML must be an array" unless opts[:fixture]
-        entries = [{"job" => entries}]
+      for input in inputs
+        logger.info "Parsing #{input}"
+        parsed = YAML.load_file(input)
+
+        unless Array === parsed
+          raise "Top-level entity in YAML must be an array" unless opts[:fixture]
+          parsed = [{"job" => parsed}]
+        end
+
+        entries += parsed
       end
 
       output = opts[:output]
@@ -79,6 +92,8 @@ module Cigale
         end
       end
 
+      logger.info "#{library.size} macros, #{concrete_entries.size} jobs."
+
       for entry in concrete_entries
         while true do
           ctx = MacroContext.new :library => library
@@ -98,7 +113,7 @@ module Cigale
         when "job"
           case cmd
           when "dump"
-            File.open(job_path, "w") do |f|
+            File.open(job_path + ".yml", "w") do |f|
               f.write entry.to_yaml
             end
           else
@@ -106,7 +121,7 @@ module Cigale
             xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
             translate_job xml, edef
 
-            File.open(job_path, "w") do |f|
+            File.open(job_path + ".xml", "w") do |f|
               f.write(xml.target!)
             end
           end

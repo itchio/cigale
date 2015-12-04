@@ -9,6 +9,7 @@ require "builder/xmlbase"
 
 module Builder
   class XmlBase
+    # expose private method '_indent' for our 'raw' implementation
     def indent!
       _indent
     end
@@ -67,7 +68,7 @@ module Cigale
 
         if testcat.nil? || testcat == "general"
           xml.actions
-          xml.description "<!-- Managed by Jenkins Job Builder -->" if testcat.nil?
+          xml.description "<!-- Managed by cigale ; don't edit by hand! -->" if testcat.nil?
           xml.keepDependencies false
           xml.blockBuildWhenDownstreamBuilding false
           xml.blockBuildWhenUpstreamBuilding false
