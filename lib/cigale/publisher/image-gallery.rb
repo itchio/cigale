@@ -2,24 +2,32 @@ module Cigale::Publisher
   def translate_image_gallery_publisher (xml, pdef)
     xml.imageGalleries do
       for gallery in pdef
-        clazz = case gallery["gallery-type"]
+        type = gallery["gallery-type"] || "archived-images-gallery"
+        clazz = case type
         when "archived-images-gallery"
-          "ArchivedImagesGallery"
+          "org.jenkinsci.plugins.imagegallery.imagegallery.ArchivedImagesGallery"
         when "in-folder-comparative-gallery"
-          "InFolderComparativeArchivedImagesGallery"
+          "org.jenkinsci.plugins.imagegallery.comparative.InFolderComparativeArchivedImagesGallery"
         when "multiple-folder-comparative-gallery"
-          "MultipleFolderComparativeArchivedImagesGallery"
+          "org.jenkinsci.plugins.imagegallery.comparative.MultipleFolderComparativeArchivedImagesGallery"
         else
-          raise "Unknown image gallery type: #{gallery["gallery-type"]}"
+          raise "Unknown image gallery type: '#{type}'"
         end
 
-        xml.tag! "org.jenkinsci.plugins.imagegallery.imagegallery.#{clazz}" do
+        xml.tag! clazz do
           xml.title gallery["title"]
           imwidth = gallery["image-width"] and xml.imageWidth imwidth
           xml.markBuildAsUnstableIfNoArchivesFound boolp(gallery["unstable-if-no-artifacts"], false)
-          baseroot = gallery["base-root-folder"] and xml.baseRootFolder baseroot
-          xml.includes gallery["includes"]
-          inwidth = gallery["image-inner-width"] and xml.imageInnerWidth imwidth
+          baseroot = gallery["base-root-folder"]
+          if baseroot || type != "archived-images-gallery"
+            xml.baseRootFolder baseroot
+          end
+
+          includes = gallery["includes"]
+          if includes || type == "archived-images-gallery"
+            xml.includes includes
+          end
+          inwidth = gallery["image-inner-width"] and xml.imageInnerWidth inwidth
         end
       end # for gallery in pdef
     end # xml.imageGalleries

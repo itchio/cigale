@@ -8,12 +8,11 @@ module Cigale::Publisher
     xml.exclusionPattern
 
     targets = pdef["targets"] || {}
-    btarget = targets["branch"] || {}
-    xml.maximumBranchCoverage btarget["healthy"]
-    xml.minimumBranchCoverage btarget["unhealthy"]
 
-    mtarget = targets["method"] || {}
-    xml.maximumMethodCoverage mtarget["healthy"]
-    xml.minimumMethodCoverage mtarget["unhealthy"]
+    for target in targets
+      k, v = first_pair(target)
+      xml.tag! "maximum#{k.capitalize}Coverage", v["healthy"]
+      xml.tag! "minimum#{k.capitalize}Coverage", v["unhealthy"]
+    end
   end
 end

@@ -5,7 +5,7 @@ module Cigale::Publisher
       xml.tag! "jenkins.plugins.jclouds.blobstore.BlobStoreEntry" do
         xml.container pdef["container"]
         xml.path pdef["basedir"]
-        xml.sourceFile pdef["Files"]
+        xml.sourceFile pdef["files"]
         xml.keepHierarchy false
       end
     end # entries
