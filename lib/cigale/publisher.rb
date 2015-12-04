@@ -122,7 +122,7 @@ module Cigale::Publisher
       "ftp" => "jenkins.plugins.publish__over__ftp.BapFtpPublisherPlugin",
       "gatling" => "io.gatling.jenkins.GatlingPublisher",
       "git" => "hudson.plugins.git.GitPublisher",
-      "github-notifier" => "com.cloudbees.jenkins.GitHubCommitNotifier",
+      "github-notifier" => CustomPublisher.new,
       "google-cloud-storage" => CustomPublisher.new,
       "groovy-postbuild" => "org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder",
       "html-publisher" => "htmlpublisher.HtmlPublisher",
