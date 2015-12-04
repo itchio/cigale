@@ -8,6 +8,14 @@ module Cigale
     # I don't really suck, but it made implementing everything much easier.
     i_suck_and_my_tests_are_order_dependent!
 
+    [
+      "spec/fixtures/parity/yamlparser/fixtures/project-matrix001.yaml"
+    ].each do |f|
+      it "gens correct xml for '#{f}'" do
+        compare_with_xml f, nil
+      end
+    end
+
     # Note: fixtures are from jenkins-job-builder but have been tuned to accomodate the following:
     #  - the builder gem doesn't escape '"' as '&quot' in text content (jjb is being overzealous)
     #  - our version of 'raw' doesn't parse & re-generate XML, it just pastes the (indented) text
@@ -35,7 +43,11 @@ module Cigale
       Helper.clean_test_dir!
       cdir = File.join(Helper.test_dir, "cig")
 
-      cigale("test", sample, cdir, ["--test-category", category]) == 0 or raise "cigale failed"
+      args = []
+      if category
+        args += ["--test-category", category]
+      end
+      cigale("test", sample, cdir, args) == 0 or raise "cigale failed"
       xf = Dir.glob(File.join(cdir, "*")).first or raise "no output produced :("
 
       ref = sample.gsub(/\.yaml$/, ".xml")

@@ -30,6 +30,7 @@ module Cigale
 
         o.string "-o", "output", "Output directory", :default => "."
         o.bool "--fixture", "fixture", "Enable fixture mode", :default => false
+        o.bool "--masquerade", "masquerade", "Try to pass off as jenkins-job-builder", :default => false
         o.integer "--blowup", "blowup", "Max macro expansion rounds", :default => 1023
         o.string "--test-category", "test_category", "Test category"
         o.string "-l", "loglevel", "Logger level", :default => "INFO"

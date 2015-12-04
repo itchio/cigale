@@ -68,7 +68,14 @@ module Cigale
 
         if testcat.nil? || testcat == "general"
           xml.actions
-          xml.description "<!-- Managed by cigale ; don't edit by hand! -->" if testcat.nil?
+          if testcat.nil?
+            if @opts[:masquerade]
+              # to let tests pass
+              xml.description "<!-- Managed by Jenkins Job Builder -->"
+            else
+              xml.description "<!-- Managed by cigale -->"
+            end
+          end
           xml.keepDependencies false
           xml.blockBuildWhenDownstreamBuilding false
           xml.blockBuildWhenUpstreamBuilding false
@@ -119,10 +126,24 @@ module Cigale
     end # translate
 
     def translate_matrix_project (xml, jdef)
+      exstrat = jdef["execution-strategy"] || {}
       xml.executionStrategy :class => "hudson.matrix.DefaultMatrixExecutionStrategyImpl" do
-        xml.runSequentially false
+        xml.runSequentially boolp(exstrat["sequential"], false)
+
+        if touchstone = exstrat["touchstone"]
+          xml.touchStoneCombinationFilter touchstone["expr"]
+          xml.touchStoneResultCondition do
+            translate_build_status xml, touchstone["result"].upcase, false
+          end
+        end
       end
-      xml.combinationFilter
+
+
+      if combfil = exstrat["combination-filter"]
+        xml.combinationFilter combfil.strip
+      else
+        xml.combinationFilter
+      end
 
       if axes = jdef["axes"]
         xml.axes do
@@ -132,6 +153,10 @@ module Cigale
             name = axis["name"]
 
             clazz = case axis["type"]
+            when "label-expression"
+              "hudson.matrix.LabelExpAxis"
+            when "slave"
+              "hudson.matrix.LabelAxis"
             when "user-defined"
               "hudson.matrix.TextAxis"
             when "jdk"

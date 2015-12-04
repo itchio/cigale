@@ -9,7 +9,7 @@ require "cigale/cli"
 module Cigale
   module Helper
     def cigale (cmd, input, output, additional_args=[])
-      CLI.new(["-l", "ERROR", "--fixture", "-o", output, cmd, input] + additional_args)
+      CLI.new(["-l", "ERROR", "--masquerade", "--fixture", "-o", output, cmd, input] + additional_args)
       0
     end
 
