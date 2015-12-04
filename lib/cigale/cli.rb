@@ -86,30 +86,32 @@ module Cigale
           break unless ctx.had_expansions?
         end
 
-        case cmd
-        when "dump"
-          puts entry.to_yaml
-        else
-          etype, edef = first_pair(entry)
-          if edef["name"].nil?
-            raise "Jobs must have names" unless opts[:fixture]
-            edef["name"] = "fixture"
-            edef["project-type"] ||= "project"
-          end
+        etype, edef = first_pair(entry)
+        if edef["name"].nil?
+          raise "Jobs must have names" unless opts[:fixture]
+          edef["name"] = "fixture"
+          edef["project-type"] ||= "project"
+        end
+        job_path = File.join(output, edef["name"])
 
-          case etype
-          when "job"
+        case etype
+        when "job"
+          case cmd
+          when "dump"
+            File.open(job_path, "w") do |f|
+              f.write entry.to_yaml
+            end
+          else
             xml = ::Builder::XmlMarkup.new(:indent => 2)
             xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
             translate_job xml, edef
 
-            job_path = File.join(output, edef["name"])
             File.open(job_path, "w") do |f|
               f.write(xml.target!)
             end
-          else
-            raise "Unknown top-level type: #{etype}"
           end
+        else
+          raise "Unknown top-level type: #{etype}"
         end
       end
 

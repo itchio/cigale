@@ -62,7 +62,9 @@ module Cigale
         # could be a hash, a list, whatever, just jam it in there.
         get_param($1)
       when String
-        entity
+        entity.gsub /{(.*)}/ do |m|
+          get_param($1)
+        end
       else
         entity
       end

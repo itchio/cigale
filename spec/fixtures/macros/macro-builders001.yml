@@ -1,0 +1,21 @@
+- :on-os-arch:
+    conditional-step:
+      condition-kind: regex-match
+      label: $os-arch
+      regex: '{spec}'
+      steps: '{do}'
+
+- :on-unix:
+    .on-os-arch:
+      spec: (linux)-.*
+      do: '{*}'
+
+- :shell:
+    .on-unix: [ shell: '{*}' ]
+
+- job:
+    name: "macro-builders"
+    builders:
+      - .shell: |
+          cookie
+          cooka

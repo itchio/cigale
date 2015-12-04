@@ -1,0 +1,26 @@
+
+- :github:
+    git:
+      url: '{url}'
+      branches:
+        - master
+        - stable
+      browser: githubweb
+      browser-url: '{browser-url}'
+      timeout: 20
+
+- :public-github:
+    .github:
+      url: 'https://github.com/{*}.git'
+      browser-url: 'https://github.com/{*}'
+
+- :private-github:
+    .github:
+      url: 'git@github.com:{*}.git'
+      browser-url: 'https://github.com/{*}'
+
+- job:
+    name: "macro-scm"
+    scm:
+      - .public-github: foo/bar
+      - .private-github: baz/permaban

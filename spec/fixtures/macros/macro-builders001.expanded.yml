@@ -1,0 +1,12 @@
+---
+job:
+  name: macro-builders
+  builders:
+  - conditional-step:
+      condition-kind: regex-match
+      label: "$os-arch"
+      regex: "(linux)-.*"
+      steps:
+      - shell: |
+          cookie
+          cooka
