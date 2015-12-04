@@ -40,7 +40,14 @@ module Cigale
               mutt "...with params", v
 
               res = self.with_params(v).expand(mdef)
-              first_pair(res)
+              case res
+              when Hash
+                first_pair(res)
+              when String, Array
+                return res
+              else
+                raise "Invalid macro expansion result: #{res.inspect}"
+              end
             end
           else
             [k, expand(v)]
@@ -57,12 +64,12 @@ module Cigale
       return entity unless expanding?
 
       case entity
-      when /^{(.*)}$/
+      when /^{([^}]*)}$/
         # just paste param verbatim — could be a string,
         # could be a hash, a list, whatever, just jam it in there.
         get_param($1)
       when String
-        entity.gsub /{(.*)}/ do |m|
+        entity.gsub /{([^}]*)}/ do |m|
           get_param($1)
         end
       else

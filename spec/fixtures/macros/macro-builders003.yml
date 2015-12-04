@@ -1,0 +1,10 @@
+- :concat: "{a}-{b}-{c}"
+
+- job:
+    name: "macro-builders"
+    builders:
+      - shell:
+        - .concat:
+            a: "louie"
+            b: "huey"
+            c: "dewey"
