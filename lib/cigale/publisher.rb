@@ -114,7 +114,7 @@ module Cigale::Publisher
       "dry" => "hudson.plugins.dry.DryPublisher",
       "email-ext" => "hudson.plugins.emailext.ExtendedEmailPublisher",
       "email" => "hudson.tasks.Mailer",
-      "emotional-jenkins" => "org.jenkinsci.plugins.emotional__jenkins.EmotionalJenkinsPublisher",
+      "emotional-jenkins" => CustomPublisher.new,
       "findbugs" => CustomPublisher.new,
       "fingerprint" => "hudson.tasks.Fingerprinter",
       "fitnesse" => "hudson.plugins.fitnesse.FitnesseResultsRecorder",
