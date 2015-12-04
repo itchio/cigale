@@ -9,8 +9,8 @@
             <recipientList/>
             <subject>$PROJECT_DEFAULT_SUBJECT</subject>
             <body>$PROJECT_DEFAULT_CONTENT</body>
-            <sendToRequester>false</sendToRequester>
             <sendToDevelopers>false</sendToDevelopers>
+            <sendToRequester>false</sendToRequester>
             <includeCulprits>false</includeCulprits>
             <sendToRecipientList>true</sendToRecipientList>
           </email>
