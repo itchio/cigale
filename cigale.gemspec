@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest-reporters", "~> 1.1.7"
   spec.add_runtime_dependency "slop", "~> 4.2.1"
   spec.add_runtime_dependency "builder", "~> 3.2.2"
+  spec.add_runtime_dependency "jenkins_api_client", "~> 1.4.2"
 end

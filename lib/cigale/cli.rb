@@ -5,12 +5,10 @@ require "cigale/generator"
 
 require "logger"
 require "slop"
+require "jenkins_api_client"
 
-# should be in parser
 require "yaml"
 require "fileutils"
-
-# should be in backend
 require "builder"
 
 module Cigale
@@ -32,6 +30,7 @@ module Cigale
 
         o.string "-o", "output", "Output directory", :default => "."
         o.bool "--fixture", "fixture", "Enable fixture mode", :default => false
+        o.integer "--blowup", "blowup", "Max macro expansion rounds", :default => 1023
         o.string "--test-category", "test_category", "Test category"
         o.string "-l", "loglevel", "Logger level", :default => "INFO"
       end
@@ -40,17 +39,24 @@ module Cigale
       logger.level = Logger.const_get opts[:loglevel]
 
       if opts.arguments.empty?
-        puts "cigale v#{VERSION}"
-        puts "Usage: cigale [test] -o output/directory [spec file or directory]"
+        logger.error "No command given"
+        print_usage!
         return
       end
 
       cmd, input = opts.arguments
       case cmd
-      when "test", "dump"
+      when "test", "dump", "update"
         # all good
       else
-        raise "Unknown command: #{cmd}"
+        logger.error "Unknown command: #{cmd}"
+        exit 1
+      end
+
+      unless input
+        logger.error "No input given"
+        print_usage!
+        exit 1
       end
 
       inputs = if File.directory? input
@@ -73,33 +79,41 @@ module Cigale
         entries += parsed
       end
 
-      output = opts[:output]
-      logger.info "Creating directory #{output}"
-      FileUtils.mkdir_p output
-
-      library = {}
-      concrete_entries = []
-
       # sort out macro definitions from actual entries
+      @library = {}
+      @definitions = []
+
       for entry in entries
         etype, edef = first_pair(entry)
 
         case etype
         when Symbol
-          library[etype.to_s] = edef
+          # ruby's yaml parses `:key: val` as `:key => val` rather
+          # than `":key" => val`, so macro definitions in cigale have symbol keys
+          @library[etype.to_s] = edef
         else
-          concrete_entries.push entry
+          @definitions.push entry
         end
       end
 
-      logger.info "#{library.size} macros, #{concrete_entries.size} jobs."
+      logger.info "Parsed #{@library.size} macros, #{@definitions.size} job definitions."
 
-      for entry in concrete_entries
-        while true do
-          ctx = MacroContext.new :library => library
-          entry = ctx.expand(entry)
-          break unless ctx.had_expansions?
-        end
+      output = opts[:output]
+      client = nil
+
+      case cmd
+      when "test", "dump"
+        logger.info "Creating directory #{output}"
+        FileUtils.mkdir_p output
+      when "update"
+        client = get_client!
+        all_jobs = client.job.list_all
+        logger.info "Before update, job list: "
+        all_jobs.each { |x| logger.info "  - #{x}" }
+      end
+
+      for entry in @definitions
+        entry = fully_expand(entry)
 
         etype, edef = first_pair(entry)
         if edef["name"].nil?
@@ -107,7 +121,9 @@ module Cigale
           edef["name"] = "fixture"
           edef["project-type"] ||= "project"
         end
-        job_path = File.join(output, edef["name"])
+
+        job_name = edef["name"]
+        job_path = File.join(output, job_name)
 
         case etype
         when "job"
@@ -121,8 +137,13 @@ module Cigale
             xml.instruct! :xml, :version => "1.0", :encoding => "utf-8"
             translate_job xml, edef
 
-            File.open(job_path + ".xml", "w") do |f|
-              f.write(xml.target!)
+            case cmd
+            when "test"
+              File.open(job_path + ".xml", "w") do |f|
+                f.write(xml.target!)
+              end
+            when "update"
+              client.job.create_or_update(job_name, xml.target!)
             end
           end
         else
@@ -133,8 +154,44 @@ module Cigale
       logger.info "Generated #{@numjobs} jobs."
     end
 
+    def fully_expand (entry)
+      original = entry
+      iterations = 0
+
+      # TODO detect circular dependencies instead
+      while iterations < @opts[:blowup]
+        ctx = MacroContext.new :library => @library
+        entry = ctx.expand(entry)
+        return entry unless ctx.had_expansions?
+        iterations += 1
+      end
+
+      raise "Blew up while trying to expand #{original.inspect}"
+    end
+
     def underize (name)
       name.gsub(/-/, '_')
+    end
+
+    def print_usage
+      puts "cigale v#{VERSION}"
+      puts "Usage: cigale [test] -o output/directory [spec file or directory]"
+    end
+
+    def get_client!
+      config_path = "secret/cigale.yml"
+      config = {}
+
+      begin
+        config = YAML.load_file(config_path)
+      rescue Errno::ENOENT => e
+        logger.error "Config file missing: #{config_path}"
+        logger.error "Please create one. The `server` section can have any of the fields listed at:"
+        logger.error " http://github.arangamani.net/jenkins_api_client/JenkinsApi/Client.html#initialize-instance_method"
+        exit 1
+      end
+
+      JenkinsApi::Client.new(config["server"])
     end
   end
 end
