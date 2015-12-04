@@ -7,7 +7,7 @@ module Cigale::Publisher
       for u in pdef["uploads"]
         k, v = first_pair(u)
 
-        clazz := case k
+        clazz = case k
         when "expiring-elements" then "ExpiringBucketLifecycleManager"
         when "build-log" then "StdoutUpload"
         when "classic" then "ClassicUpload"

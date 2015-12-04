@@ -8,7 +8,7 @@ module Cigale::Publisher
       end
     end
 
-    xml.parserConfigurations
+    xml.parserConfigurations do
       for scanner in pdef["workspace-file-scanners"]
         xml.tag! "hudson.plugins.warnings.ParserConfiguration" do
           xml.pattern scanner["file-pattern"]
@@ -28,8 +28,8 @@ module Cigale::Publisher
 
     xml.thresholds do
       %w(unstable failed).each do |a|
-        %w(total new) do |b|
-          %w(all high normal low) do |c|
+        %w(total new).each do |b|
+          %w(all high normal low).each do |c|
             val = ((pdef["#{b}-thresholds"] || {})[a] || {})["b-#{c}"]
             val and xml.tag! "#{a}#{b.capitalize}#{c.capitalize}", val
           end

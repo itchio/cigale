@@ -1,6 +1,6 @@
 module Cigale::Publisher
   def translate_plot_publisher (xml, pdef)
-    xml.plots
+    xml.plots do
       for plot in pdef["plot"]
         xml.tag! "hudson.plugins.plot.Plot" do
           xml.title plot["title"]

@@ -2,7 +2,7 @@ module Cigale::Publisher
   def translate_ssh_publisher (xml, pdef)
     xml.consolePrefix "SSH: "
 
-    xml.delegate
+    xml.delegate do
       xml.publishers do
         xml.tag! "jenkins.plugins.publish__over__ssh.BapSshPublisher" do
           xml.configName pdef["site"]
@@ -30,6 +30,7 @@ module Cigale::Publisher
       xml.continueOnError false
       xml.failOnError false
       xml.alwaysPublishFromMaster false
-      xml.hostConfigurationAccess :class => "jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin" :reference => "../.."/
-  end
+      xml.hostConfigurationAccess :class => "jenkins.plugins.publish_over_ssh.BapSshPublisherPlugin", :reference => "../.."
+    end # delegate
+  end # translate
 end
