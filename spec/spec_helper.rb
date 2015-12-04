@@ -8,12 +8,8 @@ require "cigale/cli"
 
 module Cigale
   module Helper
-    def jenkins_job (input, output)
-      cmd "jenkins-jobs -l ERROR test #{input} -o #{output}"
-    end
-
-    def cigale (input, output, additional_args=[])
-      CLI.new(["-l", "ERROR", "--fixture", "-o", output, "test", input] + additional_args)
+    def cigale (cmd, input, output, additional_args=[])
+      CLI.new(["-l", "ERROR", "--fixture", "-o", output, cmd, input] + additional_args)
       0
     end
 

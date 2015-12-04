@@ -1,0 +1,12 @@
+---
+job:
+  name: macro-scm
+  scm:
+  - git:
+      url: https://github.com/foo/bar.git
+      branches:
+      - master
+      - stable
+      browser: githubweb
+      browser-url: https://github.com/foo/bar
+      timeout: 20
