@@ -1,6 +1,6 @@
 module Cigale::Publisher
   def translate_violations_publisher (xml, pdef)
-    xml.config
+    xml.config do
       xml.suppressions :class => "tree-set" do
         xml.tag! "no-comparator"
       end
@@ -18,11 +18,10 @@ module Cigale::Publisher
               xml.min spec["min"] || 10
               xml.max spec["max"] || 999
               xml.unstable spec["unstable"] || 999
+              xml.usePattern false # XXX that sounds wrong..
               if pattern = spec["pattern"]
-                xml.usePattern true
                 xml.pattern pattern
               else
-                xml.usePattern false
                 xml.pattern
               end
             end # TypeConfig
@@ -35,5 +34,6 @@ module Cigale::Publisher
       xml.sourcePathPattern
       xml.fauxProjectPath
       xml.encoding "default"
-  end
+    end # xml.config
+  end # translate
 end

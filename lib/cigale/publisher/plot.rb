@@ -1,10 +1,18 @@
 module Cigale::Publisher
   def translate_plot_publisher (xml, pdef)
     xml.plots do
-      for plot in pdef["plot"]
+      for plot in pdef
         xml.tag! "hudson.plugins.plot.Plot" do
-          xml.title plot["title"]
-          xml.yaxis plot["yaxis"]
+          if title = plot["title"] and not title.empty?
+            xml.title title
+          else
+            xml.title
+          end
+          if yaxis = plot["yaxis"] and not yaxis.empty?
+            xml.yaxis yaxis
+          else
+            xml.yaxis
+          end
           xml.csvFileName plot["csv-file-name"]
 
           xml.series do
@@ -15,7 +23,11 @@ module Cigale::Publisher
                   xml.file serie["file"]
                   xml.inclusionFlag serie["inclusion-flag"].upcase
                   xml.exclusionValues
-                  xml.url serie["url"]
+                  if url = serie["url"] and not url.empty?
+                    xml.url url
+                  else
+                    xml.url
+                  end
                   xml.displayTableFlag serie["display-table"]
                   xml.fileType serie["format"]
                 end
@@ -26,9 +38,13 @@ module Cigale::Publisher
                   xml.fileType serie["format"]
                 end
               when "xml"
-                xml.tag! "hudson.plugins.plot.PropertiesSeries" do
+                xml.tag! "hudson.plugins.plot.XMLSeries" do
                   xml.file serie["file"]
-                  xml.url
+                  if url = serie["url"] and not url.empty?
+                    xml.url url
+                  else
+                    xml.url
+                  end
                   xml.xpathString serie["xpath"]
                   xml.nodeTypeString serie["xpath-type"].upcase
                   xml.fileType serie["format"]
@@ -41,8 +57,8 @@ module Cigale::Publisher
 
           xml.group plot["group"]
           xml.useDescr plot["use-description"]
-          xml.exclZero false
-          xml.logarithmic false
+          xml.exclZero boolp(plot["exclude-zero-yaxis"], false)
+          xml.logarithmic boolp(plot["logarithmic-yaxis"], false)
           xml.keepRecords boolp(plot["keep-records"], false)
           xml.numBuilds
           xml.style plot["style"]

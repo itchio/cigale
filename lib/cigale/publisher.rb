@@ -57,14 +57,14 @@ module Cigale::Publisher
   require "cigale/publisher/pmd"
   require "cigale/publisher/post-tasks"
   require "cigale/publisher/postbuildscript"
-  require "cigale/publisher/richtext"
+  require "cigale/publisher/rich-text-publisher"
   require "cigale/publisher/robot"
   require "cigale/publisher/ruby-metrics"
   require "cigale/publisher/s3"
   require "cigale/publisher/scan-build"
   require "cigale/publisher/scoverage"
   require "cigale/publisher/scp"
-  require "cigale/publisher/shiningpanda"
+  require "cigale/publisher/shining-panda"
   require "cigale/publisher/sitemonitor"
   require "cigale/publisher/sloccount"
   require "cigale/publisher/sonar"
@@ -145,14 +145,14 @@ module Cigale::Publisher
       "pmd" => "hudson.plugins.pmd.PmdPublisher",
       "post-tasks" => "hudson.plugins.postbuildtask.PostbuildTask",
       "postbuildscript" => "org.jenkinsci.plugins.postbuildscript.PostBuildScript",
-      "richtext" => "org.korosoft.jenkins.plugin.rtp.RichTextPublisher",
+      "rich-text-publisher" => "org.korosoft.jenkins.plugin.rtp.RichTextPublisher",
       "robot" => "hudson.plugins.robot.RobotPublisher",
       "ruby-metrics" => "hudson.plugins.rubyMetrics.rcov.RcovPublisher",
       "s3" => "hudson.plugins.s3.S3BucketPublisher",
       "scan-build" => "jenkins.plugins.clangscanbuild.publisher.ClangScanBuildPublisher",
       "scoverage" => "org.jenkinsci.plugins.scoverage.ScoveragePublisher",
       "scp" => "be.certipost.hudson.plugin.SCPRepositoryPublisher",
-      "shiningpanda" => "jenkins.plugins.shiningpanda.publishers.CoveragePublisher",
+      "shining-panda" => "jenkins.plugins.shiningpanda.publishers.CoveragePublisher",
       "sitemonitor" => "hudson.plugins.sitemonitor.SiteMonitorRecorder",
       "sloccount" => "hudson.plugins.sloccount.SloccountPublisher",
       "sonar" => "hudson.plugins.sonar.SonarPublisher",
@@ -162,7 +162,7 @@ module Cigale::Publisher
       "testng" => "hudson.plugins.testng.Publisher",
       "text-finder" => "hudson.plugins.textfinder.TextFinderPublisher",
       "trigger-parameterized-builds" => "hudson.plugins.parameterizedtrigger.BuildTrigger",
-      "trigger-success" => "hudson.tasks.BuildTrigger",
+      "trigger" => "hudson.tasks.BuildTrigger",
       "valgrind" => "org.jenkinsci.plugins.valgrind.ValgrindPublisher",
       "violations" => "hudson.plugins.violations.ViolationsPublisher",
       "warnings" => "hudson.plugins.warnings.WarningsPublisher",

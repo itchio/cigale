@@ -27,10 +27,10 @@ module Cigale::Publisher
     xml.thresholdLimit pdef["health-priorities"].split("-").last # XXX wat
 
     xml.thresholds do
-      %w(unstable failed).each do |a|
-        %w(total new).each do |b|
+      %w(total new).each do |b|
+        %w(unstable failed).each do |a|
           %w(all high normal low).each do |c|
-            val = ((pdef["#{b}-thresholds"] || {})[a] || {})["b-#{c}"]
+            val = ((pdef["#{b}-thresholds"] || {})[a] || {})["#{b}-#{c}"]
             val and xml.tag! "#{a}#{b.capitalize}#{c.capitalize}", val
           end
         end

@@ -3,7 +3,7 @@ module Cigale::Publisher
     xml.outputPath pdef["output-path"]
     xml.logFileLink pdef["log-file-link"]
     xml.reportFileName pdef["report-html"]
-    xml.logFileName pdef["custom-log.html"]
+    xml.logFileName pdef["log-html"]
     xml.outputFileName pdef["output-xml"]
     xml.passThreshold pdef["pass-threshold"]
     xml.unstableThreshold pdef["unstable-threshold"]

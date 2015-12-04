@@ -25,7 +25,7 @@ module Cigale::Publisher
 
     if gset = pdef["global-settings"]
       xml.globalSettings :class => "org.jenkinsci.plugins.configfiles.maven.job.MvnGlobalSettingsProvider" do
-        xml.settingsConfigId set
+        xml.settingsConfigId gset
       end
     else
       xml.globalSettings :class => "jenkins.mvn.DefaultGlobalSettingsProvider"

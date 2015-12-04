@@ -4,48 +4,55 @@ module Cigale::Publisher
       for b in (pdef || [])
         xml.tag! "hudson.plugins.parameterizedtrigger.BuildTriggerConfig" do
           xml.configs do
+            if current = b["current-parameters"]
+              xml.tag! "hudson.plugins.parameterizedtrigger.CurrentBuildParameters"
+            end
+            if node = b["node-parameters"]
+              xml.tag! "hudson.plugins.parameterizedtrigger.NodeParameters"
+            end
 
-            if predef = pdef["predefined-parameters"]
+            if predef = b["predefined-parameters"]
               xml.tag! "hudson.plugins.parameterizedtrigger.PredefinedBuildParameters" do
                 xml.properties predef
               end
             end
 
-            if propfile = pdef["property-file"]
+            if propfile = b["property-file"]
               xml.tag! "hudson.plugins.parameterizedtrigger.FileBuildParameters" do
-                xml.properties propfile
+                xml.propertiesFile propfile
+                xml.failTriggerOnMissing true
               end
             end
 
-            if gitrev = pdef["git-revision"]
-              xml.tag! "hudson.plugins.parameterizedtrigger.GitRevisionBuild" do
+            if gitrev = b["git-revision"]
+              xml.tag! "hudson.plugins.git.GitRevisionBuildParameters" do
                 xml.combineQueuedCommits false
               end
             end
 
-            if matrix = pdef["restrict-matrix-project"]
+            if matrix = b["restrict-matrix-project"]
               xml.tag! "hudson.plugins.parameterizedtrigger.matrix.MatrixSubsetBuildParameters" do
                 xml.filter matrix
               end
             end
 
-            if pdef["node-label"] || pdef["node-label-name"]
+            if b["node-label"] || b["node-label-name"]
               xml.tag! "org.jvnet.jenkins.plugins.nodelabelparameter.parameterizedtrigger.NodeLabelBuildParameter" do
-                xml.name pdef["node-label"]
-                xml.nodeLabel pdef["node-label-name"]
+                xml.name b["node-label-name"]
+                xml.nodeLabel b["node-label"]
               end
             end
 
           end # configs
-        end # BuildTriggerConfig
 
-        projects = b["project"]
-        if Array === projects
-          projects = projects.join(",")
-        end
-        xml.projects projects
-        xml.condition "ALWAYS"
-        xml.triggerWithNoParameters false
+          projects = b["project"]
+          if Array === projects
+            projects = projects.join(",")
+          end
+          xml.projects projects
+          xml.condition "ALWAYS"
+          xml.triggerWithNoParameters boolp(b["trigger-with-no-params"], false)
+        end # BuildTriggerConfig
       end # for b in pdef
     end
   end

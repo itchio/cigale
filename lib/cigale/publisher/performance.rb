@@ -1,7 +1,8 @@
 module Cigale::Publisher
   def translate_performance_publisher (xml, pdef)
     xml.errorFailedThreshold pdef["failed-threshold"]
-    xml.errorUnstableThreshold pdef["unstable-threshld"]
+    xml.errorUnstableThreshold pdef["unstable-threshold"]
+
     xml.parsers do
       for report in (pdef["report"] || [])
         k = report

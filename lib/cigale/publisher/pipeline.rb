@@ -14,6 +14,6 @@ module Cigale::Publisher
       xml.configs
     end
 
-    xml.downstreamProjectName pdef["project"]
+    xml.downstreamProjectNames pdef["project"]
   end
 end

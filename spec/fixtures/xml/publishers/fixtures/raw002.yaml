@@ -2,10 +2,10 @@ publishers:
   - raw:
       xml: |
         <FakeServer>
-         <serverName>fake1</serverName>
+          <serverName>fake1</serverName>
         </FakeServer>
   - raw:
       xml: |
         <FakeServer>
-         <serverName>fake2</serverName>
+          <serverName>fake2</serverName>
         </FakeServer>

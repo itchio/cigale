@@ -1,5 +1,5 @@
 module Cigale::Publisher
-  def translate_richtext_publisher (xml, pdef)
+  def translate_rich_text_publisher_publisher (xml, pdef)
     xml.stableText pdef["stable-text"]
     xml.unstableText pdef["unstable-text"]
     xml.failedText pdef["failed"]

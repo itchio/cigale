@@ -4,11 +4,19 @@ module Cigale::Publisher
       "phpunit" => "PHPUnitJunitHudsonTestType",
       "cppunit" => "CppUnitJunitHudsonTestType",
       "gtest" => "GoogleTestType",
+      "ctest" => "CTestType",
     }
 
     xml.types do
-      %w(phpunit cppunit gtest).each do |a|
-        spec = (pdef["types"] || {})[a]
+      types = {}
+      for t in pdef["types"] do
+        k, v = first_pair(t)
+        types[k] = v
+      end
+
+      %w(phpunit cppunit gtest ctest).each do |a|
+        spec = types[a]
+        next unless spec
 
         xml.tag! @xunit_test_types[a] do
           xml.pattern spec["pattern"]
@@ -21,11 +29,18 @@ module Cigale::Publisher
     end
 
     xml.thresholds do
+      thresholds = {}
+      for t in pdef["thresholds"]
+        k, v = first_pair(t)
+        thresholds[k] = v
+      end
+
       %w(failed skipped).each do |a|
         xml.tag! "org.jenkinsci.plugins.xunit.threshold.#{a.capitalize}Threshold" do
           %w(unstable failure).each do |b|
             ["", "new"].each do |c|
               val = (thresholds[a] || {})["#{b}#{c}"]
+              val = nil if val == 0
               xml.tag! "#{b}#{c.capitalize}Threshold", val
             end
           end
@@ -35,11 +50,11 @@ module Cigale::Publisher
 
     @xunit_threshold_modes ||= {
       "number" => 1,
-      "percent" => w,
+      "percent" => 2,
     }
     xml.thresholdMode @xunit_threshold_modes[pdef["thresholdmode"]]
     xml.extraConfiguration do
-      xml.testTImeMargin pdef["test-time-margin"] || 3000
+      xml.testTimeMargin pdef["test-time-margin"] || 3000
     end
   end
 end
