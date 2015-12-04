@@ -1,5 +1,6 @@
 module Cigale::Publisher
   def translate_javadoc_publisher (xml, pdef)
-    xml.fixme
+    xml.javadocDir pdef["directory"]
+    xml.keepAll pdef["keep-all-successful"]
   end
 end

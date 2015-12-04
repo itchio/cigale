@@ -1,5 +1,5 @@
 module Cigale::Publisher
   def translate_shiningpanda_publisher (xml, pdef)
-    xml.fixme
+    xml.htmlDir pdef["html-reports-directory"]
   end
 end

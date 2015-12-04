@@ -1,5 +1,7 @@
 module Cigale::Publisher
   def translate_logparser_publisher (xml, pdef)
-    xml.fixme
+    xml.unstableOnWarning pdef["unstable-on-warning"]
+    xml.failBuildOnError pdef["fail-on-error"]
+    xml.parsingRulesPath pdef["parser-rules"]
   end
 end

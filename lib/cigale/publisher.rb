@@ -49,7 +49,7 @@ module Cigale::Publisher
   require "cigale/publisher/junit"
   require "cigale/publisher/logparser"
   require "cigale/publisher/logstash"
-  require "cigale/publisher/maven"
+  require "cigale/publisher/maven-deploy"
   require "cigale/publisher/naginator"
   require "cigale/publisher/performance"
   require "cigale/publisher/pipeline"
@@ -74,7 +74,7 @@ module Cigale::Publisher
   require "cigale/publisher/testng"
   require "cigale/publisher/text-finder"
   require "cigale/publisher/trigger-parameterized-builds"
-  require "cigale/publisher/trigger-success"
+  require "cigale/publisher/trigger"
   require "cigale/publisher/valgrind"
   require "cigale/publisher/violations"
   require "cigale/publisher/warnings"
@@ -132,12 +132,12 @@ module Cigale::Publisher
       "jacoco" => "hudson.plugins.jacoco.JacocoPublisher",
       "javadoc" => "hudson.tasks.JavadocArchiver",
       "jclouds" => "jenkins.plugins.jclouds.blobstore.BlobStorePublisher",
-      "jira" => "hudson.plugins.jira.JiraIssueUpdater",
+      "jira" => CustomPublisher.new,
       "join-trigger" => "join.JoinTrigger",
       "junit" => "hudson.tasks.junit.JUnitResultArchiver",
       "logparser" => "hudson.plugins.logparser.LogParserPublisher",
       "logstash" => "jenkins.plugins.logstash.LogstashNotifier",
-      "maven" => "hudson.maven.RedeployPublisher",
+      "maven-deploy" => "hudson.maven.RedeployPublisher",
       "naginator" => "com.chikli.hudson.plugin.naginator.NaginatorPublisher",
       "performance" => "hudson.plugins.performance.PerformancePublisher",
       "pipeline" => "au.com.centrumsystems.hudson.plugin.buildpipeline.trigger.BuildPipelineTrigger",
