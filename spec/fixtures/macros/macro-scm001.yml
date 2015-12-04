@@ -1,0 +1,14 @@
+- :public-github:
+    git:
+      url: 'https://github.com/{*}.git'
+      branches:
+        - master
+        - stable
+      browser: githubweb
+      browser-url: 'https://github.com/{*}'
+      timeout: 20
+
+- job:
+    name: "macro-scm"
+    scm:
+      - .public-github: foo/bar

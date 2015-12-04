@@ -1,5 +1,0 @@
-- job:
-    name: matrix-job
-    project-type: matrix
-    workspace: '/{name}/$os-$arch/src/${git.host}/${git.user}/${git.name}'
-    child-workspace: .

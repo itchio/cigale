@@ -13,6 +13,9 @@
 - :shell:
     .on-unix: [ shell: '{* shell}' ]
 
-- .shell: |
-    cookie
-    cooka
+- job:
+    name: "macro-builders"
+    builders:
+      - .shell: |
+          cookie
+          cooka

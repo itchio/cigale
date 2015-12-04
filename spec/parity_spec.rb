@@ -31,15 +31,8 @@ module Cigale
       0.must_equal diff(xf, ref)
     end
 
-    g = File.join(Helper.fixtures_dir, "parity", "*.yml")
-    Dir.glob(g).each do |f|
-      it "do same as jjb '#{f}'" do
-        compare_with_jjb f
-      end
-    end
-
     %w[general scm builders properties wrappers publishers].each do |category|
-      g = File.join(Helper.fixtures_dir, "xml", category, "**", "*.yaml")
+      g = File.join(Helper.fixtures_dir, "parity", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
         next if f.include? "plugins_info."
         next if File.exist?(f.gsub(".yaml", ".plugins_info.yaml"))
