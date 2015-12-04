@@ -43,65 +43,27 @@ module Cigale
       project = case type
       when "matrix"
         "matrix-project"
+      when "maven"
+        "maven2-moduleset"
+      when "flow"
+        "com.cloudbees.plugins.flow.BuildFlow"
+      when "multijob"
+        "com.tikal.jenkins.plugins.multijob.MultiJobProject"
+      when "externaljob"
+        "hudson.model.ExternalJob"
       else
         "project"
       end
 
       xml.tag! project do
-        case project
-        when "matrix-project"
-          xml.executionStrategy :class => "hudson.matrix.DefaultMatrixExecutionStrategyImpl" do
-            xml.runSequentially false
-          end
-          xml.combinationFilter
-
-          if axes = jdef["axes"]
-            xml.axes do
-              for a in axes
-                axis = a.values.first
-
-                name = axis["name"]
-
-                clazz = case axis["type"]
-                when "user-defined"
-                  "hudson.matrix.TextAxis"
-                when "jdk"
-                  name ||= "jdk"
-                  "hudson.matrix.JDKAxis"
-                when "python"
-                  name ||= "PYTHON"
-                  "jenkins.plugins.shiningpanda.matrix.PythonAxis"
-                when "tox"
-                  name ||= "TOXENV"
-                  "jenkins.plugins.shiningpanda.matrix.ToxAxis"
-                when "dynamic"
-                  "ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis"
-                else
-                  raise "Unknown axis type: #{axis["type"]}"
-                end
-
-                xml.tag! clazz do
-                  xml.name name
-                  xml.values do
-                    for v in axis["values"]
-                      xml.string v
-                    end
-                  end
-
-                  case axis["type"]
-                  when "dynamic"
-                    xml.varName axis["values"].first
-                    xml.axisValues do
-                      xml.string "default"
-                    end
-                  end
-                end
-              end # for a in axes
-            end
-          else
-            xml.axes
-          end
-        end
+        case type
+        when "matrix"
+          translate_matrix_project xml, jdef
+        when "maven"
+          translate_maven_moduleset xml, jdef
+        when "flow"
+          translate_flow_project xml, jdef
+        end # case project
 
         if testcat.nil? || testcat == "general"
           xml.actions
@@ -122,6 +84,10 @@ module Cigale
             xml.canRoam false
           else
             xml.canRoam true
+          end
+
+          if retcount = jdef["retry-count"]
+            xml.scmCheckoutRetryCount retcount
           end
         end
 
@@ -149,6 +115,138 @@ module Cigale
           translate_wrappers xml, jdef["wrappers"]
         end
       end
+    end # translate
+
+    def translate_matrix_project (xml, jdef)
+      xml.executionStrategy :class => "hudson.matrix.DefaultMatrixExecutionStrategyImpl" do
+        xml.runSequentially false
+      end
+      xml.combinationFilter
+
+      if axes = jdef["axes"]
+        xml.axes do
+          for a in axes
+            axis = a.values.first
+
+            name = axis["name"]
+
+            clazz = case axis["type"]
+            when "user-defined"
+              "hudson.matrix.TextAxis"
+            when "jdk"
+              name ||= "jdk"
+              "hudson.matrix.JDKAxis"
+            when "python"
+              name ||= "PYTHON"
+              "jenkins.plugins.shiningpanda.matrix.PythonAxis"
+            when "tox"
+              name ||= "TOXENV"
+              "jenkins.plugins.shiningpanda.matrix.ToxAxis"
+            when "dynamic"
+              "ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis"
+            else
+              raise "Unknown axis type: #{axis["type"]}"
+            end
+
+            xml.tag! clazz do
+              xml.name name
+              xml.values do
+                for v in axis["values"]
+                  xml.string v
+                end
+              end
+
+              case axis["type"]
+              when "dynamic"
+                xml.varName axis["values"].first
+                xml.axisValues do
+                  xml.string "default"
+                end
+              end
+            end
+          end # for a in axes
+        end
+      else
+        xml.axes
+      end
+    end
+
+    def translate_maven_moduleset (xml, jdef)
+      mav = jdef["maven"]
+      return unless mav
+
+      if rootmod = mav["root-module"]
+        xml.rootModule do
+          xml.groupId rootmod["group-id"]
+          xml.artifactId rootmod["artifact-id"]
+        end
+      end
+
+      xml.goals mav["goals"]
+      if mav["private-repository"]
+        xml.localRepository :class => "hudson.maven.local_repo.PerJobLocalRepositoryLocator"
+      end
+      xml.ignoreUpstremChanges true # sic.
+      xml.rootPOM mav["root-pom"]
+
+      if mav["incremental-build"]
+        xml.aggregatorStyleBuild false
+        xml.incrementalBuild true
+      else
+        xml.aggregatorStyleBuild true
+        xml.incrementalBuild false
+      end
+
+      xml.siteArchivingDisabled !boolp(mav["automatic-site-archiving"], true)
+      xml.fingerprintingDisabled false
+      xml.perModuleEmail true
+      xml.archivingDisabled !boolp(mav["automatic-archiving"], true)
+      xml.resolveDependencies !!mav["resolve-dependencies"]
+      xml.processPlugins !!mav["process-plugins"]
+      xml.mavenValidationLevel -1
+      xml.runHeadless !!mav["run-headless"]
+      if mavcw = mav["custom-workspace"]
+        xml.customWorkspace mavcw
+      end
+
+      if mset = mav["settings"]
+        if mset.start_with? "org.jenkinsci"
+          xml.settings :class => "org.jenkinsci.plugins.configfiles.maven.job.MvnSettingsProvider" do
+            xml.settingsConfigId mset
+          end
+        else
+          xml.settings :class => "jenkins.mvn.FilePathSettingsProvider" do
+            xml.path mset
+          end
+        end
+      else
+        xml.settings :class => "jenkins.mvn.DefaultSettingsProvider"
+      end
+
+      if mgset = mav["global-settings"]
+        if mgset.start_with? "org.jenkinsci"
+          xml.globalSettings :class => "org.jenkinsci.plugins.configfiles.maven.job.MvnGlobalSettingsProvider" do
+            xml.settingsConfigId mgset
+          end
+        else
+          xml.globalSettings :class => "jenkins.mvn.FilePathGlobalSettingsProvider" do
+            xml.path mgset
+          end
+        end
+      else
+        xml.globalSettings :class => "jenkins.mvn.DefaultGlobalSettingsProvider"
+      end
+
+      xml.runPostStepsIfResult do
+        status = mav["post-step-run-condition"] || "FAILURE"
+        translate_build_status xml, status, false
+      end
+    end
+
+
+    def translate_flow_project (xml, jdef)
+      xml.dsl
+      xml.buildNeedsWorkspace false
     end
 
   end # Generator
