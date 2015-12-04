@@ -38,7 +38,7 @@ module Cigale
       end
     end
 
-    %w[scm builders properties wrappers publishers].each do |category|
+    %w[general scm builders properties wrappers publishers].each do |category|
       g = File.join(Helper.fixtures_dir, "xml", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
         next if f.include? "plugins_info."

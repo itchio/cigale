@@ -54,12 +54,58 @@ module Cigale
             xml.runSequentially false
           end
           xml.combinationFilter
-          xml.axes
+
+          if axes = jdef["axes"]
+            xml.axes do
+              for a in axes
+                axis = a.values.first
+
+                name = axis["name"]
+
+                clazz = case axis["type"]
+                when "user-defined"
+                  "hudson.matrix.TextAxis"
+                when "jdk"
+                  name ||= "jdk"
+                  "hudson.matrix.JDKAxis"
+                when "python"
+                  name ||= "PYTHON"
+                  "jenkins.plugins.shiningpanda.matrix.PythonAxis"
+                when "tox"
+                  name ||= "TOXENV"
+                  "jenkins.plugins.shiningpanda.matrix.ToxAxis"
+                when "dynamic"
+                  "ca.silvermaplesolutions.jenkins.plugins.daxis.DynamicAxis"
+                else
+                  raise "Unknown axis type: #{axis["type"]}"
+                end
+
+                xml.tag! clazz do
+                  xml.name name
+                  xml.values do
+                    for v in axis["values"]
+                      xml.string v
+                    end
+                  end
+
+                  case axis["type"]
+                  when "dynamic"
+                    xml.varName axis["values"].first
+                    xml.axisValues do
+                      xml.string "default"
+                    end
+                  end
+                end
+              end # for a in axes
+            end
+          else
+            xml.axes
+          end
         end
 
-        if testcat.nil?
+        if testcat.nil? || testcat == "general"
           xml.actions
-          xml.description "<!-- Managed by Jenkins Job Builder -->"
+          xml.description "<!-- Managed by Jenkins Job Builder -->" if testcat.nil?
           xml.keepDependencies false
           xml.blockBuildWhenDownstreamBuilding false
           xml.blockBuildWhenUpstreamBuilding false
@@ -67,10 +113,16 @@ module Cigale
           if val = jdef["workspace"]
             xml.customWorkspace val
           end
-          if val = jdef["child-workspace"]
+          if val = jdef["child-workspace"] and type == "matrix"
             xml.childCustomWorkspace val
           end
-          xml.canRoam true
+
+          if node = jdef["node"]
+            xml.assignedNode node
+            xml.canRoam false
+          else
+            xml.canRoam true
+          end
         end
 
         if testcat.nil? || testcat == "properties"
