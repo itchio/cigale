@@ -60,12 +60,12 @@ module Cigale
       return entity unless expanding?
 
       case entity
-      when /^{([^}]*)}$/
+      when /^{([a-zA-Z0-9*\. -]*)}$/
         # just paste param verbatim — could be a string,
         # could be a hash, a list, whatever, just jam it in there.
         get_param($1)
       when String
-        entity.gsub /{([^}]*)}/ do |m|
+        entity.gsub /{([a-zA-Z0-9*\. -]*)}/ do |m|
           get_param($1)
         end
       else

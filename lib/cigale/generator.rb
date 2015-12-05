@@ -4,6 +4,7 @@ require "cigale/wrapper"
 require "cigale/scm"
 require "cigale/builder"
 require "cigale/publisher"
+require "cigale/trigger"
 
 require "builder/xmlbase"
 
@@ -23,6 +24,7 @@ module Cigale
     include Cigale::SCM
     include Cigale::Builder
     include Cigale::Publisher
+    include Cigale::Trigger
 
     def coerce_array (input)
       case input
@@ -106,7 +108,10 @@ module Cigale
         if testcat.nil? || testcat == "scm"
           translate_scms xml, jdef["scm"]
         end
-        translate_triggers xml, jdef["triggers"]
+
+        if testcat.nil? || testcat == "triggers"
+          translate_triggers xml, jdef["triggers"]
+        end
 
         if testcat.nil? || testcat == "builders"
           if post = jdef["postbuilders"]

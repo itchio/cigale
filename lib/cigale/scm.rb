@@ -55,22 +55,5 @@ module Cigale::SCM
     end
   end
 
-  def translate_triggers (xml, triggers)
-    if (triggers || []).size == 0
-      return
-    end
-
-    xml.triggers :class => "vector" do
-      for t in triggers
-        case t
-        when "github"
-          xml.tag! "com.cloudbees.jenkins.GitHubPushTrigger" do
-            xml.spec
-          end
-        else
-          raise "Unknown trigger type: #{t}"
-        end
-      end
-    end
-  end
+  
 end # Cigale::SCM

@@ -9,10 +9,12 @@ module Cigale
     i_suck_and_my_tests_are_order_dependent!
 
     [
-      "spec/fixtures/parity/yamlparser/fixtures/project-matrix001.yaml"
-    ].each do |f|
+      ["spec/fixtures/parity/yamlparser/fixtures/project-matrix001.yaml"],
+      ["spec/fixtures/parity/triggers/fixtures/pollscm001.yaml", "triggers"],
+    ].each do |pair|
+      f, cat = pair
       it "gens correct xml for '#{f}'" do
-        compare_with_xml f, nil
+        compare_with_xml f, cat
       end
     end
 

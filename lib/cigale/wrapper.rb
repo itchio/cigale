@@ -14,6 +14,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/ssh-agent-credentials"
   require "cigale/wrapper/logfilesize"
   require "cigale/wrapper/inject-ownership-variables"
+  require "cigale/wrapper/inject"
   require "cigale/wrapper/env-script"
   require "cigale/wrapper/env-file"
   require "cigale/wrapper/exclusion"
@@ -45,10 +46,12 @@ module Cigale::Wrapper
 
       "timeout" => "hudson.plugins.build__timeout.BuildTimeoutWrapper",
       "inject-passwords" => "EnvInjectPasswordWrapper",
+      "inject" => "EnvInject",
       "port-allocator" => "org.jvnet.hudson.plugins.port__allocator.PortAllocator",
       "android-emulator" => "hudson.plugins.android__emulator.AndroidEmulator",
       "ssh-agent-credentials" => "com.cloudbees.jenkins.plugins.sshagent.SSHAgentBuildWrapper",
       "inject-ownership-variables" => "com.synopsys.arc.jenkins.plugins.ownership.wrappers.OwnershipBuildWrapper",
+      "inject" => "EnvInjectBuildWrapper",
       "env-script" => "com.lookout.jenkins.EnvironmentScript",
       "env-file" => "hudson.plugins.envfile.EnvFileBuildWrapper",
       "matrix-tie-parent" => "matrixtieparent.BuildWrapperMtp",
