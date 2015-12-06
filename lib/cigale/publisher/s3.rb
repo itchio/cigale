@@ -3,7 +3,7 @@ module Cigale::Publisher
     xml.profileName pdef["s3-profile"]
 
     xml.entries do
-      for e in pdef["entries"]
+      for e in toa(pdef["entries"])
         xml.tag! "hudson.plugins.s3.Entry" do
           xml.bucket e["destination-bucket"]
           xml.sourceFile e["source-files"]
@@ -17,7 +17,7 @@ module Cigale::Publisher
     end # entries
 
     xml.userMetadata do
-      for tag in pdef["metadata-tags"]
+      for tag in toa(pdef["metadata-tags"])
         xml.tag! "hudson.plugins.s3.MetadataPair" do
           xml.key tag["key"]
           xml.value tag["value"]
