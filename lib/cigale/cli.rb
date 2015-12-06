@@ -174,7 +174,7 @@ module Cigale
       name.gsub(/-/, '_')
     end
 
-    def print_usage
+    def print_usage!
       puts "cigale v#{VERSION}"
       puts "Usage: cigale [test] -o output/directory [spec file or directory]"
     end
