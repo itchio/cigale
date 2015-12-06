@@ -4,7 +4,7 @@ module Cigale::Publisher
     xml.errorUnstableThreshold pdef["unstable-threshold"]
 
     xml.parsers do
-      for report in (pdef["report"] || [])
+      for report in toa pdef["report"]
         k = report
         v = nil
         if Hash === report

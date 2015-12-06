@@ -2,7 +2,7 @@
 module Cigale::Builder
 
   def translate_conditional_step_builder (xml, bdef)
-    case (bdef["steps"] || []).size
+    case toa(bdef["steps"]).size
     when 0
       raise "Need 1 or more steps for conditional: #{bdef.inspect}"
     when 1

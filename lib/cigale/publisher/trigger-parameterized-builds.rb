@@ -1,7 +1,7 @@
 module Cigale::Publisher
   def translate_trigger_parameterized_builds_publisher (xml, pdef)
     xml.configs do
-      for b in (pdef || [])
+      for b in toa pdef
         xml.tag! "hudson.plugins.parameterizedtrigger.BuildTriggerConfig" do
           xml.configs do
             if current = b["current-parameters"]

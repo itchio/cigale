@@ -17,7 +17,7 @@ module Cigale::Publisher
 
     targets = {}
 
-    for target in (pdef["metric-targets"] || [])
+    for target in toa pdef["metric-targets"]
       k, v = first_pair(target)
       targets[k] = v
     end

@@ -20,7 +20,7 @@ module Cigale::Publisher
       }
 
       sendto = {}
-      for rec in (pdef["send-to"] || [])
+      for rec in toa(pdef["send-to"])
         sendto[rec] = true
       end
 

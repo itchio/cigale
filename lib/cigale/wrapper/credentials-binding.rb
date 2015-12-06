@@ -10,7 +10,7 @@ module Cigale::Wrapper
     }
 
     xml.bindings do
-      for binding in (wdef || [])
+      for binding in toa wdef
         k, v = first_pair(binding)
         clazz = @credentials_binding_classes[k] or raise "Unknown credentials binding class: #{k}"
 

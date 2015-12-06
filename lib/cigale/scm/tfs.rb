@@ -15,7 +15,7 @@ module Cigale::SCM
 
       if wa
         xml.repositoryBrowser :class => bclass do
-          for u in (wa || [])
+          for u in toa wa
             xml.url u["web-url"]
           end
         end

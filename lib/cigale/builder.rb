@@ -79,51 +79,17 @@ module Cigale::Builder
   end
 
   def translate_builders (xml, tag, builders)
-    if (builders || []).size == 0
+    builders = toa builders
+    if builders.empty?
       return xml.tag! tag
     end
 
     xml.tag! tag do
       for b in builders
-        btype, bdef = lookup_builder(b)
-        case btype
-        when "raw"
-          for l in bdef["xml"].split("\n")
-            xml.indent!
-            xml << l + "\n"
-          end
-        else
-          method = "translate_#{underize(btype)}_builder"
-          clazz = builder_classes[btype]
-          raise "Unknown builder type: #{btype}" unless clazz
-
-          case clazz
-          when CustomBuilder
-            self.send method, xml, bdef
-          else
-            xml.tag! clazz do
-              self.send method, xml, bdef
-            end
-          end
-        end # not raw
-      end # for b in builders
+        type, spec = asplode b
+        translate("builder", xml, type, spec)
+      end
     end
   end # translate_builders
-
-  def lookup_builder (b)
-    btype = nil
-    bdef = {}
-
-    case b
-    when Hash
-      btype, bdef = first_pair(b)
-    when String
-      btype = b
-    else
-      raise "Invalid builder markup: #{b.inspect}"
-    end
-
-    return btype, bdef
-  end
 
 end # Cigale::Builder
