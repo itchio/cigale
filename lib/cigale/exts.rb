@@ -31,7 +31,7 @@ module Cigale
       when String
         type = node
       else
-        raise "Invalid markup: #{b.inspect}"
+        raise "Invalid markup: #{node.inspect}"
       end
 
       return type, spec
