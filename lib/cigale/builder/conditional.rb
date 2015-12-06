@@ -1,5 +1,7 @@
 
 module Cigale::Builder
+  class CustomCondition
+  end
 
   def translate_conditional_step_builder (xml, bdef)
     case toa(bdef["steps"]).size
@@ -53,95 +55,101 @@ module Cigale::Builder
     cclass = condition_classes[ckind]
     raise "Unknown condition kind: #{ckind}" unless cclass
 
-    xml.tag! tag, :class => cclass do
-      case ckind
-      when "regex-match"
-        xml.expression bdef["regex"] || raise("Missing regex: #{bdef.inspect}")
-        xml.label bdef["label"] || raise("Missing label: #{bdef.inspect}")
-      when "files-match"
-        xml.includes bdef["include-pattern"].join(",")
-        xml.excludes bdef["exclude-pattern"].join(",")
+    if %w(always never).include? ckind
+      xml.tag! tag, :class => cclass
+    else
+      xml.tag! tag, :class => cclass do
+        case ckind
+        when "regex-match"
+          xml.expression bdef["regex"] || raise("Missing regex: #{bdef.inspect}")
+          xml.label bdef["label"] || raise("Missing label: #{bdef.inspect}")
+        when "files-match"
+          xml.includes bdef["include-pattern"].join(",")
+          xml.excludes bdef["exclude-pattern"].join(",")
 
-        bdir = bdef["condition-basedir"]
-        bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for files-match: '#{bdir}'"
-        xml.baseDir :class => bdirclass
-      when "file-exists"
-        xml.file bdef["condition-filename"]
-        bdir = bdef["condition-basedir"]
-        bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for file-exists: '#{bdir}'"
-        xml.baseDir :class => bdirclass
-      when "execution-node"
-        xml.allowedNodes do
-          for node in bdef["nodes"]
-            xml.string node
+          bdir = bdef["condition-basedir"]
+          bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for files-match: '#{bdir}'"
+          xml.baseDir :class => bdirclass
+        when "file-exists"
+          xml.file bdef["condition-filename"]
+          bdir = bdef["condition-basedir"]
+          bdirclass = condition_basedirs[bdir] or raise "Unknown base dir for file-exists: '#{bdir}'"
+          xml.baseDir :class => bdirclass
+        when "execution-node"
+          xml.allowedNodes do
+            for node in bdef["nodes"]
+              xml.string node
+            end
           end
-        end
-      when "current-status"
-        worst = bdef["condition-worst"] and xml.worstResult do
-          translate_build_status xml, worst
-        end
-        best = bdef["condition-best"] and xml.bestResult do
-          translate_build_status xml, best
-        end
-      when "num-comp"
-        xml.lhs bdef["lhs"]
-        xml.rhs bdef["rhs"]
+        when "current-status"
+          worst = bdef["condition-worst"] and xml.worstResult do
+            translate_build_status xml, worst
+          end
+          best = bdef["condition-best"] and xml.bestResult do
+            translate_build_status xml, best
+          end
+        when "num-comp"
+          xml.lhs bdef["lhs"]
+          xml.rhs bdef["rhs"]
 
-        comp = bdef["comparator"]
-        cclass = condition_comparator_classes[comp] or raise "Unknown num-comp comparator: #{comp}"
-        xml.comparator :class => cclass
-      when "build-cause"
-        xml.buildCause bdef["cause"]
-        xml.exclusiveCause bdef["exclusive-cause"]
-      when "strings-match"
-        xml.arg1 bdef["condition-string1"]
-        xml.arg2 bdef["condition-string2"]
-        xml.ignoreCase bdef["condition-case-insensitive"]
-      when "time"
-        xml.earliestHours bdef["earliest-hour"]
-        xml.earliestMinutes bdef["earliest-min"]
-        xml.latestHours bdef["latest-hour"]
-        xml.latestMinutes bdef["latest-min"]
-        xml.useBuildTime bdef["use-build-time"] || false
-      when "day-of-week"
-        @day_of_week_classes ||= {
-          "weekday" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$Weekday",
-          "select-days" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$SelectDays",
-        }
+          comp = bdef["comparator"]
+          cclass = condition_comparator_classes[comp] or raise "Unknown num-comp comparator: #{comp}"
+          xml.comparator :class => cclass
+        when "build-cause"
+          xml.buildCause bdef["cause"]
+          xml.exclusiveCause bdef["exclusive-cause"]
+        when "strings-match"
+          xml.arg1 bdef["condition-string1"]
+          xml.arg2 bdef["condition-string2"]
+          xml.ignoreCase bdef["condition-case-insensitive"]
+        when "time"
+          xml.earliestHours bdef["earliest-hour"]
+          xml.earliestMinutes bdef["earliest-min"]
+          xml.latestHours bdef["latest-hour"]
+          xml.latestMinutes bdef["latest-min"]
+          xml.useBuildTime bdef["use-build-time"] || false
+        when "day-of-week"
+          @day_of_week_classes ||= {
+            "weekday" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$Weekday",
+            "select-days" => "org.jenkins_ci.plugins.run_condition.core.DayCondition$SelectDays",
+          }
 
-        dsel = bdef["day-selector"]
-        dclass = @day_of_week_classes[dsel] or raise "Unknown day-of-week selector: #{dsel}"
+          dsel = bdef["day-selector"]
+          dclass = @day_of_week_classes[dsel] or raise "Unknown day-of-week selector: #{dsel}"
 
-        case dsel
-        when "select-days"
-          xml.daySelector :class => dclass do
-            xml.days do
-              %w(SUN MON TUE WED THU FRI SAT).each_with_index do |item, index|
-                xml.tag! "org.jenkins__ci.plugins.run__condition.core.DayCondition_-Day" do
-                  xml.day index + 1
-                  xml.selected (true == bdef["days"][item]) || false
+          case dsel
+          when "select-days"
+            xml.daySelector :class => dclass do
+              xml.days do
+                %w(SUN MON TUE WED THU FRI SAT).each_with_index do |item, index|
+                  xml.tag! "org.jenkins__ci.plugins.run__condition.core.DayCondition_-Day" do
+                    xml.day index + 1
+                    xml.selected (true == bdef["days"][item]) || false
+                  end
                 end
               end
             end
+          else
+            xml.daySelector :class => dclass
           end
-        else
-          xml.daySelector :class => dclass
-        end
 
-        xml.useBuildTime bdef["use-build-time"]
-      when "not"
-        translate_condition "condition", xml, bdef["condition-operand"]
-      when "or", "and"
-        operands = bdef["condition-operands"]
-        xml.conditions do
-          for operand in operands
-            xml.tag! "org.jenkins__ci.plugins.run__condition.logic.ConditionContainer" do
-              translate_condition "condition", xml, operand
+          xml.useBuildTime bdef["use-build-time"]
+        when "not"
+          translate_condition "condition", xml, bdef["condition-operand"]
+        when "or", "and"
+          operands = bdef["condition-operands"]
+          xml.conditions do
+            for operand in operands
+              xml.tag! "org.jenkins__ci.plugins.run__condition.logic.ConditionContainer" do
+                translate_condition "condition", xml, operand
+              end
             end
           end
+        when "shell"
+          xml.command bdef["condition-command"]
         end
-      end
-    end
+      end # xml.tag!
+    end # always/never or not
   end
 
   def condition_comparator_classes
@@ -176,6 +184,9 @@ module Cigale::Builder
       "not" => "org.jenkins_ci.plugins.run_condition.logic.Not",
       "and" => "org.jenkins_ci.plugins.run_condition.logic.And",
       "or" => "org.jenkins_ci.plugins.run_condition.logic.Or",
+      "shell" => "org.jenkins_ci.plugins.run_condition.contributed.ShellCondition",
+      "always" => "org.jenkins_ci.plugins.run_condition.core.AlwaysRun",
+      "never" => "org.jenkins_ci.plugins.run_condition.core.NeverRun",
     }
   end
 

@@ -5,26 +5,7 @@ module Cigale::Publisher
 
       for publisher in pdef
         xml.tag! "org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher" do
-          case publisher["condition-kind"]
-
-          when "current-status"
-            xml.condition :class => "org.jenkins_ci.plugins.run_condition.core.StatusCondition" do
-              %w(worst best).each do |cond|
-                xml.tag! "#{cond}Result" do
-                  translate_build_status xml, publisher["condition-#{cond}"]
-                end
-              end
-            end
-
-          when "shell"
-            xml.condition :class => "org.jenkins_ci.plugins.run_condition.contributed.ShellCondition" do
-              xml.command publisher["condition-command"]
-            end
-
-          when "always"
-            xml.condition :class => "org.jenkins_ci.plugins.run_condition.core.AlwaysRun"
-
-          end # case condition-type
+          translate_condition "condition", xml, publisher
 
           onfailure = publisher["on-evaluation-failure"] || "fail"
           verb = case onfailure
