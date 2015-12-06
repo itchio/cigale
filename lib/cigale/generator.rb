@@ -6,17 +6,6 @@ require "cigale/builder"
 require "cigale/publisher"
 require "cigale/trigger"
 
-require "builder/xmlbase"
-
-module Builder
-  class XmlBase
-    # expose private method '_indent' for our 'raw' implementation
-    def indent!
-      _indent
-    end
-  end
-end
-
 module Cigale
   module Generator
     include Cigale::Property
@@ -25,17 +14,6 @@ module Cigale
     include Cigale::Builder
     include Cigale::Publisher
     include Cigale::Trigger
-
-    def coerce_array (input)
-      case input
-      when Array
-        return input
-      when nil
-        return []
-      else
-        return [input]
-      end
-    end
 
     def translate_job (xml, jdef)
       @numjobs += 1
@@ -101,8 +79,8 @@ module Cigale
           end
         end
 
-        if testcat.nil? || testcat == "properties"
-          translate_properties xml, jdef["properties"]
+        if testcat.nil? || testcat == "properties" || testcat == "params"
+          translate_properties xml, jdef["properties"], jdef["params"]
         end
 
         if testcat.nil? || testcat == "scm"
@@ -273,7 +251,6 @@ module Cigale
         translate_build_status xml, status, false
       end
     end
-
 
     def translate_flow_project (xml, jdef)
       xml.dsl

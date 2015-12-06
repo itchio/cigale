@@ -12,7 +12,7 @@ module Cigale::SCM
     end
     xml.clean sdef["clean"] || false
     if sdef["modules"]
-      xml.modules coerce_array(sdef["modules"]).join " "
+      xml.modules toa(sdef["modules"]).join " "
     else
       xml.modules
     end

@@ -12,6 +12,7 @@ module Cigale::Property
   require "cigale/property/copyartifact"
   require "cigale/property/heavy-job"
   require "cigale/property/throttle"
+  require "cigale/property/zeromq-event"
 
   def property_classes
     @property_classes ||= {
@@ -25,54 +26,45 @@ module Cigale::Property
       "batch-tasks" => "hudson.plugins.batch__task.BatchTaskProperty",
       "heavy-job" => "hudson.plugins.heavy__job.HeavyJobProperty",
       "throttle" => "hudson.plugins.throttleconcurrents.ThrottleJobProperty",
+      "zeromq-event" => "org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty",
     }
   end
 
-  def translate_properties (xml, props)
-    if (props || []).size == 0
+  def translate_properties (xml, props, params)
+    if ((props || []).size + (params || []).size) == 0
       return xml.properties
     end
 
+    xml.properties do
+      translate_properties_inner xml, props
+    end # xml.properties
+  end
+
+  def translate_properties_inner (xml, props)
     sidebars = []
 
-    xml.properties do
-      for p in props
-        case p
-        when "delivery-pipeline"
-          xml.tag! property_classes[p] do
-            xml.stageName
-            xml.taskName
-          end
-          next
-        when "zeromq-event"
-          xml.tag! "org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty" do
-            xml.enabled true
-          end
-          next
+    for p in props
+      ptype, pdef = asplode(p)
+      clazz = property_classes[ptype]
+
+      if clazz
+        xml.tag! clazz do
+          self.send "translate_#{underize(ptype)}_property", xml, pdef
         end
-
-        ptype, pdef = first_pair(p)
-        clazz = property_classes[ptype]
-
-        if clazz
-          xml.tag! clazz do
-            self.send "translate_#{underize(ptype)}_property", xml, pdef
-          end
+      else
+        case ptype
+        when "sidebar"
+          sidebars << pdef
+        when "copyartifact"
+          translate_copyartifact_property xml, pdef
         else
-          case ptype
-          when "sidebar"
-            sidebars << pdef
-          when "copyartifact"
-            translate_copyartifact_property xml, pdef
-          else
-            raise "Unknown property type: #{ptype}"
-          end
+          raise "Unknown property type: #{ptype}"
         end
-      end # for
-
-      unless sidebars.empty?
-        translate_sidebar_properties xml, sidebars
       end
+    end # for
+
+    unless sidebars.empty?
+      translate_sidebar_properties xml, sidebars
     end
   end
 

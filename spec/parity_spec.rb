@@ -27,7 +27,7 @@ module Cigale
     # to keep up with upstream fixtures, should that be desirable.
     # Also, note that the fixtures testing the original templating system aren't
     # tested here either.
-    %w(general scm builders properties wrappers publishers).each do |category|
+    %w(properties general scm builders wrappers publishers).each do |category|
       g = File.join(Helper.fixtures_dir, "parity", category, "**", "*.yaml")
       Dir.glob(g).each do |f|
         # Anything that relies on plugins_info is unimplemented atm.

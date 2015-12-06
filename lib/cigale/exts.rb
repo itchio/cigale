@@ -18,5 +18,58 @@ module Cigale
     def first_pair(h)
       h.each_pair.next
     end
+
+    # Given `{"a" => "b"}`, returns ["a", "b"].
+    # Given `"a"`, returns ["a", {}]
+    def asplode(node)
+      type = nil
+      spec = {}
+
+      case node
+      when Hash
+        type, spec = first_pair(node)
+      when String
+        type = node
+      else
+        raise "Invalid markup: #{b.inspect}"
+      end
+
+      return type, spec
+    end
+
+    # Make sure something is an array
+    def toa (input)
+      case input
+      when Array
+        return input
+      when nil
+        return []
+      else
+        return [input]
+      end
+    end
+
+    # Make sure something is a hash
+    def toh (input)
+      case input
+      when Hash
+        return input
+      when nil
+        return {}
+      else
+        raise "Can't toh {input.inspect}"
+      end
+    end
+  end
+end
+
+require "builder/xmlbase"
+
+module Builder
+  class XmlBase
+    # expose private method '_indent' for our 'raw' implementation
+    def indent!
+      _indent
+    end
   end
 end
