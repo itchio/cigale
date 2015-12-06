@@ -82,7 +82,7 @@ module Cigale
       end
 
       res = dig(@params, name)
-      raise "Unspecified param {#{name}}" unless res
+      raise "Unspecified param {#{name}}" if res.nil?
       res
     end
 
