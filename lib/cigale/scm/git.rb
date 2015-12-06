@@ -56,7 +56,8 @@ module Cigale::SCM
     xml.doGenerateSubmoduleConfigurations false
 
     xml.authorOrCommitter false
-    xml.wipeOutWorkspace true
+    wipe = boolp(sdef["wipe"], true)
+    xml.wipeOutWorkspace wipe
     xml.pruneBranches false
     xml.remotePoll false
     xml.gitTool "Default"
@@ -134,7 +135,7 @@ module Cigale::SCM
         end
       end
 
-      xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
+      wipe and xml.tag! "hudson.plugins.git.extensions.impl.WipeWorkspace"
     end
 
     if browser = sdef["browser"]
