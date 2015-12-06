@@ -52,23 +52,12 @@ module Cigale::Property
     sidebars = []
 
     for p in props
-      ptype, pdef = asplode(p)
-      case ptype
+      type, spec = asplode(p)
+      case type
       when "sidebar"
-        sidebars << pdef
+        sidebars << spec
       else
-        clazz = property_classes[ptype]
-        raise "Unknown property type: #{ptype}" unless clazz
-        method = "translate_#{underize(ptype)}_property"
-
-        case clazz
-        when CustomProperty
-          self.send method, xml, pdef
-        else
-          xml.tag! clazz do
-            self.send method, xml, pdef
-          end
-        end
+        translate(xml, "property", type, spec)
       end
     end # for
 

@@ -7,16 +7,16 @@ require "cigale/builder"
 require "cigale/publisher"
 require "cigale/trigger"
 
+include Cigale::Property
+include Cigale::Parameter
+include Cigale::Wrapper
+include Cigale::SCM
+include Cigale::Builder
+include Cigale::Publisher
+include Cigale::Trigger
+
 module Cigale
   module Generator
-    include Cigale::Property
-    include Cigale::Parameter
-    include Cigale::Wrapper
-    include Cigale::SCM
-    include Cigale::Builder
-    include Cigale::Publisher
-    include Cigale::Trigger
-
     def translate_job (xml, jdef)
       @numjobs += 1
 
@@ -109,6 +109,25 @@ module Cigale
         end
       end
     end # translate
+
+    # kind = 'property', 'parameter', 'builder'
+    # type = 'scmpoll', 'github', etc.
+    def translate (xml, kind, type, spec)
+      classes = self.send "#{kind}_classes"
+      clazz = classes[type]
+      raise "Unknown #{kind} type: #{type}" unless clazz
+
+      method = "translate_#{underize(type)}_#{kind}"
+
+      case clazz
+      when String
+        xml.tag! clazz do
+          self.send method, xml, spec
+        end
+      else
+        self.send method, xml, spec
+      end
+    end
 
     def translate_matrix_project (xml, jdef)
       exstrat = jdef["execution-strategy"] || {}
