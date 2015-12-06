@@ -112,12 +112,16 @@ module Cigale
 
     # kind = 'property', 'parameter', 'builder'
     # type = 'scmpoll', 'github', etc.
-    def translate (xml, kind, type, spec)
+    def translate (kind, xml, type, spec)
+      if type == "raw"
+        return insert_raw xml, spec
+      end
+
       classes = self.send "#{kind}_classes"
       clazz = classes[type]
       raise "Unknown #{kind} type: #{type}" unless clazz
 
-      method = "translate_#{underize(type)}_#{kind}"
+      method = method_for_translate(kind, type)
 
       case clazz
       when String
@@ -126,6 +130,17 @@ module Cigale
         end
       else
         self.send method, xml, spec
+      end
+    end
+
+    def method_for_translate (kind, type)
+      "translate_#{underize(type)}_#{kind}"
+    end
+
+    def insert_raw (xml, spec)
+      for l in spec["xml"].split("\n")
+        xml.indent!
+        xml << l + "\n"
       end
     end
 

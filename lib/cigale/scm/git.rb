@@ -67,8 +67,8 @@ module Cigale::SCM
     xml.gitConfigEmail
     xml.skipTag false
     xml.scmName
-    xml.useShallowClone sdef["shallow-clone"] || false
-    xml.ignoreNotifyCommit sdef["ignore-notify"] || false
+    xml.useShallowClone boolp(sdef["shallow-clone"], false)
+    xml.ignoreNotifyCommit boolp(sdef["ignore-notify"], false)
 
     lb = sdef["local-branch"] and xml.localBranch lb
 
@@ -95,8 +95,8 @@ module Cigale::SCM
 
       sdef["force-polling-using-workspace"] and xml.tag! "hudson.plugins.git.extensions.impl.DisableRemotePoll"
 
-      exclRegions = sdef["excluded-regions"] || []
-      inclRegions = sdef["included-regions"] || []
+      exclRegions = toa sdef["excluded-regions"]
+      inclRegions = toa sdef["included-regions"]
       unless exclRegions.empty? && inclRegions.empty?
         xml.tag! "hudson.plugins.git.extensions.impl.PathRestriction" do
           exclRegions.empty? or xml.tag! "excludedRegions", exclRegions.join("\n")

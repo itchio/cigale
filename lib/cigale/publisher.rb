@@ -173,61 +173,31 @@ module Cigale::Publisher
   end
 
   def translate_publishers (xml, tag, publishers)
-    if (publishers || []).size == 0
+    publishers = toa publishers
+    if publishers.empty?
       return xml.tag! tag
     end
 
     xml.tag! tag do
       for p in publishers
-        ptype, pdef = lookup_publisher(p)
-        case ptype
-        when "raw"
-          for l in pdef["xml"].split("\n")
-            xml.indent!
-            xml << l + "\n"
-          end
-        else
-          method = "translate_#{underize(ptype)}_publisher"
-          clazz = publisher_classes[ptype]
-          raise "Unknown publisher type: #{ptype}" unless clazz
-
-          case clazz
-          when CustomPublisher
-            self.send method, xml, pdef
-          else
-            xml.tag! clazz do
-              self.send method, xml, pdef
-            end
-          end
-        end # not raw
+        type, spec = asplode p
+        translate("publisher", xml, type, spec)
       end # for p in publishers
     end
+
   end # translate_publishers
 
   def translate_individual_publisher (xml, p)
-    ptype, pdef = lookup_publisher p
-    clazz = publisher_classes[ptype]
+    type, spec = asplode p
+
+    clazz = publisher_classes[type]
     raise "Invalid individual publisher: #{clazz}" unless String === clazz
 
+    method = method_for_translate("publisher", type)
+
     xml.publisher :class => clazz do
-      method = "translate_#{underize(ptype)}_publisher"
-      self.send method, xml, pdef
+      self.send method, xml, spec
     end
   end
 
-  def lookup_publisher (p)
-    ptype = nil
-    pdef = {}
-
-    case p
-    when Hash
-      ptype, pdef = first_pair(p)
-    when String
-      ptype = p
-    else
-      raise "Invalid publisher markup: #{p.inspect}"
-    end
-
-    return ptype, pdef
-  end
 end

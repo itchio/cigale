@@ -11,28 +11,22 @@ module Cigale::Trigger
   end
 
   def translate_triggers (xml, triggers)
-    if (triggers || []).size == 0
-      return
-    end
+    triggers = toa triggers
+    return if triggers.empty?
 
     xml.triggers :class => "vector" do
       for t in triggers
-        ttype = nil
-        tdef = nil
-        case t
-        when String
-          ttype = t
-        when Hash
-          ttype, tdef = first_pair(t)
-        end
-
-        clazz = trigger_classes[ttype]
-        raise "Unknown trigger type #{ttype}" unless clazz
-
-        xml.tag! clazz do
-          xml.spec tdef
-        end
-      end # for t in triggers
-    end # xml.triggers
+        type, spec = asplode t
+        translate("trigger", xml, type, spec)
+      end
+    end
   end # translate_triggers
+
+  def translate_github_trigger (xml, tdef)
+    xml.spec tdef
+  end
+
+  def translate_pollscm_trigger (xml, tdef)
+    xml.spec tdef
+  end
 end

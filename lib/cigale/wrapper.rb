@@ -55,7 +55,7 @@ module Cigale::Wrapper
       "env-script" => "com.lookout.jenkins.EnvironmentScript",
       "env-file" => "hudson.plugins.envfile.EnvFileBuildWrapper",
       "matrix-tie-parent" => "matrixtieparent.BuildWrapperMtp",
-      "locks" => "hudson.plugins.locksandlatches.LockWrapper",
+      "locks" => CustomWrapper.new,
       "xvfb" => "org.jenkinsci.plugins.xvfb.XvfbBuildWrapper",
       "xvnc" => "hudson.plugins.xvnc.Xvnc",
       "credentials-binding" => "org.jenkinsci.plugins.credentialsbinding.impl.SecretBuildWrapper",
@@ -66,61 +66,27 @@ module Cigale::Wrapper
   end
 
   def translate_wrappers (xml, wrappers)
-    wrappers = (wrappers || []).reject do |wrapper|
-      case wrapper
-      when Hash
-        k, v = first_pair(wrapper)
-        true if k == "locks" && (v || []).empty?
+    wrappers = toa wrappers
+    wrappers = toa(wrappers).reject do |w|
+      type, spec = asplode w
+      case
+      when type == "locks" && (toa spec).empty?
+        true
       else
         false
       end
     end
 
-    if (wrappers || []).size == 0
+    if wrappers.empty?
       return xml.buildWrappers
     end
 
     xml.buildWrappers do
       for w in wrappers
-        wtype, wdef = lookup_wrapper(w)
-        case wtype
-        when "raw"
-          for l in wdef["xml"].split("\n")
-            xml.indent!
-            xml << l + "\n"
-          end
-        else
-          method = "translate_#{underize(wtype)}_wrapper"
-          clazz = wrapper_classes[wtype]
-          raise "Unknown wrapper type: #{wtype}" unless clazz
-
-          case clazz
-          when CustomWrapper
-            self.send method, xml, wdef
-          else
-            xml.tag! clazz do
-              self.send method, xml, wdef
-            end
-          end
-        end
-      end # for w in wrappers
-    end # xml.buildWrappers
-  end # translate_wrappers
-
-  def lookup_wrapper (w)
-    wtype = nil
-    wdef = {}
-
-    case w
-    when Hash
-      wtype, wdef = first_pair(w)
-    when String
-      wtype = w
-    else
-      raise "Invalid wrapper markup: #{w.inspect}"
+        type, spec = asplode w
+        translate("wrapper", xml, type, spec)
+      end
     end
-
-    return wtype, wdef
-  end
+  end # translate_wrappers
 
 end # Cigale::Wrapper

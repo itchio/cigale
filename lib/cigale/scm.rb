@@ -22,38 +22,37 @@ module Cigale::SCM
   end
 
   def translate_scms (xml, scms, multi=false)
-    if scms.nil? || scms.size == 0
+    scms = toa scms
+    if scms.empty?
       return xml.scm :class => scm_classes["nil"]
     end
 
     if scms.size > 1 and not multi
-      xml.scm :class => "org.jenkinsci.plugins.multiplescms.MultiSCM" do
+      return xml.scm :class => "org.jenkinsci.plugins.multiplescms.MultiSCM" do
         xml.scms do
           translate_scms(xml, scms, true)
         end
       end
-      return
     end
 
     for s in scms
-      stype, sdef = first_pair(s)
+      type, spec = asplode s
 
-      case stype
+      case type
       when "raw"
-        for l in sdef["xml"].split("\n")
-          xml.indent!
-          xml << l + "\n"
-        end
+        insert_raw xml, spec
       else
-        clazz = scm_classes[stype]
-        raise "Unknown scm type: #{stype}" unless clazz
+        clazz = scm_classes[type]
+        raise "Unknown scm type: #{type}" unless clazz
+
+        method = method_for_translate("scm", type)
 
         xml.scm :class => clazz do
-          self.send "translate_#{underize(stype)}_scm", xml, sdef
+          self.send method, xml, spec
         end
       end
     end
   end
 
-  
+
 end # Cigale::SCM

@@ -1,8 +1,5 @@
 
 module Cigale::Property
-  class CustomProperty
-  end
-
   require "cigale/property/inject"
   require "cigale/property/least-load"
   require "cigale/property/delivery-pipeline"
@@ -16,6 +13,9 @@ module Cigale::Property
   require "cigale/property/heavy-job"
   require "cigale/property/throttle"
   require "cigale/property/zeromq-event"
+
+  class CustomProperty
+  end
 
   def property_classes
     @property_classes ||= {
@@ -57,7 +57,7 @@ module Cigale::Property
       when "sidebar"
         sidebars << spec
       else
-        translate(xml, "property", type, spec)
+        translate("property", xml, type, spec)
       end
     end # for
 
