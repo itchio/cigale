@@ -81,7 +81,7 @@ module Cigale
           end
         end
 
-        if testcat.nil? || testcat == "properties" || testcat == "params"
+        if testcat.nil? || testcat == "properties" || testcat == "parameters"
           translate_properties xml, jdef
         end
 

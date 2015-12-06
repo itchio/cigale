@@ -44,7 +44,14 @@ module Cigale::Property
 
     xml.properties do
       translate_properties_inner xml, props
-      translate_parameters_inner xml, parameters
+
+      unless parameters.empty?
+        xml.tag! "hudson.model.ParametersDefinitionProperty" do
+          xml.parameterDefinitions do
+            translate_parameters_inner xml, parameters
+          end
+        end
+      end
     end
   end
 
