@@ -50,7 +50,7 @@ module Cigale::Publisher
             projects = projects.join(",")
           end
           xml.projects projects
-          xml.condition "ALWAYS"
+          xml.condition (b["condition"] || "always").upcase
           xml.triggerWithNoParameters boolp(b["trigger-with-no-params"], false)
         end # BuildTriggerConfig
       end # for b in pdef
