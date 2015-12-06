@@ -1,5 +1,8 @@
 
 module Cigale::Property
+  class CustomProperty
+  end
+
   require "cigale/property/inject"
   require "cigale/property/least-load"
   require "cigale/property/delivery-pipeline"
@@ -27,21 +30,22 @@ module Cigale::Property
       "heavy-job" => "hudson.plugins.heavy__job.HeavyJobProperty",
       "throttle" => "hudson.plugins.throttleconcurrents.ThrottleJobProperty",
       "zeromq-event" => "org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty",
+      "copyartifact" => CustomProperty.new,
     }
   end
 
   def translate_properties (xml, jdef)
     props = toa jdef["properties"]
-    params = toa jdef["params"]
+    parameters = toa jdef["parameters"]
 
-    if props.empty? && params.empty?
+    if props.empty? && parameters.empty?
       return xml.properties
     end
 
     xml.properties do
       translate_properties_inner xml, props
-      translate_params_inner xml, params
-    end # xml.properties
+      translate_parameters_inner xml, parameters
+    end
   end
 
   def translate_properties_inner (xml, props)
@@ -49,20 +53,21 @@ module Cigale::Property
 
     for p in props
       ptype, pdef = asplode(p)
-      clazz = property_classes[ptype]
-
-      if clazz
-        xml.tag! clazz do
-          self.send "translate_#{underize(ptype)}_property", xml, pdef
-        end
+      case ptype
+      when "sidebar"
+        sidebars << pdef
       else
-        case ptype
-        when "sidebar"
-          sidebars << pdef
-        when "copyartifact"
-          translate_copyartifact_property xml, pdef
+        clazz = property_classes[ptype]
+        raise "Unknown property type: #{ptype}" unless clazz
+        method = "translate_#{underize(ptype)}_property"
+
+        case clazz
+        when CustomProperty
+          self.send method, xml, pdef
         else
-          raise "Unknown property type: #{ptype}"
+          xml.tag! clazz do
+            self.send method, xml, pdef
+          end
         end
       end
     end # for

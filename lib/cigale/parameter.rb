@@ -1,22 +1,24 @@
 
-module Cigale::Param
-  class CustomParam
+module Cigale::Parameter
+  class CustomParameter
   end
 
-  def param_classes
-    @param_classes ||= {
+  # require stuff
+
+  def parameter_classes
+    @parameter_classes ||= {
       "" => ""
     }
   end
 
   # cf. property.rb — params are a different field in jjb but
   # just as much properties for jenkins config
-  def translate_params_inner (xml, params)
+  def translate_parameters_inner (xml, params)
     for p in params
       ptype, pdef = asplode(p)
       clazz = param_classes[ptype] or raise "Unknown parameter type #{ptype}"
 
-      method = "translate_#{underize(ptype)}_param"
+      method = "translate_#{underize(ptype)}_parameter"
 
       case clazz
       when CustomParam

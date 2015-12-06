@@ -1,6 +1,6 @@
 
 require "cigale/property"
-require "cigale/param"
+require "cigale/parameter"
 require "cigale/wrapper"
 require "cigale/scm"
 require "cigale/builder"
@@ -10,7 +10,7 @@ require "cigale/trigger"
 module Cigale
   module Generator
     include Cigale::Property
-    include Cigale::Param
+    include Cigale::Parameter
     include Cigale::Wrapper
     include Cigale::SCM
     include Cigale::Builder
