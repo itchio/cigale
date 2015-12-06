@@ -7,11 +7,11 @@ module Cigale::Publisher
         xml.tag! "hudson.plugins.s3.Entry" do
           xml.bucket e["destination-bucket"]
           xml.sourceFile e["source-files"]
-          xml.storageClass e["storage-class"]
-          xml.selectedRegion e["bucket-region"]
-          xml.noUploadOnFailure !e["upload-on-failure"]
-          xml.uploadFromSlave e["upload-from-slave"]
-          xml.managedArtifacts e["managed-artifacts"]
+          xml.storageClass e["storage-class"] || "STANDARD"
+          xml.selectedRegion e["bucket-region"] || "us-east-1"
+          xml.noUploadOnFailure boolp(!e["upload-on-failure"], true)
+          xml.uploadFromSlave boolp(e["upload-from-slave"], false)
+          xml.managedArtifacts boolp(e["managed-artifacts"], false)
         end
       end
     end # entries
