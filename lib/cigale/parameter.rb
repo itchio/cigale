@@ -4,6 +4,8 @@ module Cigale::Parameter
   require "cigale/parameter/extended-choice"
   require "cigale/parameter/matrix-combinations"
   require "cigale/parameter/node"
+  require "cigale/parameter/string"
+  require "cigale/parameter/bool"
   require "cigale/parameter/run"
 
   class CustomParameter
@@ -15,6 +17,8 @@ module Cigale::Parameter
       "extended-choice" => "com.cwctravel.hudson.plugins.extended__choice__parameter.ExtendedChoiceParameterDefinition",
       "matrix-combinations" => "hudson.plugins.matrix__configuration__parameter.MatrixCombinationsParameterDefinition",
       "node" => "org.jvnet.jenkins.plugins.nodelabelparameter.NodeParameterDefinition",
+      "string" => "hudson.model.StringParameterDefinition",
+      "bool" => "hudson.model.BooleanParameterDefinition",
       "run" => "hudson.model.RunParameterDefinition",
     }
   end
