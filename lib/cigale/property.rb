@@ -30,13 +30,17 @@ module Cigale::Property
     }
   end
 
-  def translate_properties (xml, props, params)
-    if ((props || []).size + (params || []).size) == 0
+  def translate_properties (xml, jdef)
+    props = toa jdef["properties"]
+    params = toa jdef["params"]
+
+    if props.empty? && params.empty?
       return xml.properties
     end
 
     xml.properties do
       translate_properties_inner xml, props
+      translate_params_inner xml, params
     end # xml.properties
   end
 
@@ -65,14 +69,6 @@ module Cigale::Property
 
     unless sidebars.empty?
       translate_sidebar_properties xml, sidebars
-    end
-  end
-
-  def boolp (val, default)
-    if val.nil?
-      default
-    else
-      val
     end
   end
 end

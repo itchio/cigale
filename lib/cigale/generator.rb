@@ -1,5 +1,6 @@
 
 require "cigale/property"
+require "cigale/param"
 require "cigale/wrapper"
 require "cigale/scm"
 require "cigale/builder"
@@ -9,6 +10,7 @@ require "cigale/trigger"
 module Cigale
   module Generator
     include Cigale::Property
+    include Cigale::Param
     include Cigale::Wrapper
     include Cigale::SCM
     include Cigale::Builder
@@ -80,7 +82,7 @@ module Cigale
         end
 
         if testcat.nil? || testcat == "properties" || testcat == "params"
-          translate_properties xml, jdef["properties"], jdef["params"]
+          translate_properties xml, jdef
         end
 
         if testcat.nil? || testcat == "scm"

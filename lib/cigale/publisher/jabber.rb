@@ -1,14 +1,14 @@
 module Cigale::Publisher
   def translate_jabber_publisher (xml, pdef)
     xml.targets do
-      for gt in (pdef["group-targets"] || [])
+      for gt in toa pdef["group-targets"]
         xml.tag! "hudson.plugins.im.GroupChatIMMessageTarget" do
           xml.name gt
           xml.notificationOnly false
         end
       end
 
-      for it in (pdef["individual-targets"] || [])
+      for it in toa pdef["individual-targets"]
         xml.tag! "hudson.plugins.im.DefaultIMMessageTarget" do
           xml.value it
         end

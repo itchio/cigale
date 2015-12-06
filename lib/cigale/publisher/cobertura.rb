@@ -16,7 +16,7 @@ module Cigale::Publisher
       "failing" => {},
     }
 
-    for target in (pdef["targets"] || [])
+    for target in toa pdef["targets"]
       metric, values = first_pair(target)
       values.each do |state, value|
         targets[state][metric] = value

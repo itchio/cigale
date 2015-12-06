@@ -4,7 +4,7 @@ module Cigale::Publisher
       xml.pattern pdef["pattern"]
       xml.ignoreBlankFiles false
 
-      thresholds = pdef["thresholds"] || {}
+      thresholds = toh pdef["thresholds"]
       xml.configSeverityEvaluation do
         xml.threshold thresholds["unstable"]
         xml.newThreshold thresholds["new-unstable"]
@@ -14,7 +14,7 @@ module Cigale::Publisher
         xml.healthy
         xml.unHealthy
 
-        severities = thresholds["severity"] || {}
+        severities = toh thresholds["severity"]
 
         xml.severityError boolp(severities["error"], true)
         xml.severityWarning boolp(severities["warning"], true)
@@ -23,13 +23,13 @@ module Cigale::Publisher
         xml.severityInformation boolp(severities["information"], true)
       end
 
-      graph = pdef["graph"] || {}
+      graph = toh pdef["graph"]
       xml.configGraph do
-        xysize = graph["xysize"] || []
+        xysize = toa graph["xysize"]
         xml.xSize xysize[0]
         xml.ySize xysize[1]
 
-        display = graph["display"] || {}
+        display = toh graph["display"]
         xml.displayAllErrors boolp(display["sum"], true)
         xml.displayErrorSeverity boolp(display["error"], false)
         xml.displayWarningSeverity boolp(display["warning"], false)

@@ -60,6 +60,17 @@ module Cigale
         raise "Can't toh {input.inspect}"
       end
     end
+
+    # Give a default to a boolean parameter
+    # (val || default) doesn't work because val
+    # may be false instead of nil
+    def boolp (val, default)
+      if val.nil?
+        default
+      else
+        val
+      end
+    end
   end
 end
 
