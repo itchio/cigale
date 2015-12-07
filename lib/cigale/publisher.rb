@@ -123,7 +123,7 @@ module Cigale::Publisher
       "gatling" => "io.gatling.jenkins.GatlingPublisher",
       "git" => "hudson.plugins.git.GitPublisher",
       "github-notifier" => CustomPublisher.new,
-      "google-cloud-storage" => CustomPublisher.new,
+      "google-cloud-storage" => ["com.google.jenkins.plugins.storage.GoogleCloudStorageUploader", :plugin => "google-storage-plugin"],
       "groovy-postbuild" => "org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder",
       "html-publisher" => "htmlpublisher.HtmlPublisher",
       "image-gallery" => "org.jenkinsci.plugins.imagegallery.ImageGalleryRecorder",
@@ -191,7 +191,12 @@ module Cigale::Publisher
     type, spec = asplode p
 
     clazz = publisher_classes[type]
-    raise "Invalid individual publisher: #{clazz}" unless String === clazz
+    case clazz
+    when String, Array
+      # all good
+    else
+      raise "Invalid individual publisher: #{clazz}"
+    end
 
     method = method_for_translate("publisher", type)
 

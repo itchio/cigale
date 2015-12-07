@@ -129,6 +129,10 @@ module Cigale
         xml.tag! clazz do
           self.send method, xml, spec
         end
+      when Array
+        xml.tag! *clazz do
+          self.send method, xml, spec
+        end
       else
         self.send method, xml, spec
       end
