@@ -90,6 +90,7 @@ module Cigale
         end
 
         if testcat.nil? || testcat == "triggers"
+          tok = jdef["token"] and xml.authToken tok
           translate_triggers xml, jdef["triggers"]
         end
 
