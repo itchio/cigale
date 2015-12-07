@@ -27,6 +27,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/job-log-logger"
   require "cigale/wrapper/custom-tools"
   require "cigale/wrapper/release"
+  require "cigale/wrapper/ansi-color"
 
   class CustomWrapper
   end
@@ -62,6 +63,7 @@ module Cigale::Wrapper
       "job-log-logger" => "org.jenkins.ci.plugins.jobloglogger.JobLogLoggerBuildWrapper",
       "custom-tools" => "com.cloudbees.jenkins.plugins.customtools.CustomToolInstallWrapper",
       "release" => "hudson.plugins.release.ReleaseWrapper",
+      "ansi-color" => ["hudson.plugins.ansicolor.AnsiColorBuildWrapper", :plugin => "ansicolor@0.4.2"],
     }
   end
 
