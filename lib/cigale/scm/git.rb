@@ -62,7 +62,7 @@ module Cigale::SCM
     xml.remotePoll false
     xml.gitTool "Default"
     xml.submoduleCfg :class => "list"
-    xml.relativeTargetDir
+    xml.relativeTargetDir sdef["relative-target-dir"]
     xml.reference
     xml.gitConfigName
     xml.gitConfigEmail
@@ -132,6 +132,12 @@ module Cigale::SCM
           xml.tag! "hudson.plugins.git.extensions.impl.MessageExclusion" do
             xml.excludedMessage pattern
           end
+        end
+      end
+
+      if reldir = sdef["relative-target-dir"]
+        xml.tag! "hudson.plugins.git.extensions.impl.RelativeTargetDirectory" do
+          xml.relativeTargetDir reldir
         end
       end
 
