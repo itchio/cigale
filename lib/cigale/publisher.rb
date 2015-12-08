@@ -96,7 +96,6 @@ module Cigale::Publisher
       "campfire" => "hudson.plugins.campfire.CampfireNotifier",
       "checkstyle" => "hudson.plugins.checkstyle.CheckStylePublisher",
       "cifs" => "jenkins.plugins.publish__over__cifs.CifsPublisherPlugin",
-      "checkstyle" => "hudson.plugins.checkstyle.CheckStylePublisher",
       "cigame" => CustomPublisher.new,
       "claim-build" => CustomPublisher.new,
       "clone-workspace" => CustomPublisher.new,
@@ -166,7 +165,7 @@ module Cigale::Publisher
       "valgrind" => "org.jenkinsci.plugins.valgrind.ValgrindPublisher",
       "violations" => "hudson.plugins.violations.ViolationsPublisher",
       "warnings" => "hudson.plugins.warnings.WarningsPublisher",
-      "workspace-cleanup" => CustomPublisher.new,
+      "workspace-cleanup" => ["hudson.plugins.ws__cleanup.WsCleanup", :plugin => "ws-cleanup@0.14"],
       "xml-summary" => "hudson.plugins.summary__report.ACIPluginPublisher",
       "xunit" => "xunit",
     }

@@ -28,6 +28,7 @@ module Cigale::Wrapper
   require "cigale/wrapper/custom-tools"
   require "cigale/wrapper/release"
   require "cigale/wrapper/ansi-color"
+  require "cigale/wrapper/workspace-cleanup"
 
   class CustomWrapper
   end
@@ -64,6 +65,7 @@ module Cigale::Wrapper
       "custom-tools" => "com.cloudbees.jenkins.plugins.customtools.CustomToolInstallWrapper",
       "release" => "hudson.plugins.release.ReleaseWrapper",
       "ansi-color" => ["hudson.plugins.ansicolor.AnsiColorBuildWrapper", :plugin => "ansicolor@0.4.2"],
+      "workspace-cleanup" => ["hudson.plugins.ws__cleanup.PreBuildCleanup", :plugin => "ws-cleanup@0.28"],
     }
   end
 
