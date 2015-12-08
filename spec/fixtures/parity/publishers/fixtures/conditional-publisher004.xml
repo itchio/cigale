@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project>
+  <publishers>
+    <org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher>
+      <publishers>
+        <org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher>
+          <condition class="org.jenkins_ci.plugins.run_condition.core.AlwaysRun"/>
+          <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$RunUnstable"/>
+          <publisher class="com.google.jenkins.plugins.storage.GoogleCloudStorageUploader" plugin="google-storage-plugin">
+            <credentialsId>foobar</credentialsId>
+            <uploads>
+              <com.google.jenkins.plugins.storage.ClassicUpload>
+                <bucketNameWithVars>gs://some-bucket/some-directory</bucketNameWithVars>
+                <sharedPublicly>true</sharedPublicly>
+                <forFailedJobs>false</forFailedJobs>
+                <module/>
+                <sourceGlobWithVars>some-file</sourceGlobWithVars>
+              </com.google.jenkins.plugins.storage.ClassicUpload>
+            </uploads>
+          </publisher>
+        </org.jenkins__ci.plugins.flexible__publish.ConditionalPublisher>
+      </publishers>
+    </org.jenkins__ci.plugins.flexible__publish.FlexiblePublisher>
+  </publishers>
+</project>

@@ -190,17 +190,20 @@ module Cigale::Publisher
     type, spec = asplode p
 
     clazz = publisher_classes[type]
-    case clazz
-    when String, Array
-      # all good
-    else
-      raise "Invalid individual publisher: #{clazz}"
-    end
 
     method = method_for_translate("publisher", type)
 
-    xml.publisher :class => clazz do
-      self.send method, xml, spec
+    case clazz
+    when String
+      xml.publisher :class => clazz do
+        self.send method, xml, spec
+      end
+    when Array
+      xml.publisher({:class => clazz[0]}.merge(clazz[1])) do
+        self.send method, xml, spec
+      end
+    else
+      raise "Invalid individual publisher: #{clazz}"
     end
   end
 

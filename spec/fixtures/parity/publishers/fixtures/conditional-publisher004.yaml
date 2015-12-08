@@ -1,0 +1,12 @@
+publishers:
+    - conditional-publisher:
+        - condition-kind: always
+          on-evaluation-failure: run-and-mark-unstable
+          action:
+              - google-cloud-storage:
+                  credentials-id: foobar
+                  uploads:
+                    - classic:
+                        storage-location: 'gs://some-bucket/some-directory'
+                        file-pattern: 'some-file'
+                        share-publicly: true
