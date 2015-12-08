@@ -1,5 +1,6 @@
 # cigale
 
+![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)
 [![Build Status](https://travis-ci.org/itchio/cigale.svg)](https://travis-ci.org/itchio/cigale)
 [![Gem Version](https://badge.fury.io/rb/cigale.svg)](https://badge.fury.io/rb/cigale)
 
