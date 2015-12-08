@@ -66,7 +66,7 @@ module Cigale::SCM
     xml.reference
     xml.gitConfigName
     xml.gitConfigEmail
-    xml.skipTag false
+    xml.skipTag boolp(sdef["skip-tag"], false)
     xml.scmName
     xml.useShallowClone boolp(sdef["shallow-clone"], false)
     xml.ignoreNotifyCommit boolp(sdef["ignore-notify"], false)
