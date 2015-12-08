@@ -1,6 +1,7 @@
 # cigale
 
 [![Build Status](https://travis-ci.org/itchio/cigale.svg)](https://travis-ci.org/itchio/cigale)
+[![Gem Version](https://badge.fury.io/rb/cigale.svg)](https://badge.fury.io/rb/cigale)
 
 cigale generates XML configuration that Jenkins can grok, from a bunch of
 human-readable, diff-friendly, YAML files.
