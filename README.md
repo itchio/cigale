@@ -99,6 +99,56 @@ If you're unsure what something will expand to, you can use the `dump` command:
 cigale dump my-def.yml -o tmp
 ```
 
+## Splats
+
+Sometimes you want to do this:
+
+```yaml
+- :cool-wrappers:
+    - ansi-color
+    - inject
+
+- job:
+    name: foobar
+    wrappers:
+      - .cool-wrappers:
+      - xvfb
+      
+```
+
+But that will expand to:
+
+```yaml
+- job:
+    name: foobar
+    wrappers:
+      - - ansi-color
+        - inject
+      - xvfb
+```
+
+Which isn't valid. What you want instead is use a splat when calling
+cool-wrappers (see [issue #2](https://github.com/itchio/cigale/issues/2))
+
+```yaml
+- job:
+    name: foobar
+    wrappers:
+      - ..cool-wrappers:
+      - xvfb
+```
+
+Which will expand to the expected result:
+
+```yaml
+- job:
+    name: foobar
+    wrappers:
+      - ansi-color
+      - inject
+      - xvfb
+```
+
 ## Contributing
 
 1. Fork it ( https://github.com/itchio/cigale/fork )
