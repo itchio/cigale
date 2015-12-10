@@ -113,12 +113,13 @@ module Cigale
         all_jobs.each { |x| logger.info "  - #{x}" }
       end
 
-      for entry in @definitions
-        entry = fully_expand(entry)
+      expanded_entries = []
+      integrate_defs(expanded_entries, @definitions)
 
+      for entry in expanded_entries
         etype, edef = first_pair(entry)
         if edef["name"].nil?
-          raise "Jobs must have names" unless opts[:fixture]
+          raise "Jobs must have names: #{edef.inspect}" unless opts[:fixture]
           edef["name"] = "fixture"
           edef["project-type"] ||= "project"
         end
@@ -128,6 +129,7 @@ module Cigale
 
         case etype
         when "job"
+          @numjobs += 1
           case cmd
           when "dump"
             File.open(job_path + ".yml", "w") do |f|
@@ -153,6 +155,21 @@ module Cigale
       end
 
       logger.info "Generated #{@numjobs} jobs."
+    end
+
+    def integrate_defs (expanded_entries, defs)
+      for entry in defs
+        case e = fully_expand(entry)
+        when Cigale::Splat
+          logger.info "Got splat from #{entry.inspect}"
+          for ch in e.elems
+            logger.info "Splat entry: #{ch.inspect}"
+          end
+          integrate_defs(expanded_entries, e.elems)
+        else
+          expanded_entries << e
+        end
+      end
     end
 
     def fully_expand (entry)

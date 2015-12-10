@@ -18,8 +18,6 @@ include Cigale::Trigger
 module Cigale
   module Generator
     def translate_job (xml, jdef)
-      @numjobs += 1
-
       type = jdef["project-type"]
       testcat = @opts[:test_category]
 
