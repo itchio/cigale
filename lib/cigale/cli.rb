@@ -117,8 +117,6 @@ module Cigale
       integrate_defs(expanded_entries, @definitions)
 
       for entry in expanded_entries
-        logger.info "fully expanded entry:\n#{entry.to_yaml}"
-
         etype, edef = first_pair(entry)
         if edef["name"].nil?
           raise "Jobs must have names: #{edef.inspect}" unless opts[:fixture]

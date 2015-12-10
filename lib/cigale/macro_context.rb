@@ -69,14 +69,17 @@ module Cigale
               # cf. https://github.com/itchio/cigale/issues/3
               case mdef
               when Hash
-                if defaults = mdef.delete(:defaults)
+                if defaults = mdef[:defaults]
                   params = defaults.merge(toh(params))
+                  mdef = mdef.dup
+                  mdef.delete(:defaults)
                 end
               when Array
                 case first = mdef.first
                 when Hash
-                  if defaults = first.delete(:defaults)
+                  if defaults = first[:defaults]
                     params = defaults.merge(toh(params))
+                    mdef = mdef.dup
                     mdef.shift
                   end
                 end
