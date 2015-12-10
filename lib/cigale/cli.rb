@@ -161,10 +161,6 @@ module Cigale
       for entry in defs
         case e = fully_expand(entry)
         when Cigale::Splat
-          logger.info "Got splat from #{entry.inspect}"
-          for ch in e.elems
-            logger.info "Splat entry: #{ch.inspect}"
-          end
           integrate_defs(expanded_entries, e.elems)
         else
           expanded_entries << e
