@@ -2,6 +2,16 @@
 require "cigale/exts"
 
 module Cigale
+  class Splat
+    def initialize (elems)
+      @elems = elems
+    end
+
+    def elems
+      @elems
+    end
+  end
+
   class MacroContext < Exts
     def initialize (options)
       @library = options[:library]
@@ -21,34 +31,69 @@ module Cigale
       case entity
       when Array
         # list of things, need to expand each individually
-        entity.map do |x|
-          expand(x)
+        array = []
+
+        entity.each do |x|
+          case child = expand(x)
+          when Splat
+            array += child.elems
+          else
+            array << child
+          end
         end
+
+        array
       when Hash
-        entity.map do |k, v|
+        pairs = []
+
+        entity.each do |k, v|
           case k
           when /^\.(.*)$/
             # macro call
             if expanding?
               # keep child macro as-is for later expansion
-              [k, expand(v)]
+              pairs << [k, expand(v)]
             else
-              mdef = lookup($1)
+              splat = false
+              mname = $1
+
+              # cf. https://github.com/itchio/cigale/issues/2 for 'spec'
+              if mname =~ /^\./
+                mname = mname[1..-1]
+                splat = true
+              end
+
+              mdef = lookup(mname)
 
               res = self.with_params(v).expand(mdef)
               case res
               when Hash
-                first_pair(res)
-              when String, Array
-                return res
+                if splat
+                  raise "Unnecessary use of splat: #{entity.inspect}"
+                end
+                res.each_pair { |p| pairs << p }
+              when Array
+                if splat
+                  if entity.size > 1
+                    raise "Invalid array splat (needs to be single-pair hash): #{entity.inspect}"
+                  end
+                  return Splat.new(res)
+                else
+                  return res
+                end
               else
-                raise "Invalid macro expansion result: #{res.inspect}"
+                if splat
+                  raise "Invalid macro expansion result for splat: #{res.inspect}"
+                end
+                return res
               end
             end
           else
-            [k, expand(v)]
+            pairs << [k, expand(v)]
           end
-        end.to_h
+        end
+
+        pairs.to_h
       else
         # not a list, not a hash
         interpolate(entity)

@@ -1,0 +1,10 @@
+- :some-keys:
+    b: "B"
+    c: "C"
+    d: "D"
+
+- job:
+    name: "splats"
+    a: "A"
+    .some-keys:
+    e: "E"

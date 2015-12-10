@@ -1,0 +1,9 @@
+---
+job:
+  name: splats
+  builders:
+  - shell: echo 0
+  - shell: echo 1
+  - shell: echo 2
+  - shell: echo 3
+  - shell: echo 4

@@ -1,0 +1,11 @@
+- :multi-shell:
+    - shell: "echo 1"
+    - shell: "echo 2"
+    - shell: "echo 3"
+
+- job:
+    name: "splats"
+    builders:
+      - shell: "echo 0"
+      - ..multi-shell:
+      - shell: "echo 4"
