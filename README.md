@@ -13,6 +13,11 @@ Key points:
   * Macros are just a YAML subtree that can be instanciated with
   parameters of any types (scalars, sequences, etc.)
 
+cigale is used in production at [itch.io](http://itch.io/), and our
+job definitionso are a good comprehensive tour of:
+
+  * <https://github.com/itchio/ci.itch.ovh>
+
 ## Installation
 
 Run:
