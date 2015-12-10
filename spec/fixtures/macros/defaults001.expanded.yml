@@ -1,0 +1,6 @@
+---
+job:
+  name: defaults
+  a: a
+  b: B
+  c: c

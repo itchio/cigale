@@ -63,9 +63,26 @@ module Cigale
                 splat = true
               end
 
+              params = v
               mdef = lookup(mname)
 
-              res = self.with_params(v).expand(mdef)
+              # cf. https://github.com/itchio/cigale/issues/3
+              case mdef
+              when Hash
+                if defaults = mdef.delete(:defaults)
+                  params = defaults.merge(toh(params))
+                end
+              when Array
+                case first = mdef.first
+                when Hash
+                  if defaults = first.delete(:defaults)
+                    params = defaults.merge(toh(params))
+                    mdef.shift
+                  end
+                end
+              end
+
+              res = self.with_params(params).expand(mdef)
               case res
               when Hash
                 if splat

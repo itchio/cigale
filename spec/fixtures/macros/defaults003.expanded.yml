@@ -1,0 +1,7 @@
+---
+job:
+  name: defaults
+  list:
+  - a: A
+  - b: B
+  - c: C

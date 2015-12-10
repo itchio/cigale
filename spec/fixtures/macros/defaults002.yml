@@ -1,0 +1,14 @@
+- :deploy:
+    - :defaults:
+        a: a
+        b: b
+        c: c
+    - a: "{a}"
+    - b: "{b}"
+    - c: "{c}"
+
+- job:
+    name: "defaults"
+    list:
+      .deploy:
+        b: B
