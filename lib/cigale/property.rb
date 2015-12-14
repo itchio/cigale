@@ -13,6 +13,7 @@ module Cigale::Property
   require "cigale/property/heavy-job"
   require "cigale/property/throttle"
   require "cigale/property/zeromq-event"
+  require "cigale/property/slack"
 
   class CustomProperty
   end
@@ -30,6 +31,7 @@ module Cigale::Property
       "heavy-job" => "hudson.plugins.heavy__job.HeavyJobProperty",
       "throttle" => "hudson.plugins.throttleconcurrents.ThrottleJobProperty",
       "zeromq-event" => "org.jenkinsci.plugins.ZMQEventPublisher.HudsonNotificationProperty",
+      "slack" => ["jenkins.plugins.slack.SlackNotifier_-SlackJobProperty", :plugin => "slack@1.8.1"],
       "copyartifact" => CustomProperty.new,
     }
   end

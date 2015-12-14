@@ -81,6 +81,7 @@ module Cigale::Publisher
   require "cigale/publisher/workspace-cleanup"
   require "cigale/publisher/xml-summary"
   require "cigale/publisher/xunit"
+  require "cigale/publisher/slack"
 
   class CustomPublisher
   end
@@ -168,6 +169,7 @@ module Cigale::Publisher
       "workspace-cleanup" => ["hudson.plugins.ws__cleanup.WsCleanup", :plugin => "ws-cleanup@0.14"],
       "xml-summary" => "hudson.plugins.summary__report.ACIPluginPublisher",
       "xunit" => "xunit",
+      "slack" => ["jenkins.plugins.slack.SlackNotifier", :plugin => "slack@1.8.1"],
     }
   end
 
